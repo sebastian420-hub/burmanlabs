@@ -172,6 +172,7 @@ h3{
     display: none;
     position: absolute;
     border: none;
+    padding: 20px;
     background-color: whitesmoke;
     min-width: 250px;
     z-index: 1;
@@ -209,6 +210,9 @@ h3{
     font-size: 40px;
     letter-spacing: 6px;
     margin-left: 30px;
+}
+.container{
+    padding: 13px;
 }
 
 #ninja canvas {
