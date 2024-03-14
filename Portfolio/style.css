@@ -7,8 +7,11 @@
 
 body{
     background-color: whitesmoke;
+  
 }
-
+#sketch1{
+    position: relative;
+}
 #icon{
     display: block;
     margin: 0 auto;
@@ -30,6 +33,15 @@ body{
     margin-left: auto; /* Centering the text horizontally */
     margin-right: 65vw; /* Centering the text horizontally */
 }
+.headt {
+    color: orangered;
+}
+/* .centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+} */
 
 footer{
     padding-bottom: 140px;
@@ -37,6 +49,32 @@ footer{
     min-width: 20rem;
     padding: 6rem;
 }
+
+/* Style for the iframe container */
+.iframe-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
+
+/* Style for the iframe */
+.cropped-iframe {
+    position: absolute;
+    /* top: 80px; 
+    left: 80px;  */
+    width: 80%; /* Adjust the width of the content to be visible */
+    height: 650px; /* Adjust the height of the content to be visible */
+    border: none; /* Optionally remove iframe border */
+}
+
+
+iframe {
+    width: 80%;
+    height: 600px; /* Adjust the height as needed */
+    border: 5px solid #ccc;
+}
+
 
 p{
     font-size: 23px;
@@ -53,6 +91,7 @@ p{
     padding: 5rem;
 
 }
+
 
 #intro{
     padding-bottom: 70px;
@@ -214,23 +253,6 @@ h3{
 .container{
     padding: 13px;
 }
-
-#ninja canvas {
-    position: relative;
-    top: 100%;
-    left: 50%;
-    margin-left: 900px;
-    
-   
-  }
-
-#sketches{
-    position: grid;
-    grid-template-rows: 2fr 2fr 2fr;
-}
-  
-
-
 
 .folder-button{
     color: whitesmoke;

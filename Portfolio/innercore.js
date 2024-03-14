@@ -1,51 +1,106 @@
-function sketch(p) {
-  let a = 1;
-  let b = 80;
-  let angle = 0;
-  let angleV = 1;
-  let angleA = 1;
-  let move;
+let ones = [];
+let zeros = [];
+let x;
+let y;
 
-  p.setup = function() {
-    p.createCanvas(windowWidth, 800, p.WEBGL);
-  };
+let boolean = true;
 
-  p.draw = function() {
-    p.background(20);
 
-    a = move;
 
-    angle += angleV;
-    angleV += angleA;
+function setup() {
+  createCanvas(windowWidth, 300, document.getElementById('sketch1'));
+  
 
-    p.translate(20, 0);
-    p.push();
-    p.fill(0, 0, 0);
-    p.stroke(p.random(0, 255), p.random(0, 25), p.random(0, 25));
-    p.rotateZ(angle);
-    p.rotateX(p.frameCount * 0.00);
-    p.rotateY(p.frameCount * 0.01);
-
-    p.torus(10, b);
-    p.pop();
-
-    move = p.map(p.mouseY, 0, p.height, 1, 500, 1);
-
-    p.translate(5, 0);
-
-    p.push();
-    p.stroke(p.random(0, 255), p.random(0, 25), p.random(0, 25));
-    p.rotateZ(p.frameCount * 0.005);
-    p.rotateX(p.frameCount * 0.00);
-    p.rotateY(p.frameCount * 0.01);
-
-    p.torus(a, b);
-    p.pop();
-  };
-
-  p.windowResized = function() {
-    p.resizeCanvas(p.windowWidth, p.windowHeight);
-  };
+  
+    
+ 
+  for (let i = 0; i < 80; i++) {
+    ones.push(new One());
+  }
+    for (let i = 0; i < 80; i++) {
+    zeros.push(new Zero());
+  }
 }
 
-new p5(sketch, 'sketch-container2');
+ function draw() {
+  background(252,76,2);
+ 
+   
+   for (let i = 0; i < ones.length; i++) {
+    ones[i].update();
+    ones[i].display();
+ }   
+   
+      for (let i = 0; i < zeros.length; i++) {
+    zeros[i].update();
+    zeros[i].display();
+ } 
+   
+}
+  
+class One {
+  constructor() {
+    this.x = random(width); 
+    this.y = -20;             
+    this.speed = random(5, 8); 
+    if(boolean){
+      this.speed = random(1, 2); 
+    }
+    
+  }
+
+  update() {
+    this.y += this.speed;
+    if (this.y > height) {
+      this.y = -20;
+      this.x = random(width);
+    }
+    if(boolean){
+         this.y += this.speed;
+    }}
+  display() {
+    
+     text('1',this.x,this.y)
+   
+   
+  }
+}
+    class Zero {
+  constructor() {
+    this.x = random(width); 
+    this.y = -20;             
+    this.speed = random(3, 5); 
+    if(boolean){
+      this.speed = random(1, 2); 
+    }
+    
+  }
+
+  update() {
+    this.y += this.speed;
+    if (this.y > height) {
+      this.y = -20;
+      this.x = random(width);
+    }
+    if(boolean){
+         this.y += this.speed;
+    }}
+  display() {
+    text('0',this.x,this.y)
+   
+   
+  }
+}
+
+ windowResized = function() {
+   resizeCanvas(windowWidth, 500);
+};
+
+
+
+
+function keyPressed() {
+  if (keyCode === 75) {
+    boolean = !boolean;
+    console.log(boolean);
+    } }
