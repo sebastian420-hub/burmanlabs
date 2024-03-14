@@ -56,23 +56,16 @@ footer{
     justify-content: center;
     align-items: center;
     height: 50vh;
+    margin-bottom: 40px;
 }
 
-/* Style for the iframe */
-.cropped-iframe {
-    position: absolute;
-    /* top: 80px; 
-    left: 80px;  */
-    width: 80%; /* Adjust the width of the content to be visible */
-    height: 650px; /* Adjust the height of the content to be visible */
-    border: none; /* Optionally remove iframe border */
-}
 
 
 iframe {
     width: 80%;
     height: 600px; /* Adjust the height as needed */
     border: 5px solid #ccc;
+    padding-bottom: 30px;
 }
 
 
