@@ -66,6 +66,11 @@ p{
    
 }
 
+.aboutme{
+    padding: 2rem;
+    min-width: 15%;
+}
+
 #aboutmehead{
     text-align: left;
     font-family: 'Handjet', cursive;
@@ -76,7 +81,7 @@ p{
 
 #aboutme{
     text-align: left;
-    font-family: 'Handjet', cursive;
+    font-family: 'Saira Condensed', sans-serif;
     font-size: 25px;
     margin-left: 120px;
     margin-right: 120px;
