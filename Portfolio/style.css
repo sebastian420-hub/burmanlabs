@@ -68,7 +68,12 @@ p{
 
 .aboutme{
     padding: 2rem;
-    min-width: 15%;
+    min-width: 40%;
+    
+}
+
+#about{
+    padding-top: 30px;
 }
 
 #aboutmehead{
@@ -77,6 +82,7 @@ p{
     margin-top: 60px;
     margin-left: 120px;
     font-size: 35px;
+    margin-bottom: 1.5rem;
 }
 
 #aboutme{
