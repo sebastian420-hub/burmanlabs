@@ -8,7 +8,7 @@ let boolean = true;
 
 
 function setup() {
-  createCanvas(windowWidth, windowHeight, document.getElementById('sketch1'));
+  createCanvas(windowWidth, 100, document.getElementById('sketch1'));
   
 
   
@@ -23,7 +23,7 @@ function setup() {
 }
 
  function draw() {
-  background(255,250,250);
+  background(252,50,0);
  
    
    for (let i = 0; i < ones.length; i++) {
@@ -93,7 +93,7 @@ class One {
 }
 
  windowResized = function() {
-   resizeCanvas(windowWidth, windowHeight);
+   resizeCanvas(windowWidth, 250);
 };
 
 

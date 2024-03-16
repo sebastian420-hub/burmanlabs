@@ -11,6 +11,10 @@ body{
 }
 #sketch1{
     position: relative;
+    z-index: 0;
+}
+#sketch2{
+    position: relative;
 }
 #icon{
     display: block;
@@ -52,21 +56,85 @@ footer{
 
 /* Style for the iframe container */
 .iframe-container {
+    position: relative;
+    display: flex;
+    height: 50vh;
+    width: 85%;
+    right:0;
+    margin-right: -300px;
+    margin: 0 auto;
+    margin-bottom: 400px;
+    margin-top: -645px;
+    z-index: 11;
+
+    
+}
+
+.iframe-con {
+    display: flex;
+    height: 50vh;
+    width: 85%;
+    right:0;
+    margin-right: -300px;
+    margin: 0 auto;
+    margin-bottom: 260px;
+    margin-top: 100px;
+    z-index: 11;
+
+    
+}
+
+.my-iframe2 {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 600px; 
+    border: 5px solid #ccc;
+    z-index: 998;
+}
+
+.my-iframe3 {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 600px; 
+    border: 5px solid #ccc;
+    z-index: 998;
+}
+
+
+.iframe-container2 {
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50vh;
-    margin-bottom: 40px;
+    height: 80vh;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: -50px;
+    
+    z-index: 11;
+    
 }
 
 
 
-iframe {
-    width: 80%;
-    height: 600px; /* Adjust the height as needed */
+
+
+.cropped-iframe{
+    position: absolute;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 140px;
     border: 5px solid #ccc;
-    padding-bottom: 30px;
 }
+
+
+
+
+
 
 
 p{
@@ -174,6 +242,38 @@ h3{
     padding-bottom: 20px;
 }
 
+.navi2{
+    z-index: 1;
+    display: flex;
+    width: 8%;
+    height: 100px;
+    border: 2px solid black;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-item {
+    padding-bottom: 20px;
+}
+
+.list-group{
+    list-style-type: none;
+
+}
+
+.nav-link{
+    text-decoration: none;
+    display: flex;
+    padding: 10px;
+    
+    border: 1px solid orangered;
+    border-radius: 10px;
+    
+}
+
+
+
 .letters{
     margin: 200px;
     margin-top: auto;
@@ -185,11 +285,14 @@ h3{
     top: 0;
     left: 0;
     padding: 10px;
+    z-index: 999;
  }
 
  .navi a{
     margin: 0 6px;
  }
+
+
 
 .dropdown {
     font-family: 'Handjet', cursive;
@@ -200,18 +303,19 @@ h3{
 
 }
 
+
+
 .dropdown-content {
     display: none;
     position: absolute;
     border: none;
-    padding: 20px;
-    background-color: whitesmoke;
+    padding: 25px;
     min-width: 250px;
     z-index: 1;
 }
 
 .dropdown-content a {
-    color: black;
+    color: orangered;
     padding: 20px 20px;
     text-decoration: none;
     display: block;
@@ -219,14 +323,17 @@ h3{
     font-size: 25px;
     text-align: left;
     letter-spacing: 6px;
+    list-style-type: none;
 }
 
 .dropdown-content a:hover {
     background-color: orangered;
+    color: black;
 }
 
 .navi:hover .dropdown-content {
     display: block;
+    
 }
 
 #film{
