@@ -25,6 +25,23 @@ body{
     padding-top: 100x;
     padding-left: 180px;
 }
+
+.index{
+    text-align: center;
+    font-family: 'Handjet', cursive;
+    max-width: 600px;
+    margin: auto;
+    align-items: center;
+    width: 30vh;
+
+}
+
+
+
+.index :hover{
+    color: orangered;
+}
+
 .head {
     text-align: center;
     font-family: 'Handjet', cursive;
@@ -98,6 +115,10 @@ footer{
     height: 600px; 
     border: 5px solid #ccc;
     z-index: 998;
+}
+
+#app{
+    margin: auto 0;
 }
 
 
