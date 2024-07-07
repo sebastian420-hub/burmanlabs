@@ -3,11 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Handjet:wght@100..900&display=swap" rel="stylesheet">
     <title>The Earth</title>
     <style>
       body {
         margin: 0;
       }
+
+      @import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@300&display=swap');
     </style>
     <script type="importmap">
 			{
@@ -19,6 +25,25 @@
 		</script>
   </head>
   <body>
+
+    <nav class="navi">
+      <div class="container">
+            <a class="dropdown" href="#">Directory</a>
+               <button class="dropdown" id="dropdownn" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+               </button>
+            <div class="dropdown-content" id="navbarSupportedContent">
+               <ul class="list-group">
+                 <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                 </li>
+                 <li class="nav-item">
+                     <a class="nav-link" href="editor.html">Editor</a>
+                 </li>
+               </ul>
+            </div>
+      </div>
+  </nav>
     <script type="module" src="index.js"></script>
   </body>
 </html>
