@@ -248,13 +248,13 @@ input[type="checkbox"] {
                 <h3>Basic Shape</h3>  
                 <div class="control-group">  
                     <label>Outer Radius</label>  
-                    <input type="range" id="outerRadius" min="2" max="6" step="0.1" value="3">  
-                    <span class="value-display">3.0</span>  
+                    <input type="range" id="outerRadius" min="2" max="6" step="0.1" value="3.20">  
+                    <span class="value-display">3.20</span>  
                 </div>  
                 <div class="control-group">  
                     <label>Inner Oval X</label>  
-                    <input type="range" id="innerOvalX" min="0.5" max="4" step="0.1" value="2">  
-                    <span class="value-display">2.0</span>  
+                    <input type="range" id="innerOvalX" min="0.5" max="4" step="0.1" value="0.9">  
+                    <span class="value-display">0.9</span>  
                 </div>  
                 <div class="control-group">  
                     <label>Inner Oval Y</label>  
@@ -267,18 +267,18 @@ input[type="checkbox"] {
                 <h3>Pattern Detail</h3>  
                 <div class="control-group">  
                     <label>Segments</label>  
-                    <input type="range" id="segments" min="100" max="500" step="10" value="320">  
-                    <span class="value-display">320</span>  
+                    <input type="range" id="segments" min="100" max="500" step="10" value="280">  
+                    <span class="value-display">280</span>  
                 </div>  
                 <div class="control-group">  
                     <label>Loops</label>  
-                    <input type="range" id="loops" min="5" max="40" step="1" value="20">  
-                    <span class="value-display">20</span>  
+                    <input type="range" id="loops" min="5" max="40" step="1" value="35">  
+                    <span class="value-display">35</span>  
                 </div>  
                 <div class="control-group">  
                     <label>Tube Radius</label>  
-                    <input type="range" id="tubeRadius" min="0.01" max="0.2" step="0.01" value="0.05">  
-                    <span class="value-display">0.05</span>  
+                    <input type="range" id="tubeRadius" min="0.01" max="0.2" step="0.01" value="0.08">  
+                    <span class="value-display">0.08</span>  
                 </div>  
             </div>  
     
@@ -286,18 +286,18 @@ input[type="checkbox"] {
                 <h3>Wave Effects</h3>  
                 <div class="control-group">  
                     <label>Wave Speed</label>  
-                    <input type="range" id="waveSpeed" min="0.01" max="0.2" step="0.01" value="0.05">  
-                    <span class="value-display">0.05</span>  
+                    <input type="range" id="waveSpeed" min="0.01" max="0.2" step="0.01" value="0.03">  
+                    <span class="value-display">0.03</span>  
                 </div>  
                 <div class="control-group">  
                     <label>Wave Amplitude</label>  
-                    <input type="range" id="waveAmplitude" min="0.1" max="2" step="0.1" value="0.8">  
-                    <span class="value-display">0.8</span>  
+                    <input type="range" id="waveAmplitude" min="0.1" max="2" step="0.1" value="0.2">  
+                    <span class="value-display">0.2</span>  
                 </div>  
                 <div class="control-group">  
                     <label>Secondary Wave</label>  
-                    <input type="range" id="secondaryWave" min="0" max="1" step="0.1" value="0.5">  
-                    <span class="value-display">0.5</span>  
+                    <input type="range" id="secondaryWave" min="0" max="1" step="0.1" value="1">  
+                    <span class="value-display">1</span>  
                 </div>  
             </div>  
     
@@ -310,15 +310,15 @@ input[type="checkbox"] {
                 </div>  
                 <div class="control-group">  
                     <label>Pattern Flow</label>  
-                    <input type="range" id="patternFlow" min="0" max="1" step="0.1" value="0.5">  
-                    <span class="value-display">0.5</span>  
+                    <input type="range" id="patternFlow" min="0" max="1" step="0.1" value="0.40">  
+                    <span class="value-display">0.40</span>  
                 </div>  
             </div>  
             <div class="control-section">
                 <h3>Colors</h3>
                 <div class="control-group">
                     <label>Primary Color</label>
-                    <input type="color" id="primaryColor" value="#00ff00">
+                    <input type="color" id="primaryColor" value="#E4A9F9">
                     <span class="value-display">Active</span>
                 </div>
                 <div class="control-group">
@@ -332,8 +332,8 @@ input[type="checkbox"] {
                 </div>
                 <div class="control-group" id="gradientControls">
                     <label>Gradient Intensity</label>
-                    <input type="range" id="colorGradient" min="0" max="1" step="0.1" value="0.5">
-                    <span class="value-display">0.5</span>
+                    <input type="range" id="colorGradient" min="0" max="1" step="0.1" value="1">
+                    <span class="value-display">1</span>
                 </div>
             </div>
             
@@ -423,29 +423,29 @@ input[type="checkbox"] {
         class ControlsManager {  
             constructor() {  
                 this.config = {  
-                    outerRadius: 3,  
-                    innerOvalX: 2,  
-                    innerOvalY: 1,  
-                    tubeRadius: 0.05,  
-                    segments: 320,  
-                    loops: 20,  
-                    waveSpeed: 0.05,  
-                    waveAmplitude: 0.8,  
+                    outerRadius: 3.20,  
+                    innerOvalX: 0.90,  
+                    innerOvalY: 1.0,  
+                    tubeRadius: 0.08,  
+                    segments: 280,  
+                    loops: 35,  
+                    waveSpeed: 0.03,  
+                    waveAmplitude: 0.2,  
                     rotationSpeed: 0.005,  
-                    secondaryWave: 0.5,  
-                    patternFlow: 0.5,  
-                    colorGradient: 0.5,  
+                    secondaryWave: 1.0,  
+                    patternFlow: 0.4,  
+                    colorGradient: 1,  
                     primaryColor: 0xffffff,  
                     backgroundColor: 0x000000, 
-                    useGradient: true,  
+                    useGradient: false,  
                     textContent: "Pulse Studio",  
                     textColor: "#ffffff",  
-                    textSize: 72,  
+                    textSize: 48,  
                     textOpacity: 1,
-                    fontFamily: "'Roboto', sans-serif",  
+                    fontFamily: "'Orbitron', sans-serif",  
                     fontWeight: "normal",  
                     fontStyle: "normal",  
-                    textTransform: "none",  
+                    textTransform: "uppercase",  
                     letterSpacing: 2
                 };  
                 this.presets = {  
