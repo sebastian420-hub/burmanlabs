@@ -1,48 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Handjet:wght@100..900&display=swap" rel="stylesheet">
-    <title>The Earth</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Earth and Moon Visualization</title>
+    
     <style>
-      body {
-        margin: 0;
-      }
-
-      @import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@300&display=swap');
-    </style>
-       <script type="importmap">
-        {
-          "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-            "jsm/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
-          }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      </script>
 
-  </head>
-  <body>
+        body {
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+        }
 
-    <nav class="navi">
-      <div class="container">
-            <a class="dropdown" href="#">Directory</a>
-               <button class="dropdown" id="dropdownn" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-               </button>
-            <div class="dropdown-content" id="navbarSupportedContent">
-               <ul class="list-group">
-                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home</a>
-                 </li>
-                 <li class="nav-item">
-                     <a class="nav-link" href="editor.html">Editor</a>
-                 </li>
-               </ul>
-            </div>
-      </div>
-  </nav>
-    <script type="module" src="index.js"></script>
-  </body>
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 1000;
+        }
+
+        #loading-bar {
+            width: 200px;
+            height: 4px;
+            background-color: #333;
+            margin-top: 20px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        #loading-progress {
+            width: 0%;
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.3s ease-in-out;
+        }
+
+        #controls-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 100;
+            min-width: 250px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            outline: none;
+            margin-top: 8px;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #4CAF50;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #error-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 1000;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <h2>Loading Earth Visualization</h2>
+        <div id="loading-bar">
+            <div id="loading-progress"></div>
+        </div>
+    </div>
+
+    <div id="controls-panel">
+        <div class="control-group">
+            <label for="rotation-speed">Earth Rotation Speed</label>
+            <input type="range" id="rotation-speed" min="0" max="200" value="100">
+        </div>
+        <div class="control-group">
+            <label for="clouds-opacity">Clouds Opacity</label>
+            <input type="range" id="clouds-opacity" min="0" max="100" value="50">
+        </div>
+        <div class="control-group">
+            <label for="moon-speed">Moon Orbital Speed</label>
+            <input type="range" id="moon-speed" min="0" max="200" value="50">
+        </div>
+    </div>
+
+    <div id="error-message"></div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+                "jsm/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'jsm/controls/OrbitControls.js';
+
+        class EarthVisualization {
+            constructor() {
+                this.loadingManager = new THREE.LoadingManager();
+                this.setupLoadingManager();
+                this.init();
+                this.setupScene();
+                this.setupLights();
+                this.setupStarfield();
+                this.setupEarth();
+                this.setupMoon();
+                this.setupControls();
+                this.addEventListeners();
+                this.animate();
+            }
+
+            setupLoadingManager() {
+                const progressBar = document.querySelector('#loading-progress');
+                const loadingScreen = document.querySelector('#loading-screen');
+
+                this.loadingManager.onProgress = (url, loaded, total) => {
+                    const progress = (loaded / total) * 100;
+                    progressBar.style.width = `${progress}%`;
+                };
+
+                this.loadingManager.onLoad = () => {
+                    loadingScreen.style.display = 'none';
+                };
+
+                this.loadingManager.onError = (url) => {
+                    this.showError(`Failed to load resource: ${url}`);
+                };
+            }
+
+            init() {
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                this.updateSize();
+                document.body.appendChild(this.renderer.domElement);
+
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x000000);
+                
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.camera.position.set(0, 0, 5);
+
+                this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enableDamping = true;
+                this.controls.dampingFactor = 0.03;
+                this.controls.minDistance = 3;
+                this.controls.maxDistance = 10;
+
+                this.rotationSpeed = 0.0001;
+                this.moonOrbitSpeed = 0.0005;
+            }
+
+            setupScene() {
+                this.earthGroup = new THREE.Group();
+                this.earthGroup.rotation.z = -23.4 * Math.PI / 180;
+                this.scene.add(this.earthGroup);
+            }
+
+            setupLights() {
+                const ambientLight = new THREE.AmbientLight(0x404040);
+                this.scene.add(ambientLight);
+
+                this.sunLight = new THREE.DirectionalLight(0xffffff, 1);
+                this.sunLight.position.set(-2, 0.5, 1.5);
+                this.scene.add(this.sunLight);
+            }
+
+            setupStarfield() {
+                const starGeometry = new THREE.BufferGeometry();
+                const starMaterial = new THREE.PointsMaterial({
+                    color: 0xFFFFFF,
+                    size: 0.1,
+                    transparent: true
+                });
+
+                const starVertices = [];
+                for (let i = 0; i < 1000; i++) {
+                    const x = (Math.random() - 0.5) * 2000;
+                    const y = (Math.random() - 0.5) * 2000;
+                    const z = (Math.random() - 0.5) * 2000;
+                    starVertices.push(x, y, z);
+                }
+
+                starGeometry.setAttribute('position', 
+                    new THREE.Float32BufferAttribute(starVertices, 3));
+                
+                this.starfield = new THREE.Points(starGeometry, starMaterial);
+                this.scene.add(this.starfield);
+            }
+
+            setupEarth() {
+                try {
+                    const loader = new THREE.TextureLoader(this.loadingManager);
+                    const geometry = new THREE.IcosahedronGeometry(1.0, 12);
+
+                    // Earth surface
+                    this.earthMesh = new THREE.Mesh(
+                        geometry,
+                        new THREE.MeshStandardMaterial({
+                            map: loader.load('00_earthmap1k.jpg')
+                        })
+                    );
+                    this.earthGroup.add(this.earthMesh);
+
+                    // Night lights
+                    this.lightsMesh = new THREE.Mesh(
+                        geometry,
+                        new THREE.MeshBasicMaterial({
+                            map: loader.load('8k_earth_nightmap.jpg'),
+                            blending: THREE.AdditiveBlending
+                        })
+                    );
+                    this.earthGroup.add(this.lightsMesh);
+
+                    // Clouds
+                    this.cloudsMesh = new THREE.Mesh(
+                        geometry,
+                        new THREE.MeshBasicMaterial({
+                            transparent: true,
+                            opacity: 0.5,
+                            map: loader.load('8k_earth_clouds.jpg'),
+                            blending: THREE.AdditiveBlending
+                        })
+                    );
+                    this.earthGroup.add(this.cloudsMesh);
+                } catch (error) {
+                    this.showError(`Failed to setup Earth: ${error.message}`);
+                }
+            }
+
+            setupMoon() {
+                try {
+                    const moonGeometry = new THREE.IcosahedronGeometry(0.27, 8);
+                    const loader = new THREE.TextureLoader(this.loadingManager);
+
+                    this.moonGroup = new THREE.Group();
+                    this.earthGroup.add(this.moonGroup);
+                    this.moonGroup.position.x = 3;
+
+                    this.moonMesh = new THREE.Mesh(
+                        moonGeometry,
+                        new THREE.MeshStandardMaterial({
+                            map: loader.load('moon.jpg'),
+                            roughness: 1,
+                            metalness: 0
+                        })
+                    );
+
+                    this.moonRotationSpeed = 0.001;
+                    this.moonGroup.add(this.moonMesh);
+
+                    // Moon orbit line
+                    const orbitGeometry = new THREE.RingGeometry(3, 3.02, 64);
+                    const orbitMaterial = new THREE.MeshBasicMaterial({
+                        color: 0x444444,
+                        side: THREE.DoubleSide,
+                        transparent: true,
+                        opacity: 0.3
+                    });
+                    const orbitLine = new THREE.Mesh(orbitGeometry, orbitMaterial);
+                    orbitLine.rotation.x = Math.PI / 2;
+                    this.earthGroup.add(orbitLine);
+
+                } catch (error) {
+                    this.showError(`Failed to setup Moon: ${error.message}`);
+                }
+            }
+
+            updateMoon() {
+                this.moonGroup.rotation.y += this.moonOrbitSpeed;
+                this.moonMesh.rotation.y += this.moonRotationSpeed;
+            }
+
+            setupControls() {
+                const rotationSpeedControl = document.getElementById('rotation-speed');
+                const cloudsOpacityControl = document.getElementById('clouds-opacity');
+                const moonSpeedControl = document.getElementById('moon-speed');
+
+                rotationSpeedControl.addEventListener('input', (e) => {
+                    this.rotationSpeed = (e.target.value / 100000);
+                });
+
+                cloudsOpacityControl.addEventListener('input', (e) => {
+                    this.cloudsMesh.material.opacity = e.target.value / 100;
+                });
+
+                moonSpeedControl.addEventListener('input', (e) => {
+                    this.moonOrbitSpeed = (e.target.value / 100000);
+                });
+            }
+
+            showError(message) {
+                const errorElement = document.getElementById('error-message');
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                setTimeout(() => {
+                    errorElement.style.display = 'none';
+                }, 5000);
+            }
+
+            updateSize() {
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                if (this.camera) {
+                    this.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.camera.updateProjectionMatrix();
+                }
+            }
+
+            addEventListeners() {
+                window.addEventListener('resize', this.updateSize.bind(this));
+            }
+
+            animate(time = 0) {
+                requestAnimationFrame(this.animate.bind(this));
+
+                this.earthMesh.rotation.y += this.rotationSpeed;
+                this.lightsMesh.rotation.y += this.rotationSpeed;
+                this.cloudsMesh.rotation.y += this.rotationSpeed;
+                
+                this.updateMoon();
+
+                this.controls.update();
+                this.renderer.render(this.scene, this.camera);
+            }
+
+            dispose() {
+                window.removeEventListener('resize', this.updateSize.bind(this));
+                
+                this.earthMesh.geometry.dispose();
+                this.earthMesh.material.dispose();
+                this.lightsMesh.geometry.dispose();
+                this.lightsMesh.material.dispose();
+                this.cloudsMesh.geometry.dispose();
+                this.cloudsMesh.material.dispose();
+                
+                this.moonMesh.geometry.dispose();
+                this.moonMesh.material.dispose();
+                this.moonMesh.material.map?.dispose();
+                
+                this.earthMesh.material.map?.dispose();
+                this.lightsMesh.material.map?.dispose();
+                this.cloudsMesh.material.map?.dispose();
+                
+                this.renderer.dispose();
+            }
+        }
+
+        // Create visualization when document is fully loaded
+        window.addEventListener('load', () => {
+            new EarthVisualization();
+        });
+    </script>
+</body>
 </html>
