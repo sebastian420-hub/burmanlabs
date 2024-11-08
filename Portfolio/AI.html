@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Zwe | AI & Development</title>
+    <style>
+        .gradient-text {
+            background: linear-gradient(to right, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .cyber-bg {
+            background: 
+                linear-gradient(to bottom, #0f172a, #1e293b),
+                linear-gradient(rgba(0, 242, 254, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 254, 0.1) 1px, transparent 1px);
+            background-size: 100% 100%, 20px 20px, 20px 20px;
+            background-position: center;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+        }
+    </style>
+</head>
+<body class="cyber-bg text-gray-200 min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-gray-900/80 backdrop-blur-md border-b border-blue-500/10 z-50">
+        <div class="max-w-5xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <span class="text-xl font-bold gradient-text">~/zwe</span>
+                <div class="space-x-8">
+                    <a href="#projects" class="text-gray-400 hover:text-blue-400 transition-colors">Projects</a>
+                    <a href="#research" class="text-gray-400 hover:text-blue-400 transition-colors">Research</a>
+                    <a href="#contact" class="text-gray-400 hover:text-blue-400 transition-colors">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="pt-32 pb-20 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">
+                    Hi, I'm <span class="gradient-text">Zwe</span>
+                    <br>AI Enthusiast & Developer
+                </h1>
+                <p class="text-xl text-gray-400 max-w-2xl">
+                    Exploring the intersection of neural networks, game development, and web technologies. 
+                    Building bridges between AI theory and practical applications.
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-4 text-sm">
+                <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full">Neural Networks</span>
+                <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full">Game Development</span>
+                <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full">Web Development</span>
+                <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full">Machine Learning</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Projects -->
+    <section id="projects" class="py-20 px-6">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-3xl font-bold mb-12 gradient-text">Featured Projects</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- AI Project -->
+                <div class="bg-gray-900/50 p-6 rounded-xl border border-blue-500/10 card-hover">
+                    <div class="mb-4">
+                        <span class="text-sm text-blue-400 bg-blue-400/10 px-3 py-1 rounded-full">Neural Networks</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Neural Network Visualizer</h3>
+                    <p class="text-gray-400 mb-4">
+                        Interactive tool for visualizing neural network architectures and learning processes. 
+                        Built with PyTorch and Three.js.
+                    </p>
+                    <div class="flex gap-2">
+                        <span class="text-xs text-gray-500">PyTorch</span>
+                        <span class="text-xs text-gray-500">•</span>
+                        <span class="text-xs text-gray-500">Three.js</span>
+                    </div>
+                </div>
+
+                <!-- Game Project -->
+                <div class="bg-gray-900/50 p-6 rounded-xl border border-blue-500/10 card-hover">
+                    <div class="mb-4">
+                        <span class="text-sm text-blue-400 bg-blue-400/10 px-3 py-1 rounded-full">Game AI</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">AI-Powered Game NPCs</h3>
+                    <p class="text-gray-400 mb-4">
+                        Implementation of reinforcement learning for creating adaptive and intelligent 
+                        non-player characters in Unity.
+                    </p>
+                    <div class="flex gap-2">
+                        <span class="text-xs text-gray-500">Unity</span>
+                        <span class="text-xs text-gray-500">•</span>
+                        <span class="text-xs text-gray-500">ML-Agents</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research & Notes -->
+    <section id="research" class="py-20 px-6 bg-gray-900/50">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-3xl font-bold mb-12 gradient-text">Research & Notes</h2>
+            
+            <!-- Neural Networks -->
+            <div class="mb-16">
+                <h3 class="text-2xl font-bold mb-6 text-blue-400">Neural Networks Deep Dive</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Architecture Patterns</h4>
+                        <ul class="space-y-3 text-gray-400">
+                            <li>• Convolutional Neural Networks (CNN)</li>
+                            <li>• Recurrent Neural Networks (RNN)</li>
+                            <li>• Transformer Architecture</li>
+                            <li>• Attention Mechanisms</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Current Focus</h4>
+                        <ul class="space-y-3 text-gray-400">
+                            <li>• Self-attention in game AI</li>
+                            <li>• Efficient training methods</li>
+                            <li>• Transfer learning applications</li>
+                            <li>• Model optimization</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Latest Notes -->
+            <div>
+                <h3 class="text-2xl font-bold mb-6 text-blue-400">Latest Notes</h3>
+                <div class="space-y-6">
+                    <div class="bg-gray-900/50 p-6 rounded-xl border border-blue-500/10 card-hover">
+                        <span class="text-sm text-gray-500">October 2023</span>
+                        <h4 class="text-lg font-semibold mt-2 mb-3">
+                            Implementing Attention Mechanisms in Game AI
+                        </h4>
+                        <p class="text-gray-400">
+                            Exploring how attention mechanisms can improve NPC decision-making and 
+                            environmental awareness in game development.
+                        </p>
+                    </div>
+                    <div class="bg-gray-900/50 p-6 rounded-xl border border-blue-500/10 card-hover">
+                        <span class="text-sm text-gray-500">September 2023</span>
+                        <h4 class="text-lg font-semibold mt-2 mb-3">
+                            Neural Network Optimization Techniques
+                        </h4>
+                        <p class="text-gray-400">
+                            A collection of methods and best practices for optimizing neural networks 
+                            for real-time applications.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="py-20 px-6">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-6 gradient-text">Let's Connect</h2>
+            <p class="text-gray-400 mb-8 max-w-xl mx-auto">
+                Interested in AI, game development, or web technologies? 
+                Let's discuss ideas and potential collaborations.
+            </p>
+            <div class="flex justify-center space-x-6">
+                <a href="https://github.com/yourusername" class="text-gray-400 hover:text-blue-400 transition-colors">
+                    GitHub
+                </a>
+                <a href="mailto:your.email@example.com" class="text-gray-400 hover:text-blue-400 transition-colors">
+                    Email
+                </a>
+                <a href="https://twitter.com/yourusername" class="text-gray-400 hover:text-blue-400 transition-colors">
+                    X
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-blue-500/10 py-8 px-6">
+        <div class="max-w-5xl mx-auto text-center text-sm text-gray-500">
+            Built by Zwe & LLM • 2024
+        </div>
+    </footer>
+</body>
+</html>
