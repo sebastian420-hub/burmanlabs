@@ -1,0 +1,909 @@
+
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Playfair+Display:wght@400;700&family=Dancing+Script&family=Pacifico&family=Press+Start+2P&family=VT323&family=Orbitron:wght@400;700&display=swap" rel="stylesheet"> 
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <title>Pattern Controls</title>  
+    <style>  
+
+        body {   
+            margin: 0;   
+            overflow: hidden;  
+            background: #000;  
+            font-family: 'Arial', sans-serif;  
+            color: white;  
+        }  
+        canvas {   
+            display: block;   
+        }  
+       
+        #controls {  
+            position: absolute;  
+            top: 10px;  
+            right: 10px;  
+            background: rgba(0, 0, 0, 0.8);  
+            padding: 15px;  
+            border-radius: 8px;  
+            width: 300px;  
+            max-height: 90vh;  
+            overflow-y: auto;  
+            z-index: 1000;  
+        } 
+        .controls-container {  
+            position: fixed;  
+            right: 0;  
+            top: 0;  
+            width: 300px;  
+            height: 100vh;  
+            background: rgba(0, 0, 0, 0.9);  
+            padding: 20px;  
+            color: white;  
+            overflow-y: auto;  
+            transition: transform 0.3s ease-in-out;  
+        }  
+
+        .controls-container.hidden {  
+            transform: translateX(100%);  
+        }  
+
+        .controls-container.visible {  
+            transform: translateX(0);  
+        }  
+
+        .controls-toggle {  
+            position: fixed;  
+            top: 20px;  
+            right: 320px;  
+            background: rgba(0, 0, 0, 0.8);  
+            color: white;  
+            padding: 8px 16px;  
+            border-radius: 4px;  
+            cursor: pointer;  
+            display: flex;  
+            align-items: center;  
+            gap: 8px;  
+            transition: right 0.3s ease-in-out;  
+            z-index: 1000;  
+        }  
+
+        .controls-toggle.shifted {  
+            right: 20px;  
+        }  
+
+        .toggle-icon {  
+            font-size: 1.2em;  
+        }  
+
+        /* Rest of the existing styles */  
+        .control-section {  
+            margin-bottom: 24px;  
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);  
+            padding-bottom: 15px; 
+        }  
+
+        .control-section h3 {  
+            font-size: 1.2em;  
+            margin-bottom: 12px;  
+            color: #fff;  
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);  
+            padding-bottom: 4px;  
+        }  
+
+        .control-group {  
+            margin-bottom: 12px;  
+        }  
+
+        .control-group label {  
+            display: block;  
+            margin-bottom: 4px;  
+            color: rgba(255, 255, 255, 0.8);  
+        }  
+
+        input[type="range"] {  
+            width: 100%;  
+            background: rgba(255, 255, 255, 0.1);  
+            border-radius: 4px;  
+            height: 6px;  
+        }  
+
+        input[type="color"] {  
+            width: 60px;  
+            height: 30px;  
+            border: none;  
+            border-radius: 4px;  
+        }  
+
+input[type="checkbox"] {  
+    margin-right: 8px;  
+    vertical-align: middle;  
+}  
+
+
+        .preset-button {  
+            background: rgba(255, 255, 255, 0.1);  
+            border: 1px solid rgba(255, 255, 255, 0.2);  
+            padding: 6px 12px;  
+            margin-right: 8px;  
+            border-radius: 4px;  
+            cursor: pointer;  
+            transition: all 0.3s ease;  
+        }  
+
+        .preset-button:hover {  
+            background: #45a049;  
+        }
+        .tooltip {  
+            position: relative;  
+            display: inline-block;  
+            margin-left: 5px;  
+            cursor: help;  
+        } 
+        .tooltip:hover::after {  
+            content: attr(data-tooltip);  
+            position: absolute;  
+            left: 100%;  
+            top: 50%;  
+            transform: translateY(-50%);  
+            background: rgba(0, 0, 0, 0.8);  
+            padding: 5px;  
+            border-radius: 4px;  
+            font-size: 12px;  
+            white-space: nowrap;  
+            z-index: 1001;  
+        }  
+
+        .preset-button:hover {  
+            background: rgba(255, 255, 255, 0.2);  
+        }  
+
+        .value-display {  
+            font-size: 0.8em;  
+            color: rgba(255, 255, 255, 0.6);  
+            margin-left: 8px;  
+        }  
+
+        .font-select {  
+    width: 140px;  
+    background: rgba(255, 255, 255, 0.1);  
+    border: 1px solid rgba(255, 255, 255, 0.3);  
+    border-radius: 4px;  
+    color: white;  
+    padding: 4px 8px;  
+    cursor: pointer;  
+}  
+
+.font-select:focus {  
+    outline: none;  
+    border-color: #4CAF50;  
+}  
+
+.font-select option {  
+    background: #1a1a1a;  
+    color: white;  
+}  
+
+.font-select optgroup {  
+    background: #1a1a1a;  
+    color: #4CAF50;  
+}
+        
+        .text-input {  
+    width: 120px;  
+    background: rgba(255, 255, 255, 0.1);  
+    border: 1px solid rgba(255, 255, 255, 0.3);  
+    border-radius: 4px;  
+    color: white;  
+    padding: 4px 8px;  
+}  
+
+.text-input:focus {  
+    outline: none;  
+    border-color: #4CAF50;  
+}  
+
+        select, input[type="text"] {  
+            width: 100%;  
+            background: rgba(255, 255, 255, 0.1);  
+            border: 1px solid rgba(255, 255, 255, 0.2);  
+            color: white;  
+            padding: 6px;  
+            border-radius: 4px;  
+        }  
+        /* Add these styles for the text overlay container */  
+#text-overlay {  
+    position: absolute;  
+    top: 50%;  
+    left: 50%;  
+    transform: translate(-50%, -50%);  
+    z-index: 1000;  
+    text-align: center;  
+    pointer-events: none;  
+    white-space: nowrap;  
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  
+} 
+    </style>  
+</head>  
+<body class="bg-gray-900">  
+    <!-- Toggle Button -->  
+    <button id="toggleControls" class="controls-toggle">  
+        <span class="toggle-icon">⚙️</span>  
+        <span class="toggle-text">Hide Controls</span>  
+    </button>  
+    <div id="text-overlay">Fulse Studio</div>  
+
+    <!-- Controls Container -->  
+    <div id="controlsContainer" class="controls-container visible">  
+        <div id="controls">
+            <!-- <div class="control-section">  
+                <h3>Pattern Presets</h3>  
+                <button class="preset-button">Classic</button>  
+                <button class="preset-button">Dynamic</button>  
+                <button class="preset-button">Chaos</button>  
+            </div>   -->
+    
+            <div class="control-section">  
+                <h3>Basic Shape</h3>  
+                <div class="control-group">  
+                    <label>Outer Radius</label>  
+                    <input type="range" id="outerRadius" min="2" max="6" step="0.1" value="3">  
+                    <span class="value-display">3.0</span>  
+                </div>  
+                <div class="control-group">  
+                    <label>Inner Oval X</label>  
+                    <input type="range" id="innerOvalX" min="0.5" max="4" step="0.1" value="2">  
+                    <span class="value-display">2.0</span>  
+                </div>  
+                <div class="control-group">  
+                    <label>Inner Oval Y</label>  
+                    <input type="range" id="innerOvalY" min="0.5" max="4" step="0.1" value="1">  
+                    <span class="value-display">1.0</span>  
+                </div>  
+            </div>  
+    
+            <div class="control-section">  
+                <h3>Pattern Detail</h3>  
+                <div class="control-group">  
+                    <label>Segments</label>  
+                    <input type="range" id="segments" min="100" max="500" step="10" value="320">  
+                    <span class="value-display">320</span>  
+                </div>  
+                <div class="control-group">  
+                    <label>Loops</label>  
+                    <input type="range" id="loops" min="5" max="40" step="1" value="20">  
+                    <span class="value-display">20</span>  
+                </div>  
+                <div class="control-group">  
+                    <label>Tube Radius</label>  
+                    <input type="range" id="tubeRadius" min="0.01" max="0.2" step="0.01" value="0.05">  
+                    <span class="value-display">0.05</span>  
+                </div>  
+            </div>  
+    
+            <div class="control-section">  
+                <h3>Wave Effects</h3>  
+                <div class="control-group">  
+                    <label>Wave Speed</label>  
+                    <input type="range" id="waveSpeed" min="0.01" max="0.2" step="0.01" value="0.05">  
+                    <span class="value-display">0.05</span>  
+                </div>  
+                <div class="control-group">  
+                    <label>Wave Amplitude</label>  
+                    <input type="range" id="waveAmplitude" min="0.1" max="2" step="0.1" value="0.8">  
+                    <span class="value-display">0.8</span>  
+                </div>  
+                <div class="control-group">  
+                    <label>Secondary Wave</label>  
+                    <input type="range" id="secondaryWave" min="0" max="1" step="0.1" value="0.5">  
+                    <span class="value-display">0.5</span>  
+                </div>  
+            </div>  
+    
+            <div class="control-section">  
+                <h3>Motion</h3>  
+                <div class="control-group">  
+                    <label>Rotation Speed</label>  
+                    <input type="range" id="rotationSpeed" min="0" max="0.02" step="0.001" value="0.005">  
+                    <span class="value-display">0.005</span>  
+                </div>  
+                <div class="control-group">  
+                    <label>Pattern Flow</label>  
+                    <input type="range" id="patternFlow" min="0" max="1" step="0.1" value="0.5">  
+                    <span class="value-display">0.5</span>  
+                </div>  
+            </div>  
+            <div class="control-section">
+                <h3>Colors</h3>
+                <div class="control-group">
+                    <label>Primary Color</label>
+                    <input type="color" id="primaryColor" value="#00ff00">
+                    <span class="value-display">Active</span>
+                </div>
+                <div class="control-group">
+                    <label>Background Color</label>
+                    <input type="color" id="backgroundColor" value="#000000">
+                </div>
+                <div class="control-group">
+                    <label>Color Gradient</label>
+                    <input type="checkbox" id="useGradient" checked>
+                    <span>Enable Gradient</span>
+                </div>
+                <div class="control-group" id="gradientControls">
+                    <label>Gradient Intensity</label>
+                    <input type="range" id="colorGradient" min="0" max="1" step="0.1" value="0.5">
+                    <span class="value-display">0.5</span>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h3>Text Overlay</h3>
+                <div class="control-group">
+                    <label>Text Content</label>
+                    <input type="text" id="overlayText" value="Fulse Studio" class="text-input">
+                </div>
+                <div class="control-group">
+                    <label>Text Color</label>
+                    <input type="color" id="textColor" value="#ffffff">
+                </div>
+                <div class="control-group">
+                    <label>Text Size</label>
+                    <input type="range" id="textSize" min="12" max="72" step="1" value="48">
+                    <span class="value-display">48px</span>
+                </div>
+                <div class="control-group">
+                    <label>Text Opacity</label>
+                    <input type="range" id="textOpacity" min="0" max="1" step="0.1" value="1">
+                    <span class="value-display">1.0</span>
+                </div>
+                <div class="control-group">
+                    <label>Font Family</label>
+                    <select id="fontFamily" class="font-select">
+                        <optgroup label="Basic Fonts">
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="'Courier New', monospace">Courier New</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                        </optgroup>
+                        <optgroup label="Modern Fonts">
+                            <option value="'Roboto', sans-serif">Roboto</option>
+                            <option value="'Open Sans', sans-serif">Open Sans</option>
+                            <option value="'Lato', sans-serif">Lato</option>
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                        </optgroup>
+                        <optgroup label="Decorative Fonts">
+                            <option value="'Playfair Display', serif">Playfair Display</option>
+                            <option value="'Dancing Script', cursive">Dancing Script</option>
+                            <option value="'Pacifico', cursive">Pacifico</option>
+                        </optgroup>
+                        <optgroup label="Tech Fonts">
+                            <option value="'Press Start 2P', cursive">Press Start 2P</option>
+                            <option value="'VT323', monospace">VT323</option>
+                            <option value="'Orbitron', sans-serif">Orbitron</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Font Weight</label>
+                    <select id="fontWeight" class="font-select">
+                        <option value="normal">Normal</option>
+                        <option value="bold">Bold</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Font Style</label>
+                    <select id="fontStyle" class="font-select">
+                        <option value="normal">Normal</option>
+                        <option value="italic">Italic</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Text Transform</label>
+                    <select id="textTransform" class="font-select">
+                        <option value="none">None</option>
+                        <option value="uppercase">Uppercase</option>
+                        <option value="lowercase">Lowercase</option>
+                        <option value="capitalize">Capitalize</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Letter Spacing</label>
+                    <input type="range" id="letterSpacing" min="-2" max="10" step="0.5" value="0">
+                    <span class="value-display">0px</span>
+                </div>
+            </div>
+        </div> 
+        
+    </div>  
+
+    <script type= "module">  
+     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.150.0/build/three.module.js';  
+        class ControlsManager {  
+            constructor() {  
+                this.config = {  
+                    outerRadius: 3,  
+                    innerOvalX: 2,  
+                    innerOvalY: 1,  
+                    tubeRadius: 0.05,  
+                    segments: 320,  
+                    loops: 20,  
+                    waveSpeed: 0.05,  
+                    waveAmplitude: 0.8,  
+                    rotationSpeed: 0.005,  
+                    secondaryWave: 0.5,  
+                    patternFlow: 0.5,  
+                    colorGradient: 0.5,  
+                    primaryColor: 0xffffff,  
+                    backgroundColor: 0x000000, 
+                    useGradient: true,  
+                    textContent: "Fulse Studio",  
+                    textColor: "#ffffff",  
+                    textSize: 72,  
+                    textOpacity: 1,
+                    fontFamily: "'Roboto', sans-serif",  
+                    fontWeight: "normal",  
+                    fontStyle: "normal",  
+                    textTransform: "none",  
+                    letterSpacing: 2
+                };  
+                this.presets = {  
+                    classic: {  
+                        outerRadius: 3,  
+                        innerOvalX: 2,  
+                        innerOvalY: 1,  
+                        waveAmplitude: 0.8,  
+                        secondaryWave: 0.5,  
+                        patternFlow: 0.5  
+                    },  
+                    dynamic: {  
+                        outerRadius: 4,  
+                        innerOvalX: 3,  
+                        innerOvalY: 2,  
+                        waveAmplitude: 1.2,  
+                        secondaryWave: 0.8,  
+                        patternFlow: 0.7  
+                    },  
+                    chaos: {  
+                        outerRadius: 5,  
+                        innerOvalX: 1,  
+                        innerOvalY: 3,  
+                        waveAmplitude: 1.5,  
+                        secondaryWave: 1,  
+                        patternFlow: 1  
+                    }  
+
+                    
+                }; 
+                this.createTextOverlay(); 
+                this.initialize();  
+                this.init();  
+                this.setupControls();  
+                this.animate();  
+
+                this.setupControlsToggle(); 
+            }  
+
+            createTextOverlay() {  
+               let overlay = document.getElementById('text-overlay');  
+               if (!overlay) {  
+                    overlay = document.createElement('div');  
+                    overlay.id = 'text-overlay';  
+                    document.body.appendChild(overlay);  
+                 }  
+                    this.updateTextOverlay();  
+            }  
+
+            initialize() {  
+                this.setupControlsToggle();  
+                this.setupEventListeners();  
+            }  
+
+            setupControlsToggle() {  
+                const toggleButton = document.getElementById('toggleControls');  
+                const controlsContainer = document.getElementById('controlsContainer');  
+                const toggleText = toggleButton.querySelector('.toggle-text');  
+
+                // Load saved state  
+                const controlsVisible = localStorage.getItem('controlsVisible') !== 'false';  
+                this.setControlsVisibility(controlsVisible);  
+
+                // Toggle button click handler  
+                toggleButton.addEventListener('click', () => {  
+                    const isVisible = controlsContainer.classList.contains('visible');  
+                    this.setControlsVisibility(!isVisible);  
+                });  
+
+                // Keyboard shortcut (Alt+C)  
+                document.addEventListener('keydown', (e) => {  
+                    if (e.altKey && e.key.toLowerCase() === 'c') {  
+                        const isVisible = controlsContainer.classList.contains('visible');  
+                        this.setControlsVisibility(!isVisible);  
+                    }  
+                });  
+            }  
+
+            setControlsVisibility(visible) {  
+                const toggleButton = document.getElementById('toggleControls');  
+                const controlsContainer = document.getElementById('controlsContainer');  
+                const toggleText = toggleButton.querySelector('.toggle-text');  
+
+                if (visible) {  
+                    controlsContainer.classList.remove('hidden');  
+                    controlsContainer.classList.add('visible');  
+                    toggleButton.classList.remove('shifted');  
+                    toggleText.textContent = 'Hide Controls';  
+                } else {  
+                    controlsContainer.classList.remove('visible');  
+                    controlsContainer.classList.add('hidden');  
+                    toggleButton.classList.add('shifted');  
+                    toggleText.textContent = 'Show Controls';  
+                }  
+
+                // Save state  
+                localStorage.setItem('controlsVisible', visible);  
+            }  
+
+            async init() {  
+        await this.loadFonts();  
+        this.scene = new THREE.Scene();  
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);  
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });  
+                this.renderer.setSize(window.innerWidth, window.innerHeight);  
+                this.renderer.setClearColor(this.config.backgroundColor);  
+                document.body.appendChild(this.renderer.domElement);  
+
+                this.time = 0;  
+                this.geometry = new THREE.BufferGeometry();  
+                this.createGeometry();  
+                
+                this.material = new THREE.LineBasicMaterial({   
+                    vertexColors: true,  
+                    transparent: true,  
+                    opacity: 0.8  
+                });  
+                
+                this.line = new THREE.Line(this.geometry, this.material);  
+                this.scene.add(this.line);  
+                
+                this.camera.position.z = 10;  
+
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);  
+                this.scene.add(ambientLight);  
+
+                window.addEventListener('resize', () => this.onWindowResize());   
+    } 
+
+
+            createGeometry() {  
+                const vertices = [];  
+                const colors = [];  
+                const color = new THREE.Color();  
+                const baseColor = new THREE.Color(document.getElementById('primaryColor').value);  
+
+                for (let j = 0; j < this.config.loops; j++) {  
+                    const loopOffset = (j / this.config.loops) * Math.PI * 2;  
+                    const ratio = j / this.config.loops;  
+
+                    const radiusX = this.config.innerOvalX * (1 - ratio) + this.config.outerRadius * ratio;  
+                    const radiusY = this.config.innerOvalY * (1 - ratio) + this.config.outerRadius * ratio;  
+                    
+                    const variationFactor = 1 + Math.sin(ratio * Math.PI * 2) * this.config.patternFlow;  
+
+                    for (let i = 0; i <= this.config.segments; i++) {  
+                        const t = (i / this.config.segments) * Math.PI * 2;  
+                        
+                        // Enhanced pattern generation with secondary wave  
+                        const secondaryWaveEffect = Math.sin(t * 2 + ratio * Math.PI) * this.config.secondaryWave;  
+                        
+                        const x = (radiusX * variationFactor + this.config.tubeRadius * Math.cos(t)) *   
+                                Math.cos(t + loopOffset + secondaryWaveEffect);  
+                        const y = (radiusY * variationFactor + this.config.tubeRadius * Math.cos(t)) *   
+                                Math.sin(t + loopOffset + secondaryWaveEffect);  
+                        const z = this.config.tubeRadius * Math.sin(t);  
+                        
+                        vertices.push(x, y, z);  
+
+                       // Modified color assignment  
+                       if (this.config.useGradient) {  
+                         const gradientFactor = (ratio + Math.sin(t)) * 0.5;  
+                         color.setHSL(gradientFactor * this.config.colorGradient, 1, 0.5);  
+                           } else {  
+                         color.copy(baseColor);  
+                        }  
+                         colors.push(color.r, color.g, color.b);  
+                         }  
+                       }  
+                 
+
+                this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));  
+                this.geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));  
+            }  
+
+            updateGeometry() {  
+                this.geometry.dispose();  
+                this.geometry = new THREE.BufferGeometry();  
+                this.createGeometry();  
+                this.line.geometry = this.geometry;  
+            }  
+
+
+            updateTextOverlay() {  
+        const overlay = document.getElementById('text-overlay');  
+        overlay.textContent = this.config.textContent;  
+        overlay.style.color = this.config.textColor;  
+        overlay.style.fontSize = `${this.config.textSize}px`;  
+        overlay.style.opacity = this.config.textOpacity;  
+    }  
+
+            setupControls() {  
+                // Setup all number input controls  
+                const numberInputs = [  
+                    'outerRadius', 'innerOvalX', 'innerOvalY', 'segments', 'loops',  
+                    'tubeRadius', 'waveSpeed', 'waveAmplitude', 'rotationSpeed',  
+                    'secondaryWave', 'patternFlow', 'colorGradient'  
+                ];  
+
+                numberInputs.forEach(id => {  
+                    const input = document.getElementById(id);  
+                    const display = input.nextElementSibling;  
+                    
+                    input.addEventListener('input', (e) => {  
+                        const value = parseFloat(e.target.value);  
+                        this.config[id] = value;  
+                        display.textContent = value.toFixed(2);  
+                        
+                        if (id !== 'waveSpeed' && id !== 'rotationSpeed') {  
+                            this.updateGeometry();  
+                        }  
+                    });  
+                });  
+
+                /// Primary Color handling  
+        document.getElementById('primaryColor').addEventListener('input', (e) => {  
+            const color = new THREE.Color(e.target.value);  
+            this.material.color = color;  
+            if (!this.config.useGradient) {  
+                const colors = this.geometry.attributes.color.array;  
+                for (let i = 0; i < colors.length; i += 3) {  
+                    colors[i] = color.r;  
+                    colors[i + 1] = color.g;  
+                    colors[i + 2] = color.b;  
+                }  
+                this.geometry.attributes.color.needsUpdate = true;  
+                      }  
+               });  
+
+                         // Gradient Toggle  
+        document.getElementById('useGradient').addEventListener('change', (e) => {  
+            this.config.useGradient = e.target.checked;  
+            document.getElementById('gradientControls').classList.toggle('disabled', !e.target.checked);  
+            this.updateGeometry();  
+        });
+
+         // Text Customization  
+         document.getElementById('overlayText').addEventListener('input', (e) => {  
+            this.config.textContent = e.target.value;  
+            this.updateTextOverlay();  
+        });  
+
+        document.getElementById('textColor').addEventListener('input', (e) => {  
+            this.config.textColor = e.target.value;  
+            this.updateTextOverlay();  
+        });  
+
+        document.getElementById('textSize').addEventListener('input', (e) => {  
+            this.config.textSize = parseInt(e.target.value);  
+            e.target.nextElementSibling.textContent = `${e.target.value}px`;  
+            this.updateTextOverlay();  
+        });  
+
+        document.getElementById('textOpacity').addEventListener('input', (e) => {  
+            this.config.textOpacity = parseFloat(e.target.value);  
+            e.target.nextElementSibling.textContent = e.target.value;  
+            this.updateTextOverlay();  
+        });  
+
+                document.getElementById('backgroundColor').addEventListener('input', (e) => {  
+                    this.config.backgroundColor = new THREE.Color(e.target.value);  
+                    this.renderer.setClearColor(this.config.backgroundColor);  
+                });  
+
+                // Font Family  
+        document.getElementById('fontFamily').addEventListener('change', (e) => {  
+            this.config.fontFamily = e.target.value;  
+            this.updateTextOverlay();  
+        });  
+
+        // Font Weight  
+        document.getElementById('fontWeight').addEventListener('change', (e) => {  
+            this.config.fontWeight = e.target.value;  
+            this.updateTextOverlay();  
+        });  
+
+        // Font Style  
+        document.getElementById('fontStyle').addEventListener('change', (e) => {  
+            this.config.fontStyle = e.target.value;  
+            this.updateTextOverlay();  
+        });  
+
+        // Text Transform  
+        document.getElementById('textTransform').addEventListener('change', (e) => {  
+            this.config.textTransform = e.target.value;  
+            this.updateTextOverlay();  
+        });  
+
+        // Letter Spacing  
+        document.getElementById('letterSpacing').addEventListener('input', (e) => {  
+            this.config.letterSpacing = parseFloat(e.target.value);  
+            e.target.nextElementSibling.textContent = `${e.target.value}px`;  
+            this.updateTextOverlay();  
+        });  
+
+        // Add font preview functionality  
+        this.setupFontPreview();  
+
+                // Setup preset buttons  
+                document.querySelectorAll('.preset-button').forEach(button => {  
+                    button.addEventListener('click', () => {  
+                        const presetName = button.dataset.preset;  
+                        const preset = this.presets[presetName];  
+                        
+                        // Update configuration with preset values  
+                        Object.keys(preset).forEach(key => {  
+                            this.config[key] = preset[key];  
+                            
+                            // Update UI controls  
+                            const input = document.getElementById(key);  
+                            if (input) {  
+                                input.value = preset[key];  
+                                const display = input.nextElementSibling;  
+                                if (display) {  
+                                    display.textContent = preset[key].toFixed(2);  
+                                }  
+                            }  
+                        });  
+                        
+                        this.updateGeometry();  
+                    });  
+                });  
+            }  
+
+            setupFontPreview() {  
+        const fontSelect = document.getElementById('fontFamily');  
+        const options = fontSelect.getElementsByTagName('option');  
+        
+        Array.from(options).forEach(option => {  
+            option.style.fontFamily = option.value;  
+        });  
+    }  
+
+    updateTextOverlay() {  
+        const overlay = document.getElementById('text-overlay');  
+        if (!overlay) return;  
+
+        overlay.textContent = this.config.textContent;  
+        overlay.style.color = this.config.textColor;  
+        overlay.style.fontSize = `${this.config.textSize}px`;  
+        overlay.style.opacity = this.config.textOpacity;  
+        overlay.style.fontFamily = this.config.fontFamily;  
+        overlay.style.fontWeight = this.config.fontWeight;  
+        overlay.style.fontStyle = this.config.fontStyle;  
+        overlay.style.textTransform = this.config.textTransform;  
+        overlay.style.letterSpacing = `${this.config.letterSpacing}px`;  
+    }  
+
+     // Add font loading check  
+     async loadFonts() {  
+        try {  
+            await document.fonts.ready;  
+            console.log('Fonts loaded successfully');  
+        } catch (err) {  
+            console.warn('Font loading encountered an error:', err);  
+        }  
+    }   
+
+    
+
+            updateWavePattern() {  
+                  
+        // Modify the color update in updateWavePattern  
+        const positions = this.geometry.attributes.position.array;  
+        const colors = this.geometry.attributes.color.array;  
+        const color = new THREE.Color();  
+        const baseColor = new THREE.Color(document.getElementById('primaryColor').value); 
+
+                for (let j = 0; j < this.config.loops; j++) {  
+                    const loopOffset = (j / this.config.loops) * Math.PI * 2;  
+                    const ratio = j / this.config.loops;  
+                    const radiusX = this.config.innerOvalX * (1 - ratio) + this.config.outerRadius * ratio;  
+                    const radiusY = this.config.innerOvalY * (1 - ratio) + this.config.outerRadius * ratio;  
+                    
+                    // Enhanced dynamic pattern variation  
+                    const variationFactor = 1 + Math.sin(ratio * Math.PI * 2 + this.time * this.config.patternFlow) * 0.2;  
+                    const secondaryTimeFactor = Math.sin(this.time * 0.5) * this.config.secondaryWave;  
+
+                    for (let i = 0; i <= this.config.segments; i++) {  
+                        const index = (j * (this.config.segments + 1) + i) * 3;  
+                        const t = (i / this.config.segments) * Math.PI * 2;  
+
+                        // Complex wave effect combining multiple frequencies  
+                        const primaryWave = Math.sin(t + this.time) * this.config.waveAmplitude;  
+                        const secondaryWave = Math.cos(t * 2 + this.time * 1.5) * this.config.secondaryWave;  
+                        const waveOffset = primaryWave * Math.sin(ratio * Math.PI + this.time * 0.5) +   
+                                         secondaryWave * Math.cos(ratio * Math.PI * 2 + this.time);  
+
+                        // Calculate position with enhanced effects  
+                        const x = (radiusX * variationFactor + this.config.tubeRadius * Math.cos(t)) *   
+                                Math.cos(t + loopOffset + secondaryTimeFactor);  
+                        const y = (radiusY * variationFactor + this.config.tubeRadius * Math.cos(t)) *   
+                                Math.sin(t + loopOffset + secondaryTimeFactor);  
+                        const z = this.config.tubeRadius * Math.sin(t) + waveOffset;  
+
+                        positions[index] = x;  
+                        positions[index + 1] = y;  
+                        positions[index + 2] = z;  
+
+                        // Modified color update  
+                if (this.config.useGradient) {  
+                    const colorPhase = (ratio + Math.sin(t + this.time * 0.5)) * 0.5;  
+                    color.setHSL(colorPhase * this.config.colorGradient, 1, 0.5);  
+                } else {  
+                    color.copy(baseColor);  
+                }  
+                colors[index] = color.r;  
+                colors[index + 1] = color.g;  
+                colors[index + 2] = color.b;  
+            
+                    }  
+                }  
+
+                this.geometry.attributes.position.needsUpdate = true;  
+                this.geometry.attributes.color.needsUpdate = true;  
+            }  
+            
+
+            animate() {  
+                requestAnimationFrame(() => this.animate());  
+
+                // Update time and pattern  
+                this.time += this.config.waveSpeed;  
+                this.updateWavePattern();  
+
+                // Apply rotations  
+                this.line.rotation.y += this.config.rotationSpeed;  
+                this.line.rotation.x = Math.sin(this.time * 0.2) * 0.1;  
+
+                // Add subtle camera movement  
+                this.camera.position.y = Math.sin(this.time * 0.1) * 0.5;  
+                this.camera.lookAt(0, 0, 0);  
+
+                this.renderer.render(this.scene, this.camera);  
+            }  
+
+            onWindowResize() {  
+                const width = window.innerWidth;  
+                const height = window.innerHeight;  
+                
+                this.renderer.setSize(width, height);  
+                this.camera.aspect = width / height;  
+                this.camera.updateProjectionMatrix();  
+            }  
+
+            setupEventListeners() {  
+                // Update value displays for range inputs  
+                document.querySelectorAll('input[type="range"]').forEach(input => {  
+                    const display = input.nextElementSibling;  
+                    input.addEventListener('input', () => {  
+                        display.textContent = input.value + (display.textContent.includes('px') ? 'px' : '');  
+                    });  
+                });  
+            }  
+        }  
+
+        // Initialize controls  
+        new ControlsManager();  
+    </script>  
+</body>  
+</html> 
