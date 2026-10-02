@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+/*
+ * Burmese webfont, self-hosted (Noto Sans Myanmar, Unicode, SIL OFL). Phones that still
+ * use a Zawgyi system font would show Unicode text garbled, so we ship our own font and
+ * use font-display: block (briefly invisible text beats briefly wrong text). The
+ * unicode-range means English pages never download it.
+ */
+@font-face {
+  font-family: "Noto Sans Myanmar";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url(/fonts/noto-myanmar-400.woff2) format("woff2");
+  unicode-range: U+1000-109F, U+200C-200D, U+25CC, U+A92E, U+A9E0-A9FE, U+AA60-AA7F;
+}
+@font-face {
+  font-family: "Noto Sans Myanmar";
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url(/fonts/noto-myanmar-700.woff2) format("woff2");
+  unicode-range: U+1000-109F, U+200C-200D, U+25CC, U+A92E, U+A9E0-A9FE, U+AA60-AA7F;
+}
+
+@theme {
+  --color-ink: #060a13;
+  --color-panel: #0d1424;
+  --color-panel-2: #131d34;
+  --color-line: #222f4c;
+  --color-mist: #a6b4d0;
+  --color-snow: #eef3fb;
+  --color-ember: #ffb347;
+  --color-jade: #3ddcb4;
+  --color-iris: #a69bff;
+  --font-sans:
+    "Noto Sans Myanmar", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-ink);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  background:
+    radial-gradient(1100px 600px at 70% -10%, #11204a55, transparent 60%),
+    radial-gradient(800px 500px at 0% 30%, #3b1f0a33, transparent 60%), var(--color-ink);
+  color: var(--color-snow);
+  font-family: var(--font-sans);
+  overflow-wrap: break-word;
+}
+
+/*
+ * Burmese has tall stacked marks and deep digits. Tailwind's text-* utilities set tight
+ * line-heights that clip them, so Burmese gets generous leading on every element
+ * (unlayered CSS beats Tailwind's layers) and no letter-spacing.
+ */
+html:lang(my) body * {
+  line-height: 1.8;
+  letter-spacing: 0;
+}
+html:lang(my) body :is(h1, h2, h3, h4) {
+  line-height: 1.6;
+}
+html:lang(en) body {
+  line-height: 1.6;
+}
+html:lang(en) :is(h1, h2, h3, h4) {
+  line-height: 1.15;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
