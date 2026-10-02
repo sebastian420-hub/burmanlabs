@@ -1,0 +1,454 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <title>Comprehensive Technical Analysis Guide</title>  
+</head>  
+<body class="bg-gray-50">  
+    <div class="min-h-screen">  
+        <!-- Header -->  
+        <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">  
+            <div class="container mx-auto px-4">  
+                <h1 class="text-4xl font-bold mb-4">Comprehensive Technical Analysis Guide</h1>  
+                <p class="text-xl">A Detailed Guide for Market Analysis and Trading Strategy Development</p>  
+            </div>  
+        </header>  
+
+        <!-- Main Content -->  
+        <main class="container mx-auto px-4 py-8">  
+            <!-- Navigation Pills -->  
+            <div class="flex flex-wrap gap-2 mb-8" id="nav-pills">  
+                <button class="px-4 py-2 rounded-full bg-blue-600 text-white" onclick="showSection('intro')">Introduction</button>  
+                <button class="px-4 py-2 rounded-full bg-gray-200" onclick="showSection('price-action')">Price Action</button>  
+                <button class="px-4 py-2 rounded-full bg-gray-200" onclick="showSection('chart-patterns')">Chart Patterns</button>  
+                <button class="px-4 py-2 rounded-full bg-gray-200" onclick="showSection('indicators')">Technical Indicators</button>  
+                <button class="px-4 py-2 rounded-full bg-gray-200" onclick="showSection('strategy')">Trading Strategy</button>  
+            </div>  
+
+            <!-- Content Sections -->  
+            <div class="space-y-8">  
+                <!-- Introduction Section -->  
+                <section id="intro" class="bg-white rounded-lg shadow-md p-6 transition-all duration-300">  
+                    <h2 class="text-2xl font-bold mb-4 text-blue-800">Understanding Technical Analysis</h2>  
+                    <div class="space-y-4">  
+                        <div class="p-4 bg-blue-50 rounded-lg">  
+                            <h3 class="font-semibold text-xl mb-2">What is Technical Analysis?</h3>  
+                            <p class="mb-4">Technical analysis is the study of historical price action to predict future market movements. It's based on three key principles:</p>  
+                            <ul class="list-disc pl-6 space-y-2">  
+                                <li><strong>Market Price Discounts Everything:</strong> All known information is reflected in the current price</li>  
+                                <li><strong>Prices Move in Trends:</strong> Markets tend to move in identifiable directions</li>  
+                                <li><strong>History Tends to Repeat:</strong> Market patterns often recur due to trader psychology</li>  
+                            </ul>  
+                        </div>  
+
+                        <!-- Essential Tools for Analysis -->  
+<div class="p-4 bg-green-50 rounded-lg">  
+    <!-- Section Title -->  
+    <h3 class="font-semibold text-xl mb-2">Essential Tools for Analysis</h3>  
+    
+    <!-- Container for Tools -->  
+    <div class="space-y-3">  
+        
+        <!-- Price Charts -->  
+        <div class="border-l-4 border-green-500 pl-4">  
+            <!-- Title for Price Charts -->  
+            <h4 class="font-medium">Price Charts</h4>  
+            <!-- Description for Price Charts -->  
+            <p>Price charts visually display the history and movement of prices over time. The most common types used in technical analysis are:</p>  
+            <ul class="list-disc pl-6 space-y-1">  
+                <li><strong>Candlestick Charts:</strong> Offer a visual representation of price action using candle shapes that display open, high, low, and close prices within a specific period.</li>  
+                <li><strong>Line Charts:</strong> Simple, efficient charts that connect the closing prices of assets with a continuous line, providing a clear view of price trends without the noise.</li>  
+                <li><strong>Bar Charts:</strong> Show the opening, high, low, and closing prices for a particular time frame, similar to candlestick charts but without the body color fill.</li>  
+            </ul>  
+        </div>  
+        
+        <!-- Technical Indicators -->  
+        <div class="border-l-4 border-green-500 pl-4">  
+            <!-- Title for Technical Indicators -->  
+            <h4 class="font-medium">Technical Indicators</h4>  
+            <!-- Description for Technical Indicators -->  
+            <p>Technical indicators are mathematical calculations based on the price, volume, or open interest of a security. They are used to predict future price movements and include:</p>  
+            <ul class="list-disc pl-6 space-y-1">  
+                <li><strong>Moving Averages:</strong> Help smooth out price data by creating a constantly updated average price.</li>  
+                <li><strong>RSI (Relative Strength Index):</strong> Measures the speed and change of price movements, often used to identify overbought or oversold conditions.</li>  
+                <li><strong>MACD (Moving Average Convergence Divergence):</strong> Analyzes the interaction between two moving averages of prices to signal potential buy and sell opportunities.</li>  
+            </ul>  
+        </div>  
+        
+        <!-- Chart Patterns -->  
+        <div class="border-l-4 border-green-500 pl-4">  
+            <!-- Title for Chart Patterns -->  
+            <h4 class="font-medium">Chart Patterns</h4>  
+            <!-- Description for Chart Patterns -->  
+            <p>Chart patterns are geometric shapes found on charts that help traders understand ongoing movements and potential future price actions. Key patterns include:</p>  
+            <ul class="list-disc pl-6 space-y-1">  
+                <li><strong>Head and Shoulders:</strong> Indicates a trend reversal where the price initially rises, meets resistance, decreases, and then rises again before finally decreasing.</li>  
+                <li><strong>Double Tops and Bottoms:</strong> Signal potential reversals in trends where the price reaches the same high/low twice with a moderate pullback in between.</li>  
+                <li><strong>Triangles:</strong> Form as converging trend lines, indicating a potential breakout upon pattern completion.</li>  
+            </ul>  
+        </div>  
+        
+    </div>  
+</div>  
+
+                        <!-- Time Frames in Technical Analysis -->  
+<div class="p-4 bg-yellow-50 rounded-lg">  
+    <h3 class="font-semibold text-xl mb-2">Time Frames in Technical Analysis</h3>  
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">  
+        
+        <!-- Short-term Time Frame -->  
+        <div class="p-3 bg-white rounded shadow-sm">  
+            <h4 class="font-medium text-yellow-800">Short-term</h4>  
+            <p>The short-term time frame covers periods intraday to a few days, prioritizing swift market access.</p>  
+            <ul class="list-disc pl-6 space-y-1">  
+                <li><strong>Day Traders:</strong> Execute multiple trades within a single day to profit from small price fluctuations without holding positions overnight.</li>  
+                <li><strong>Swing Traders:</strong> Aim to capture short price trends and reversals over days, relying on technical charts to forecast movements.</li>  
+            </ul>  
+            <p class="text-sm text-gray-600">This time frame requires rapid decision making and often utilizes indicators like moving averages, RSI, and MACD for timely entries and exits.</p>  
+        </div>  
+        
+        <!-- Medium-term Time Frame -->  
+        <div class="p-3 bg-white rounded shadow-sm">  
+            <h4 class="font-medium text-yellow-800">Medium-term</h4>  
+            <p>The medium-term spans several weeks to months, ideal for traders seeking to exploit intermediate trends.</p>  
+            <ul class="list-disc pl-6 space-y-1">  
+                <li><strong>Position Traders:</strong> Hold positions over weeks to months, analyzing broader trends to optimize market timing.</li>  
+                <li><strong>Trend Followers:</strong> Capture sustained price movements by adhering to longer trending conditions.</li>  
+            </ul>  
+            <p class="text-sm text-gray-600">Involves a blend of technical and fundamental analysis to assess market conditions and predict sustained movements.</p>  
+        </div>  
+        
+        <!-- Long-term Time Frame -->  
+        <div class="p-3 bg-white rounded shadow-sm">  
+            <h4 class="font-medium text-yellow-800">Long-term</h4>  
+            <p>Long-term time frames range from multiple months to years, focusing on major economic and market cycles.</p>  
+            <ul class="list-disc pl-6 space-y-1">  
+                <li><strong>Investors:</strong> Engage in analyzing companies' fundamentals and macroeconomic factors to make informed, long-horizon investments.</li>  
+                <li><strong>Trend Followers:</strong> Participate in long-term market trends, staying invested through larger market cycles to achieve substantial returns.</li>  
+            </ul>  
+            <p class="text-sm text-gray-600">Emphasizes patience and a comprehensive understanding of factors affecting market dynamics over extended periods.</p>  
+        </div>  
+    </div>  
+</div>  
+
+<!-- Key Benefits of Technical Analysis -->  
+<div class="p-4 bg-purple-50 rounded-lg">  
+    <h3 class="font-semibold text-xl mb-2">Key Benefits of Technical Analysis</h3>  
+    <div class="space-y-2">  
+        
+        <!-- Objective Decision Making -->  
+        <div class="flex items-center">  
+            <span class="w-4 h-4 bg-purple-500 rounded-full mr-2"></span>  
+            <p><strong>Objective Decision Making:</strong> Bases trading strategies on data-driven insights from price trends, eliminating emotional interference. This approach enables traders to maintain discipline and consistent decision-making in volatile markets.</p>  
+        </div>  
+        
+        <!-- Risk Management -->  
+        <div class="flex items-center">  
+            <span class="w-4 h-4 bg-purple-500 rounded-full mr-2"></span>  
+            <p><strong>Risk Management:</strong> Provides frameworks to identify precise entry and exit points, aiding traders in setting stop-loss and profit-taking levels. This systematic approach reduces risks and ensures traders are prepared for varying market conditions.</p>  
+        </div>  
+        
+        <!-- Versatility -->  
+        <div class="flex items-center">  
+            <span class="w-4 h-4 bg-purple-500 rounded-full mr-2"></span>  
+            <p><strong>Versatility:</strong> Adaptable to diverse markets—including equities, forex, and commodities—allowing strategies to be tailored according to specific timeframes and market conditions, making it a flexible tool for traders with varying objectives.</p>  
+        </div>  
+        
+        <!-- Pattern Recognition -->  
+        <div class="flex items-center">  
+            <span class="w-4 h-4 bg-purple-500 rounded-full mr-2"></span>  
+            <p><strong>Pattern Recognition:</strong> Utilizes patterns from historical price movements that tend to repeat, assisting traders in anticipating future market direction and identifying potentially profitable trading signals.</p>  
+        </div>  
+    </div>  
+</div> 
+                </section>  
+
+                   <!-- Price Action Section -->  
+<section id="price-action" class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hidden">  
+    <h2 class="text-2xl font-bold mb-4 text-blue-800">Price Action Analysis</h2>  
+    <div class="space-y-4">  
+        
+        <!-- Candlestick Patterns -->  
+        <div class="p-4 bg-blue-50 rounded-lg">  
+            <h3 class="font-semibold text-xl mb-2">Candlestick Patterns</h3>  
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  
+                
+                <!-- Bullish Patterns -->  
+                <div class="p-3 bg-white rounded shadow-sm">  
+                    <h4 class="font-medium">Bullish Patterns</h4>  
+                    <ul class="list-disc pl-6">  
+                        <li><strong>Hammer:</strong> A single candle pattern that signals a reversal, occurring during a downtrend with a small body and long lower shadow.</li>  
+                        <li><strong>Morning Star:</strong> A three-candle pattern indicating bullish reversal, starting with a long down candle, followed by a small indecision candle, and then a long up candle.</li>  
+                        <li><strong>Bullish Engulfing:</strong> A two-candle pattern where a small bearish candle is engulfed by a larger bullish candle, suggesting buying momentum.</li>  
+                        <li><strong>Piercing Line:</strong> This two-candle pattern occurs in a downtrend, where the second candle opens below and closes more than halfway up the first candle's body.</li>  
+                    </ul>  
+                </div>  
+                
+                <!-- Bearish Patterns -->  
+                <div class="p-3 bg-white rounded shadow-sm">  
+                    <h4 class="font-medium">Bearish Patterns</h4>  
+                    <ul class="list-disc pl-6">  
+                        <li><strong>Shooting Star:</strong> A bearish reversal pattern characterized by a small body, long upper shadow, and little or no lower shadow, indicating a potential top.</li>  
+                        <li><strong>Evening Star:</strong> A three-candle pattern suggesting a reversal, with a long bullish candle followed by a small indecision candle, and completed by a long bearish candle.</li>  
+                        <li><strong>Bearish Engulfing:</strong> In this two-candle pattern, a smaller bullish candle is swallowed by a larger bearish candle, indicating selling pressure.</li>  
+                        <li><strong>Dark Cloud Cover:</strong> A bearish reversal pattern where the second candle opens above but closes within the prior bullish candle's body.</li>  
+                    </ul>  
+                </div>  
+            </div>  
+        </div>  
+
+        <!-- Support and Resistance -->  
+        <div class="p-4 bg-green-50 rounded-lg">  
+            <h3 class="font-semibold text-xl mb-2">Support and Resistance</h3>  
+            <div class="space-y-3">  
+                <p><strong>Support:</strong> A price level where buying interest is strong enough to overcome selling pressure, halting further price decline.</p>  
+                <p><strong>Resistance:</strong> A price level where selling pressure overcomes buying interest, potentially stopping or reversing an uptrend.</p>  
+                <div class="mt-4">  
+                    <h4 class="font-medium">Key Concepts:</h4>  
+                    <ul class="list-disc pl-6 mt-2">  
+                        <li><strong>Role Reversal:</strong> Previous support levels becoming resistance and vice versa after being broken.</li>  
+                        <li><strong>Multiple Timeframe Analysis:</strong> Evaluating support and resistance across different timeframes for stronger signals.</li>  
+                        <li><strong>Psychological Levels:</strong> Round numbers often act as psychological support/resistance due to trader perception.</li>  
+                        <li><strong>Price Action Confirmation:</strong> Utilizing price action signals to confirm support and resistance integrity.</li>  
+                    </ul>  
+                </div>  
+            </div>  
+        </div>  
+    </div>  
+</section>
+
+<section id="chart-patterns" class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hidden">  
+    <h2 class="text-2xl font-bold mb-4 text-blue-800">Chart Patterns Analysis</h2>  
+    <div class="space-y-4">  
+
+        <!-- Continuation Patterns -->  
+        <div class="p-4 bg-blue-50 rounded-lg">  
+            <h3 class="font-semibold text-xl mb-2">Continuation Patterns</h3>  
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  
+                
+                <!-- Triangles -->  
+                <div class="p-3 bg-white rounded shadow-sm">  
+                    <h4 class="font-medium text-blue-700">Triangles</h4>  
+                    <ul class="list-disc pl-6">  
+                        <li><strong>Symmetrical Triangle:</strong> This pattern signifies a period of consolidation where the direction of the breakout is uncertain.</li>  
+                        <li><strong>Ascending Triangle:</strong> Typically seen as a bullish pattern, indicating the potential continuation of an uptrend when the breakout occurs.</li>  
+                        <li><strong>Descending Triangle:</strong> Generally bearish, suggesting a downtrend continuation when prices break below the support line.</li>  
+                        <li><strong>Trading Strategy:</strong> Involves entering positions as price breaks from the triangle pattern with confirmed volume support.</li>  
+                    </ul>  
+                </div>  
+                
+                <!-- Flags and Pennants -->  
+                <div class="p3 bg-white rounded shadow-sm">  
+                    <h4 class="font-medium text-blue-700">Flags and Pennants</h4>  
+                    <ul class="list-disc pl-6">  
+                        <li><strong>Bull Flag:</strong> A brief consolidation period following a strong upward movement, often predictive of further upside.</li>  
+                        <li><strong>Bear Flag:</strong> A consolidation phase following a sharp decline, typically preceding additional downside.</li>  
+                        <li><strong>Pennant Formation:</strong> Resembles a small symmetrical triangle formation, indicating a pause before the trend continuation.</li>  
+                        <li><strong>Volume Consideration:</strong> Key to validating flag and pennant patterns, where breakouts generally occur on increasing volume.</li>  
+                    </ul>  
+                </div>  
+            </div>  
+        </div>  
+
+        <!-- Reversal Patterns -->  
+        <div class="p-4 bg-red-50 rounded-lg">  
+            <h3 class="font-semibold text-xl mb-2">Reversal Patterns</h3>  
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  
+                
+                <!-- Head and Shoulders -->  
+                <div class="p-3 bg-white rounded shadow-sm">  
+                    <h4 class="font-medium text-red-700">Head and Shoulders</h4>  
+                    <ul class="list-disc pl-6">  
+                        <li><strong>Classic Head and Shoulders:</strong> A reversal pattern that signals a potential top with three peaks, the middle being the highest.</li>  
+                        <li><strong>Inverse Head and Shoulders:</strong> Indicates a reversal from a downtrend with the same structure, suggesting the market may move higher.</li>  
+                        <li><strong>Measuring Objectives:</strong> Typically calculated by measuring the height from the neckline to the top of the head.</li>  
+                        <li><strong>Volume Confirmation:</strong> Confirmation is often sought through analyzing volume, where falling volume on the formation and rising volume on the breakout support authenticity.</li>  
+                    </ul>  
+                </div>  
+                
+                <!-- Double/Triple Patterns -->  
+                <div class="p-3 bg-white rounded shadow-sm">  
+                    <h4 class="font-medium text-red-700">Double/Triple Patterns</h4>  
+                    <ul class="list-disc pl-6">  
+                        <li><strong>Double Top/Bottom:</strong> A chart pattern signaling a reversal, it resembles the letter "M" for tops, or "W" for bottoms.</li>  
+                        <li><strong>Triple Top/Bottom:</strong> Similar to double patterns, but featuring three distinct peaks or troughs before reversing.</li>  
+                        <li><strong>Confirmation Levels:</strong> Typically marked by the breakout of support/resistance after the third peak/trough.</li>  
+                        <li><strong>Stop-loss Placement:</strong> Stops are often set above/below the pattern to protect against false breakouts.</li>  
+                    </ul>  
+                </div>  
+            </div>  
+        </div>  
+    </div>  
+</section>
+                    
+                    <!-- Technical Indicators Section -->  
+<section id="indicators" class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hidden">  
+    <h2 class="text-2xl font-bold mb-4 text-blue-800">Technical Indicators</h2>  
+    <div class="space-y-4">  
+
+        <!-- Trend Indicators -->  
+        <div class="p-4 bg-indigo-50 rounded-lg">  
+            <h3 class="font-semibold text-xl mb-2">Trend Indicators</h3>  
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  
+                
+                <!-- Moving Averages -->  
+                <div class="p-3 bg-white rounded shadow-sm">  
+                    <h4 class="font-medium text-indigo-700">Moving Averages</h4>  
+                    <ul class="list-disc pl-6">  
+                        <li><strong>Simple Moving Average (SMA):</strong> Calculated by averaging a closing price over a specific period, used to identify trend direction.</li>  
+                        <li><strong>Exponential Moving Average (EMA):</strong> Gives more weight to recent prices, thus reacting faster to price changes than the SMA.</li>  
+                        <li><strong>Moving Average Crossovers:</strong> Occur when a short-term moving average crosses a long-term moving average, often used to identify potential buy/sell signals.</li>  
+                        <li><strong>Best Timeframes:</strong> Different markets or instruments may benefit from specific timeframe considerations, tailoring moving average application.</li>  
+                    </ul>  
+                </div>  
+                
+                <!-- MACD -->  
+                <div class="p-3 bg-white rounded shadow-sm">  
+                    <h4 class="font-medium text-indigo-700">MACD</h4>  
+                    <ul class="list-disc pl-6">  
+                        <li><strong>MACD Line Calculation:</strong> Subtracts the 26-day EMA from the 12-day EMA to generate trend-following insights.</li>  
+                        <li><strong>Signal Line Interpretation:</strong> A 9-day EMA of the MACD line, which can signify buy/sell actions when crossed.</li>  
+                        <li><strong>Histogram Analysis:</strong> The difference between the MACD and signal line can help anticipate trend direction.</li>  
+                        <li><strong>Divergence Signals:</strong> Occur when the MACD diverges from price action, often seen as a leading signal of reversals.</li>  
+                    </ul>  
+                </div>  
+            </div>  
+        </div>  
+
+        <!-- Momentum Indicators -->  
+        <div class="p-4 bg-green-50 rounded-lg">  
+            <h3 class="font-semibold text-xl mb-2">Momentum Indicators</h3>  
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  
+                
+                <!-- RSI -->  
+                <div class="p-3 bg-white rounded shadow-sm">  
+                    <h4 class="font-medium text-green-700">RSI (Relative Strength Index)</h4>  
+                    <ul class="list-disc pl-6">  
+                        <li><strong>Overbought/Oversold Levels:</strong> Generally above 70 indicates overbought conditions, below 30 indicates oversold, suggesting potential reversals.</li>  
+                        <li><strong>Divergence Patterns:</strong> Occurs when RSI diverges from the price trend, often used for predicting reversals.</li>  
+                        <li><strong>Failure Swings:</strong> Provide signals by identifying failed attempts to stay in the overbought/oversold territory.</li>  
+                        <li><strong>RSI-based Strategies:</strong> Involve entering trades based on pronounced deviations or confirmations aligning with overbought/oversold signals.</li>  
+                    </ul>  
+                </div>  
+                
+                <!-- Stochastic Oscillator -->  
+                <div class="p-3 bg-white rounded shadow-sm">  
+                    <h4 class="font-medium text-green-700">Stochastic Oscillator</h4>  
+                    <ul class="list-disc pl-6">  
+                        <li><strong>Fast vs Slow Stochastic:</strong> Fast stochastic responds quickly to price changes, while slow stochastic smoothes the reaction.</li>  
+                        <li><strong>Signal Line Crossovers:</strong> Used to indicate potential entry or exit points when the stochastic line crosses the signal line.</li>  
+                        <li><strong>Hidden Divergence:</strong> Suggests a continuation of the current trend, rather than a reversal, when divergence occurs between stochastic and price.</li>  
+                        <li><strong>Combining with Other Indicators:</strong> Often used in conjunction with other indicators to confirm market signals.</li>  
+                    </ul>  
+                </div>  
+            </div>  
+        </div>  
+    </div>  
+</section>
+                
+                <!-- Trading Strategy Section -->  
+                <section id="strategy" class="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hidden">  
+                    <h2 class="text-2xl font-bold mb-4 text-blue-800">Trading Strategy Development</h2>  
+                    <div class="space-y-4">  
+                        <!-- Strategy Components -->  
+                        <div class="p-4 bg-yellow-50 rounded-lg">  
+                            <h3 class="font-semibold text-xl mb-2">Essential Strategy Components</h3>  
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  
+                                <div class="p-3 bg-white rounded shadow-sm">  
+                                    <h4 class="font-medium text-yellow-700">Entry Rules</h4>  
+                                    <ul class="list-disc pl-6">  
+                                        <li>Trend identification</li>  
+                                        <li>Entry trigger signals</li>  
+                                        <li>Confirmation methods</li>  
+                                        <li>Position sizing rules</li>  
+                                    </ul>  
+                                </div>  
+                                <div class="p-3 bg-white rounded shadow-sm">  
+                                    <h4 class="font-medium text-yellow-700">Exit Rules</h4>  
+                                    <ul class="list-disc pl-6">  
+                                        <li>Stop-loss placement</li>  
+                                        <li>Take-profit targets</li>  
+                                        <li>Trailing stop methods</li>  
+                                        <li>Time-based exits</li>  
+                                    </ul>  
+                                </div>  
+                            </div>  
+                        </div>  
+                
+                        <!-- Risk Management -->  
+                        <div class="p-4 bg-purple-50 rounded-lg">  
+                            <h3 class="font-semibold text-xl mb-2">Risk Management Guidelines</h3>  
+                            <div class="space-y-3">  
+                                <div class="border-l-4 border-purple-500 pl-4">  
+                                    <h4 class="font-medium">Position Sizing</h4>  
+                                    <p>Calculate position size based on:</p>  
+                                    <ul class="list-disc pl-6">  
+                                        <li>Account size percentage risk (1-2% rule)</li>  
+                                        <li>Stop-loss distance</li>  
+                                        <li>Market volatility</li>  
+                                    </ul>  
+                                </div>  
+                                <div class="border-l-4 border-purple-500 pl-4">  
+                                    <h4 class="font-medium">Risk-Reward Ratio</h4>  
+                                    <p>Maintain minimum 1:2 risk-reward ratio:</p>  
+                                    <ul class="list-disc pl-6">  
+                                        <li>Calculate potential reward</li>  
+                                        <li>Assess probability of success</li>  
+                                        <li>Consider market conditions</li>  
+                                    </ul>  
+                                </div>  
+                            </div>  
+                        </div>  
+                
+                        <!-- Trading Psychology -->  
+                        <div class="p-4 bg-pink-50 rounded-lg">  
+                            <h3 class="font-semibold text-xl mb-2">Trading Psychology</h3>  
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  
+                                <div class="p-3 bg-white rounded shadow-sm">  
+                                    <h4 class="font-medium text-pink-700">Emotional Control</h4>  
+                                    <ul class="list-disc pl-6">  
+                                        <li>Fear and greed management</li>  
+                                        <li>Dealing with losses</li>  
+                                        <li>Maintaining discipline</li>  
+                                        <li>Building confidence</li>  
+                                    </ul>  
+                                </div>  
+                                <div class="p-3 bg-white rounded shadow-sm">  
+                                    <h4 class="font-medium text-pink-700">Trading Journal</h4>  
+                                    <ul class="list-disc pl-6">  
+                                        <li>Recording trades</li>  
+                                        <li>Performance analysis</li>  
+                                        <li>Strategy refinement</li>  
+                                        <li>Pattern recognition</li>  
+                                    </ul>  
+                                </div>  
+                            </div>  
+                        </div>  
+                    </div>  
+                </section>
+
+            </div>  
+        </main>  
+    </div>  
+
+    <script>  
+        function showSection(sectionId) {  
+            document.querySelectorAll('main section').forEach(section => {  
+                section.classList.add('hidden');  
+            });  
+            
+            document.getElementById(sectionId).classList.remove('hidden');  
+            
+            document.querySelectorAll('#nav-pills button').forEach(button => {  
+                button.classList.remove('bg-blue-600', 'text-white');  
+                button.classList.add('bg-gray-200');  
+            });  
+            
+            event.target.classList.remove('bg-gray-200');  
+            event.target.classList.add('bg-blue-600', 'text-white');  
+        }  
+    </script>  
+</body>  
+</html> 

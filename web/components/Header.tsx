@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 
 interface Props {
@@ -16,26 +17,51 @@ interface Props {
 export default function Header({ lang, name, home, links, other }: Props) {
   const pathname = usePathname() ?? `/${lang}`;
   const otherLang: Locale = lang === "my" ? "en" : "my";
-  // Same page, other language.
   const switchHref = pathname.replace(/^\/(my|en)(?=\/|$)/, `/${otherLang}`);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line/70 bg-ink/80 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2 sm:px-6">
-        <Link href={`/${lang}`} aria-label={home} className="flex items-center gap-2">
-          <Image src="/logo-mark.png" alt="" width={32} height={32} className="size-8" />
-          <span className="text-lg font-bold">{name}</span>
+    <header
+      className={`fixed inset-x-0 top-0 z-40 transition-colors duration-500 ${
+        scrolled ? "border-b border-line/80 bg-ink/75 backdrop-blur-md" : "border-b border-transparent"
+      }`}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-5 sm:px-8">
+        <Link href={`/${lang}`} aria-label={home} className="group flex items-center gap-2.5">
+          <Image
+            src="/logo-mark.png"
+            alt=""
+            width={30}
+            height={30}
+            priority
+            className="size-7 opacity-90 transition group-hover:opacity-100"
+          />
+          <span className="text-[15px] font-semibold tracking-tight">{name}</span>
         </Link>
-        <nav className="ml-auto flex items-center gap-1 text-sm sm:gap-3">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="rounded-lg px-3 py-1.5 text-mist hover:bg-panel-2 hover:text-snow"
-            >
-              {l.label}
-            </Link>
-          ))}
+
+        <nav className="ml-auto flex items-center gap-1 text-sm">
+          {links.map((l) => {
+            const active = pathname.startsWith(l.href);
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                className={`relative rounded-full px-3 py-1.5 transition-colors ${
+                  active ? "text-bone" : "text-ash hover:text-bone"
+                }`}
+              >
+                {l.label}
+                {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-signal" />}
+              </Link>
+            );
+          })}
           <Link
             href={switchHref}
             hrefLang={otherLang}
@@ -44,7 +70,7 @@ export default function Header({ lang, name, home, links, other }: Props) {
             onClick={() => {
               document.cookie = `lang=${otherLang}; path=/; max-age=31536000; samesite=lax`;
             }}
-            className="rounded-lg border border-line px-3 py-1.5 font-medium text-ember hover:bg-panel-2"
+            className="ml-1 rounded-full border border-line-2 px-3 py-1 text-[13px] text-bone transition hover:border-bone/60"
           >
             {other.label}
           </Link>

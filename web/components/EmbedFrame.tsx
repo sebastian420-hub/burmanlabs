@@ -14,15 +14,15 @@ export default function EmbedFrame({ url, title, labels }: Props) {
 
   if (!on) {
     return (
-      <div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 rounded-2xl border border-line bg-panel p-6 text-center sm:aspect-video">
+      <div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 rounded-3xl border border-line bg-ink-2 p-6 text-center sm:aspect-video">
         <button
           type="button"
           onClick={() => setOn(true)}
-          className="rounded-xl bg-ember px-6 py-3 font-bold text-ink hover:brightness-110"
+          className="rounded-full bg-bone px-7 py-3 font-medium text-ink transition hover:bg-white"
         >
-          {labels.load}
+          ▶ {labels.load}
         </button>
-        <p className="text-sm text-mist">{labels.note}</p>
+        <p className="text-sm text-dim">{labels.note}</p>
       </div>
     );
   }
@@ -33,7 +33,7 @@ export default function EmbedFrame({ url, title, labels }: Props) {
       loading="lazy"
       referrerPolicy="no-referrer"
       sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
-      className="aspect-[4/3] w-full rounded-2xl border border-line bg-white sm:aspect-video"
+      className="aspect-[4/3] w-full rounded-3xl border border-line bg-white sm:aspect-video"
     />
   );
 }

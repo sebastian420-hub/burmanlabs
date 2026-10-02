@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <title>Neural Network Visualizer</title>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(to bottom right, #1a1a2e, #16213e);
+        }
+        #network-canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="gradient-bg text-gray-200 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-blue-400 mb-4">Neural Network Visualizer</h1>
+            <p class="text-gray-400">Interactive 3D visualization of neural network architectures and learning processes</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Control Panel -->
+            <div class="bg-gray-900/50 p-6 rounded-xl border border-blue-500/10">
+                <h2 class="text-xl font-bold mb-6">Network Configuration</h2>
+                
+                <!-- Layer Configuration -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-2">Layer Structure</label>
+                    <div class="space-y-3">
+                        <input type="number" id="input-layer" placeholder="Input Layer (e.g., 784)" 
+                               class="w-full bg-gray-800 border border-blue-500/20 rounded px-3 py-2 text-sm">
+                        <div id="hidden-layers">
+                            <input type="number" placeholder="Hidden Layer 1" 
+                                   class="w-full bg-gray-800 border border-blue-500/20 rounded px-3 py-2 text-sm mb-2">
+                        </div>
+                        <input type="number" id="output-layer" placeholder="Output Layer (e.g., 10)" 
+                               class="w-full bg-gray-800 border border-blue-500/20 rounded px-3 py-2 text-sm">
+                    </div>
+                    <button id="add-layer" class="text-sm text-blue-400 mt-2">+ Add Hidden Layer</button>
+                </div>
+
+                <!-- Activation Functions -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-2">Activation Function</label>
+                    <select class="w-full bg-gray-800 border border-blue-500/20 rounded px-3 py-2 text-sm">
+                        <option value="relu">ReLU</option>
+                        <option value="sigmoid">Sigmoid</option>
+                        <option value="tanh">Tanh</option>
+                    </select>
+                </div>
+
+                <!-- Visualization Options -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-medium mb-3">Visualization Options</h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="form-checkbox bg-gray-800 border-blue-500/20" checked>
+                            <span class="ml-2 text-sm">Show Weights</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="form-checkbox bg-gray-800 border-blue-500/20" checked>
+                            <span class="ml-2 text-sm">Show Neuron Values</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="form-checkbox bg-gray-800 border-blue-500/20" checked>
+                            <span class="ml-2 text-sm">Animate Propagation</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button id="visualize" class="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 transition-colors">
+                    Update Visualization
+                </button>
+            </div>
+
+            <!-- Visualization Area -->
+            <div class="lg:col-span-2 bg-gray-900/50 rounded-xl border border-blue-500/10 overflow-hidden" style="height: 600px">
+                <div id="network-canvas"></div>
+            </div>
+        </div>
+
+        <!-- Information Panel -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Network Stats -->
+            <div class="bg-gray-900/50 p-6 rounded-xl border border-blue-500/10">
+                <h2 class="text-xl font-bold mb-4">Network Statistics</h2>
+                <div class="space-y-2 text-sm">
+                    <p><span class="text-gray-400">Total Parameters:</span> <span id="total-params">0</span></p>
+                    <p><span class="text-gray-400">Total Layers:</span> <span id="total-layers">0</span></p>
+                    <p><span class="text-gray-400">Memory Usage:</span> <span id="memory-usage">0 MB</span></p>
+                </div>
+            </div>
+
+            <!-- Training Controls -->
+            <div class="bg-gray-900/50 p-6 rounded-xl border border-blue-500/10">
+                <h2 class="text-xl font-bold mb-4">Training Controls</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Learning Rate</label>
+                        <input type="range" min="0.001" max="0.1" step="0.001" value="0.01"
+                               class="w-full bg-gray-800">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Batch Size</label>
+                        <input type="number" value="32" min="1" max="128"
+                               class="w-full bg-gray-800 border border-blue-500/20 rounded px-3 py-2 text-sm">
+                    </div>
+                    <button class="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg px-4 py-2 transition-colors">
+                        Start Training
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Three.js Setup
+        let scene, camera, renderer;
+        let network = null;
+
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            
+            const container = document.getElementById('network-canvas');
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            // Camera position
+            camera.position.z = 5;
+
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            directionalLight.position.set(0, 1, 1);
+            scene.add(directionalLight);
+
+            animate();
+        }
+
+        function createNeuralNetwork(layers) {
+            if (network) {
+                // Remove existing network
+                network.forEach(layer => {
+                    layer.forEach(neuron => scene.remove(neuron));
+                });
+            }
+
+            network = [];
+            const neuronGeometry = new THREE.SphereGeometry(0.1, 32, 32);
+            const neuronMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+
+            // Create neurons for each layer
+            layers.forEach((layerSize, layerIndex) => {
+                const layer = [];
+                for (let i = 0; i < layerSize; i++) {
+                    const neuron = new THREE.Mesh(neuronGeometry, neuronMaterial);
+                    const y = (i - layerSize/2) * 0.3;
+                    const x = (layerIndex - layers.length/2) * 2;
+                    neuron.position.set(x, y, 0);
+                    scene.add(neuron);
+                    layer.push(neuron);
+                }
+                network.push(layer);
+            });
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (network) {
+                network.forEach(layer => {
+                    layer.forEach(neuron => {
+                        neuron.rotation.x += 0.01;
+                        neuron.rotation.y += 0.01;
+                    });
+                });
+            }
+            renderer.render(scene, camera);
+        }
+
+        // Event Listeners
+        document.getElementById('visualize').addEventListener('click', () => {
+            const inputSize = parseInt(document.getElementById('input-layer').value) || 4;
+            const outputSize = parseInt(document.getElementById('output-layer').value) || 2;
+            const hiddenLayers = Array.from(document.querySelectorAll('#hidden-layers input'))
+                                    .map(input => parseInt(input.value) || 3);
+            
+            createNeuralNetwork([inputSize, ...hiddenLayers, outputSize]);
+        });
+
+        document.getElementById('add-layer').addEventListener('click', () => {
+            const hiddenLayers = document.getElementById('hidden-layers');
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.placeholder = `Hidden Layer ${hiddenLayers.children.length + 1}`;
+            input.className = 'w-full bg-gray-800 border border-blue-500/20 rounded px-3 py-2 text-sm mb-2';
+            hiddenLayers.appendChild(input);
+        });
+
+        // Initialize visualization
+        init();
+        // Create default network
+        createNeuralNetwork([4, 3, 2]);
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('network-canvas');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
+</body>
+</html>

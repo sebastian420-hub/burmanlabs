@@ -7,9 +7,10 @@ import { getDictionary } from "@/lib/dictionaries";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SWRegister from "@/components/SWRegister";
+import { site } from "@/lib/site";
 
 export const viewport: Viewport = {
-  themeColor: "#060a13",
+  themeColor: "#0b0a09",
   width: "device-width",
   initialScale: 1,
 };
@@ -35,11 +36,16 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const dict = getDictionary(lang);
-  // Start the Burmese font download with the HTML instead of after the CSS is parsed.
-  if (lang === "my") {
-    preload("/fonts/noto-myanmar-400.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
-  }
-  const requestUrl = process.env.NEXT_PUBLIC_REQUEST_URL;
+  // Start font downloads with the HTML instead of after CSS and layout. Burmese is
+  // preloaded on English pages too: the language switch and footer use it, and
+  // nearly every visitor reads Burmese anyway.
+  preload("/fonts/noto-myanmar-400.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+  preload("/fonts/inter-tight-var.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+  const links = [
+    { href: `/${lang}/catalog`, label: dict.nav.catalog },
+    { href: `/${lang}/studio`, label: dict.nav.studio },
+    ...(site.requestUrl ? [{ href: `/${lang}/request`, label: dict.nav.request }] : []),
+  ];
 
   return (
     <html lang={lang}>
@@ -48,14 +54,11 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
           lang={lang}
           name={dict.site.name}
           home={dict.nav.home}
-          links={[
-            { href: `/${lang}/catalog`, label: dict.nav.catalog },
-            ...(requestUrl ? [{ href: `/${lang}/request`, label: dict.nav.request }] : []),
-          ]}
+          links={links}
           other={{ label: dict.lang.other, aria: dict.lang.otherLabel }}
         />
-        <main className="mx-auto w-full max-w-6xl px-4 sm:px-6">{children}</main>
-        <Footer line={dict.footer.line} />
+        <main className="pt-16">{children}</main>
+        <Footer lang={lang} labels={dict.footer} links={links} email={site.email} />
         <SWRegister />
       </body>
     </html>

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/lib/dictionaries";
 import { hasLocale } from "@/lib/i18n";
+import { site } from "@/lib/site";
+import { ButtonLink, Container } from "@/components/ui";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/request">): Promise<Metadata> {
   const { lang } = await params;
@@ -16,26 +18,20 @@ export default async function RequestPage({ params }: PageProps<"/[lang]/request
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const { request } = getDictionary(lang);
-  const url = process.env.NEXT_PUBLIC_REQUEST_URL;
 
   return (
-    <div className="pt-8">
-      <h1 className="text-3xl font-bold">{request.title}</h1>
-      <p className="mt-3 max-w-2xl text-lg text-mist">{request.lead}</p>
-      <div className="mt-8">
-        {url ? (
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block rounded-xl bg-ember px-6 py-3 font-bold text-ink hover:brightness-110"
-          >
-            {request.cta} ↗
-          </a>
+    <Container className="pt-16">
+      <h1 className="display t-hero intro max-w-4xl">{request.title}</h1>
+      <p className="intro-2 mt-6 max-w-xl text-lg text-ash">{request.lead}</p>
+      <div className="intro-3 mt-10">
+        {site.requestUrl ? (
+          <ButtonLink href={site.requestUrl} external>
+            {request.cta}
+          </ButtonLink>
         ) : (
-          <p className="text-mist">{request.unset}</p>
+          <p className="text-dim">{request.unset}</p>
         )}
       </div>
-    </div>
+    </Container>
   );
 }
