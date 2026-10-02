@@ -7,7 +7,7 @@
  *
  * Bump VERSION to drop every old cache.
  */
-const VERSION = "v2";
+const VERSION = "v3";
 const CACHE = `burmanlabs-${VERSION}`;
 const SHELL = ["/offline.html", "/fonts/noto-myanmar-400.woff2", "/fonts/noto-myanmar-700.woff2", "/icon-192.png"];
 const NETWORK_TIMEOUT = 3500;
