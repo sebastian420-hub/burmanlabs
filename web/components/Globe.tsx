@@ -15,9 +15,9 @@ interface Props {
 // Myanmar (Naypyidaw-ish): the globe always settles facing here.
 const HOME = { lat: 21.5, lon: 96 };
 const TYPE_COLOR: Record<GlobeItem["type"], string> = {
-  textbook: "#ffb347",
-  app: "#3ddcb4",
-  sim: "#a69bff",
+  textbook: "#f2efe9",
+  app: "#c9a45c",
+  sim: "#ff3131",
 };
 
 const rad = (d: number) => (d * Math.PI) / 180;
@@ -56,9 +56,9 @@ const DOT_FRAG = /* glsl */ `
   void main() {
     float d = length(gl_PointCoord - 0.5);
     if (d > 0.5) discard;
-    vec3 base = vec3(0.50, 0.62, 0.86);
-    vec3 hot = vec3(1.0, 0.70, 0.28);
-    gl_FragColor = vec4(mix(base, hot, vBoost), smoothstep(0.5, 0.3, d) * (0.55 + 0.45 * vBoost));
+    vec3 base = vec3(0.95, 0.93, 0.90);
+    vec3 hot = vec3(1.0, 0.19, 0.19);
+    gl_FragColor = vec4(mix(base, hot, vBoost), smoothstep(0.5, 0.3, d) * (0.32 + 0.68 * vBoost));
   }
 `;
 const NODE_VERT = /* glsl */ `
@@ -100,8 +100,8 @@ const ATMO_VERT = /* glsl */ `
 const ATMO_FRAG = /* glsl */ `
   varying vec3 vN;
   void main() {
-    float i = pow(max(0.0, 0.72 - dot(vN, vec3(0.0, 0.0, 1.0))), 3.2);
-    gl_FragColor = vec4(0.26, 0.55, 1.0, 1.0) * i;
+    float i = pow(max(0.0, 0.7 - dot(vN, vec3(0.0, 0.0, 1.0))), 3.6);
+    gl_FragColor = vec4(1.0, 0.92, 0.86, 1.0) * i * 0.55;
   }
 `;
 
@@ -156,7 +156,7 @@ export default function Globe({ items, selectedId, onSelect }: Props) {
     globe.add(
       new THREE.Mesh(
         new THREE.SphereGeometry(0.985, 48, 32),
-        new THREE.MeshBasicMaterial({ color: 0x070d1d }),
+        new THREE.MeshBasicMaterial({ color: 0x0b0a09 }),
       ),
     );
 

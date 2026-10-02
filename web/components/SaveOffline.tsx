@@ -46,16 +46,16 @@ export default function SaveOffline({ urls, labels }: Props) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3 text-sm">
+    <div className="flex flex-col-reverse items-start gap-4 text-sm sm:flex-row sm:items-center md:flex-row-reverse">
       <button
         type="button"
         onClick={save}
         disabled={state === "saving"}
-        className="rounded-xl border border-line px-4 py-2 font-medium hover:bg-panel-2 disabled:opacity-60"
+        className="rounded-full bg-bone px-6 py-3 font-medium text-ink transition hover:bg-white disabled:opacity-60"
       >
         {state === "saving" ? labels.saving : state === "done" ? `✓ ${labels.done}` : labels.button}
       </button>
-      <span className="text-mist" role="status">
+      <span className="max-w-xs text-ash" role="status">
         {state === "failed"
           ? labels.failed
           : state === "unsupported"

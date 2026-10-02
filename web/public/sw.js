@@ -7,7 +7,7 @@
  *
  * Bump VERSION to drop every old cache.
  */
-const VERSION = "v1";
+const VERSION = "v2";
 const CACHE = `burmanlabs-${VERSION}`;
 const SHELL = ["/offline.html", "/fonts/noto-myanmar-400.woff2", "/fonts/noto-myanmar-700.woff2", "/icon-192.png"];
 const NETWORK_TIMEOUT = 3500;
@@ -104,6 +104,9 @@ self.addEventListener("fetch", (event) => {
   }
   if (
     url.pathname.startsWith("/_next/static/") ||
+    url.pathname.startsWith("/_next/image") ||
+    url.pathname.startsWith("/studio/") ||
+    url.pathname.startsWith("/brand/") ||
     url.pathname.startsWith("/fonts/") ||
     /\.(?:png|jpg|jpeg|webp|svg|woff2?|ico)$/.test(url.pathname)
   ) {

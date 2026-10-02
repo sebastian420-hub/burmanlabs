@@ -3,7 +3,7 @@
 import sharp from "sharp";
 
 const SRC = new URL("../../Portfolio/logo.png", import.meta.url).pathname;
-const BG = "#060a13";
+const BG = "#0b0a09";
 
 async function icon(size, file, pad = 0.2) {
   const inner = Math.round(size * (1 - pad * 2));

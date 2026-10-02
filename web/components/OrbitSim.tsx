@@ -82,23 +82,27 @@ export default function OrbitSim({ labels, lang }: { labels: OrbitLabels; lang: 
 
     const sun = new THREE.Mesh(
       new THREE.SphereGeometry(0.13, 32, 16),
-      new THREE.MeshBasicMaterial({ color: 0xffb347 }),
+      new THREE.MeshBasicMaterial({ color: 0xff3131 }),
     );
     const glow = new THREE.Mesh(
       new THREE.SphereGeometry(0.2, 32, 16),
-      new THREE.MeshBasicMaterial({ color: 0xffb347, transparent: true, opacity: 0.18 }),
+      new THREE.MeshBasicMaterial({ color: 0xff3131, transparent: true, opacity: 0.16 }),
     );
     const planet = new THREE.Mesh(
       new THREE.SphereGeometry(0.06, 24, 12),
-      new THREE.MeshBasicMaterial({ color: 0x3ddcb4 }),
+      new THREE.MeshBasicMaterial({ color: 0xf2efe9 }),
     );
     scene.add(sun, glow, planet);
+
+    // Faint polar grid, like the face of an instrument.
+    const grid = new THREE.PolarGridHelper(4, 12, 8, 96, 0x2a2725, 0x1b1917);
+    scene.add(grid);
 
     const ringGeo = new THREE.RingGeometry(1, 1.006, 128);
     ringGeo.rotateX(-Math.PI / 2);
     const ring = new THREE.Mesh(
       ringGeo,
-      new THREE.MeshBasicMaterial({ color: 0x4a5b86, transparent: true, opacity: 0.55, side: THREE.DoubleSide }),
+      new THREE.MeshBasicMaterial({ color: 0xff3131, transparent: true, opacity: 0.35, side: THREE.DoubleSide }),
     );
     scene.add(ring);
 
@@ -108,7 +112,7 @@ export default function OrbitSim({ labels, lang }: { labels: OrbitLabels; lang: 
     trailGeo.setDrawRange(0, 0);
     const trail = new THREE.Line(
       trailGeo,
-      new THREE.LineBasicMaterial({ color: 0x3ddcb4, transparent: true, opacity: 0.75 }),
+      new THREE.LineBasicMaterial({ color: 0xf2efe9, transparent: true, opacity: 0.9 }),
     );
     trail.frustumCulled = false;
     scene.add(trail);
@@ -244,7 +248,7 @@ export default function OrbitSim({ labels, lang }: { labels: OrbitLabels; lang: 
     };
   }, []);
 
-  if (failed) return <p className="rounded-2xl border border-line p-6 text-mist">{labels.webgl}</p>;
+  if (failed) return <p className="rounded-3xl border border-line p-6 text-ash">{labels.webgl}</p>;
 
   const fixed = (v: number, d = 2) => num(Number(v.toFixed(d)), lang).replace(".", lang === "my" ? "·" : ".");
 
@@ -254,16 +258,16 @@ export default function OrbitSim({ labels, lang }: { labels: OrbitLabels; lang: 
         ref={hostRef}
         role="img"
         aria-label={labels.result}
-        className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-line bg-panel sm:aspect-video"
+        className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-line bg-black sm:aspect-[16/9]"
       >
         {note && (
-          <p className="absolute inset-x-0 top-3 z-10 mx-auto w-fit rounded-lg bg-ink/80 px-3 py-1 text-sm text-ember">
+          <p className="absolute inset-x-0 top-3 z-10 mx-auto w-fit rounded-full bg-ink/80 px-4 py-1 text-sm text-signal backdrop-blur">
             {note === "crashed" ? labels.crashed : labels.lost}
           </p>
         )}
       </div>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+      <div className="mt-4 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2">
         <Slider
           label={labels.speed}
           hint={labels.speedHint}
@@ -289,32 +293,32 @@ export default function OrbitSim({ labels, lang }: { labels: OrbitLabels; lang: 
         <button
           type="button"
           onClick={() => setPlaying((p) => !p)}
-          className="rounded-xl border border-line px-4 py-2 hover:bg-panel-2"
+          className="rounded-full border border-line-2 px-5 py-2 text-sm transition hover:border-bone/60"
         >
           {playing ? labels.pause : labels.play}
         </button>
         <button
           type="button"
           onClick={() => resetRef.current()}
-          className="rounded-xl border border-line px-4 py-2 hover:bg-panel-2"
+          className="rounded-full border border-line-2 px-5 py-2 text-sm transition hover:border-bone/60"
         >
           {labels.restart}
         </button>
       </div>
 
-      <dl className="mt-5 grid gap-3 rounded-2xl border border-line bg-panel p-4 sm:grid-cols-3">
+      <dl className="mt-4 grid gap-6 rounded-3xl border border-line p-6 sm:grid-cols-3">
         <div>
-          <dt className="text-xs text-mist">{labels.result}</dt>
-          <dd className="font-bold text-ember">{labels[result.kind]}</dd>
+          <dt className="eyebrow">{labels.result}</dt>
+          <dd className="mt-1 text-xl text-signal">{labels[result.kind]}</dd>
         </div>
         <div>
-          <dt className="text-xs text-mist">{labels.ecc}</dt>
-          <dd className="font-bold">{fixed(result.e)}</dd>
+          <dt className="eyebrow">{labels.ecc}</dt>
+          <dd className="display num mt-1 text-3xl">{fixed(result.e)}</dd>
         </div>
         {Number.isFinite(result.period) && (
           <div>
-            <dt className="text-xs text-mist">{labels.period}</dt>
-            <dd className="font-bold">
+            <dt className="eyebrow">{labels.period}</dt>
+            <dd className="display num mt-1 text-3xl">
               {fixed(result.period, 1)} {labels.units}
             </dd>
           </div>
@@ -344,10 +348,10 @@ function Slider({
   onChange: (v: number) => void;
 }) {
   return (
-    <label className="block rounded-2xl border border-line bg-panel p-4">
+    <label className="block bg-ink p-5">
       <span className="flex justify-between">
         <span>{label}</span>
-        <span className="font-bold text-ember">{shown}</span>
+        <span className="num font-medium text-signal">{shown}</span>
       </span>
       <input
         type="range"
@@ -356,9 +360,9 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="mt-3 w-full accent-[#ffb347]"
+        className="mt-4 w-full accent-[#ff3131]"
       />
-      {hint && <span className="mt-1 block text-xs text-mist">{hint}</span>}
+      {hint && <span className="mt-2 block text-xs text-dim">{hint}</span>}
     </label>
   );
 }

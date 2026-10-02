@@ -1,5 +1,13 @@
 /**
- * Pulls the lazy 3D chunks through the network once, so the service worker caches
- * them and the globe and sims also work offline. Add each new native sim here.
+ * Pulls the lazy chunks through the network once, so the service worker caches them
+ * and the globe, sims and Studio pieces also work offline. Add each new one here.
  */
-export const warmAll = () => Promise.allSettled([import("./Globe"), import("./OrbitSim")]);
+export const warmAll = () =>
+  Promise.allSettled([
+    import("./Globe"),
+    import("./OrbitSim"),
+    import("./art/Quantum"),
+    import("./art/Pulse"),
+    import("./art/Mandalay"),
+    import("./art/BinaryRain"),
+  ]);

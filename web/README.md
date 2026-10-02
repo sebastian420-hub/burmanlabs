@@ -18,6 +18,46 @@ The repo root still holds the static `Portfolio/` site that `burmanlabs.vercel.a
 This app lives in `web/`. In Vercel, create a **new project** from this repo with
 **Root Directory = `web`** and check the preview before pointing any domain at it.
 
+## Design system
+
+Warm black, bone white and one loud colour: the red (`#ff3131`) of the original
+BURMAN LABS wordmark (`public/brand/wordmark.webp`, from `Portfolio/burmanx.png`). Tokens live
+in `app/globals.css` (`ink`, `bone`, `ash`, `signal`, `gold`, …).
+
+- Type: Instrument Serif for display, Inter Tight for UI (Latin), Noto Sans Myanmar for
+  Burmese. All self-hosted in `public/fonts/`. Burmese gets its own, smaller display scale
+  (`.t-hero`, `.t-section`, `.t-row`) and generous line-height; it never uses uppercase or
+  letter-spacing.
+- Layout pieces: `components/ui.tsx` (`Container`, `SectionHead`, `ButtonLink`, `Tag`).
+- Catalog items get generative SVG covers (`components/Cover.tsx`), deterministic from the id,
+  with zero downloads.
+- Motion: CSS-only entrance animations, plus scroll reveals where the browser supports
+  scroll-driven animation. Both are off with reduced motion.
+
+## Studio (the original portfolio)
+
+`/{lang}/studio` presents works from the original `Portfolio/` site, ported to run natively
+(no p5.js, which would be ~1 MB):
+
+| Piece           | Ported from            | Engine      |
+| --------------- | ---------------------- | ----------- |
+| Quantum         | `atomsketch.js`        | three.js    |
+| Pulse           | `x7.html`              | three.js    |
+| Mandalay Palace | `mandalay.js`          | Canvas 2D   |
+| Binary Rain     | `one.js`               | Canvas 2D   |
+
+Data lives in `content/studio.ts`, the pieces in `components/art/`. They share `lib/artLoop.ts`
+(pixel-ratio cap, 30 fps on low-end phones, pause off-screen, reduced motion). The original
+Quantum snapped rings to random angles every frame (a strobe); the port keeps the jitter but
+smooths it.
+
+Posters in `public/studio/*.webp` are screenshots of the live pieces. They show before a piece
+starts and on cards. Re-capture them if a piece changes.
+
+The **archive** (`public/archive/`) serves the original Earth & Moon, the two neural network
+visualizers and the technical analysis guide unchanged. They load three.js / TensorFlow from
+public CDNs, so they need internet. Earth's 8K textures were reduced to 2K (~1 MB total).
+
 ## Adding to the catalog
 
 Everything is driven by one list: `content/catalog.ts`. Add an item and the landing-page
@@ -33,6 +73,9 @@ counts, the globe lights, search and the item page all update.
 Entries marked `sample: true` are placeholders and show a "Sample" tag, and the landing page
 says how many there are. Delete them as real items arrive. `spikebook` has a guessed
 category: confirm it.
+
+To add a Studio piece: add it to `content/studio.ts`, put the component in `components/art/`,
+register it in `components/ArtStage.tsx` and `components/warm.ts`, and add a poster.
 
 To add a native sim: create `components/<Name>Sim.tsx`, a page under
 `app/[lang]/sims/<slug>/page.tsx`, add the dynamic import to `components/warm.ts` (so it is
@@ -54,7 +97,8 @@ saved for offline), and a catalog row with `mode: "native"`.
 
 ## Low-data and offline design
 
-- First load is ~210 KB (English) / ~260 KB (Burmese), most of it the React runtime and font.
+- First load is ~310 KB (English) / ~335 KB (Burmese) with 3D off: ~145 KB React runtime and
+  ~160 KB fonts, all cached immutably after the first visit.
 - **3D is optional.** The globe is a separate ~140 KB chunk, fetched only if WebGL works and the
   browser is not on Save-Data or 2G. Otherwise a CSS poster is shown. Users can switch 3D off
   (remembered). It uses no textures: land is a generated 1° bitmap (`lib/landMask.ts`, made by
@@ -72,6 +116,8 @@ Copy `.env.example` to `.env.local`.
 
 - `NEXT_PUBLIC_REQUEST_URL`: Messenger / Telegram / Viber / form link for the
   "tell us what you need" page. The nav link stays hidden until this is set.
+- `NEXT_PUBLIC_CONTACT_EMAIL`: footer contact. Defaults to the address on the original
+  portfolio (`lib/site.ts`).
 
 ## Not in this version
 
