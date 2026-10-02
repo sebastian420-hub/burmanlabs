@@ -63,6 +63,18 @@ export const catalog: CatalogItem[] = [
     sizeMB: 0.3,
     offline: true,
   },
+  {
+    id: "edusim",
+    type: "sim",
+    category: "science",
+    title: { my: "EduSim", en: "EduSim" },
+    summary: {
+      my: "GPU ကို အသုံးပြု၍ ဖန်တီးထားသော အပြန်အလှန်ဆက်သွယ်နိုင်သော သိပ္ပံစမ်းသပ်မှုများ။",
+      en: "Interactive physics, biology and computer-science simulations that run on your GPU with WebGPU.",
+    },
+    mode: "link",
+    target: "https://edusim-theta.vercel.app/",
+  },
   ...(
     [
       ["math-textbook", "textbook", "math", "သင်္ချာ ဖတ်စာအုပ်", "Mathematics textbook"],
