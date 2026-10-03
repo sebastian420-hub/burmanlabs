@@ -75,13 +75,27 @@ export const catalog: CatalogItem[] = [
     mode: "link",
     target: "https://edusim-theta.vercel.app/",
   },
+  {
+    // digital_sim's daily world (github.com/sebastian420-hub/digital_sim, site/).
+    // "soon" until its Vercel project exists; then mode: "link" and target: its URL.
+    // Burmese text: please have a native speaker check it.
+    id: "the-village",
+    type: "sim",
+    category: "ai",
+    title: { my: "AI ကျေးရွာ", en: "The Village" },
+    summary: {
+      my: "AI အေးဂျင့်များ နေထိုင်သော ကျေးရွာတစ်ရွာ။ နေ့စဉ် ကမ္ဘာက ဆက်လက်လည်ပတ်ပြီး ဘာဖြစ်ခဲ့သည်ကို ပြန်ကြည့်နိုင်သည်။",
+      en: "A village of AI agents that lives one day at a time. Every day the world runs on, and you can watch what happened.",
+    },
+    mode: "soon",
+    sizeMB: 0.5,
+  },
   ...(
     [
       ["math-textbook", "textbook", "math", "သင်္ချာ ဖတ်စာအုပ်", "Mathematics textbook"],
       ["physics-sim", "sim", "science", "ရူပဗေဒ စမ်းသပ်မှု", "Physics simulation"],
       ["chem-sim", "sim", "science", "ဓာတုဗေဒ စမ်းသပ်မှု", "Chemistry simulation"],
       ["bio-textbook", "textbook", "science", "ဇီဝဗေဒ ဖတ်စာအုပ်", "Biology textbook"],
-      ["research-ai", "sim", "ai", "AI သုတေသန စမ်းသပ်မှု", "AI research simulation"],
       ["ai-basics", "textbook", "ai", "AI အခြေခံ ဖတ်စာအုပ်", "AI basics textbook"],
       ["stat-sim", "sim", "math", "ဖြစ်နိုင်ခြေ စမ်းသပ်မှု", "Probability simulation"],
       ["tools-converter", "app", "tools", "ယူနစ်ပြောင်းအက်ပ်", "Unit converter"],
