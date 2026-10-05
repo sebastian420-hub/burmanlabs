@@ -76,8 +76,8 @@ export const catalog: CatalogItem[] = [
     target: "https://edusim-theta.vercel.app/",
   },
   {
-    // digital_sim's daily world (github.com/sebastian420-hub/digital_sim, site/).
-    // "soon" until its Vercel project exists; then mode: "link" and target: its URL.
+    // digital_sim's daily world, native here: /{lang}/sims/village reads the
+    // episodes the daily runner publishes into public/village/.
     // Burmese text: please have a native speaker check it.
     id: "the-village",
     type: "sim",
@@ -87,8 +87,9 @@ export const catalog: CatalogItem[] = [
       my: "AI အေးဂျင့်များ နေထိုင်သော ကျေးရွာတစ်ရွာ။ နေ့စဉ် ကမ္ဘာက ဆက်လက်လည်ပတ်ပြီး ဘာဖြစ်ခဲ့သည်ကို ပြန်ကြည့်နိုင်သည်။",
       en: "A village of AI agents that lives one day at a time. Every day the world runs on, and you can watch what happened.",
     },
-    mode: "soon",
-    sizeMB: 0.5,
+    mode: "native",
+    target: "village",
+    sizeMB: 0.4,
   },
   ...(
     [

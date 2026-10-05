@@ -1,0 +1,206 @@
+{
+ "tick": 400,
+ "seed": 11,
+ "structures": [
+  {
+   "type": "well",
+   "x": 10,
+   "y": 20,
+   "owner": null
+  },
+  {
+   "type": "well",
+   "x": 30,
+   "y": 20,
+   "owner": null
+  },
+  {
+   "type": "market",
+   "x": 20,
+   "y": 20,
+   "owner": null
+  },
+  {
+   "type": "library",
+   "x": 20,
+   "y": 20,
+   "owner": null
+  },
+  {
+   "type": "well",
+   "x": 15,
+   "y": 4,
+   "owner": null
+  },
+  {
+   "type": "well",
+   "x": 2,
+   "y": 8,
+   "owner": null
+  },
+  {
+   "type": "granary",
+   "x": 3,
+   "y": 8,
+   "owner": null
+  }
+ ],
+ "people": [
+  {
+   "id": "4bec01ef79e4",
+   "name": "Pike",
+   "role": "explorer",
+   "alive": true,
+   "died_at_tick": null,
+   "x": 36,
+   "y": 13,
+   "coins": 0,
+   "food": 4,
+   "tools_made": 0,
+   "lessons_taught": 0
+  },
+  {
+   "id": "86918935b453",
+   "name": "Cedar",
+   "role": "builder",
+   "alive": false,
+   "died_at_tick": 162,
+   "x": 2,
+   "y": 8,
+   "coins": 0,
+   "food": 0,
+   "tools_made": 1,
+   "lessons_taught": 0
+  },
+  {
+   "id": "63f280cdfe1e",
+   "name": "Bolt",
+   "role": "gatherer",
+   "alive": true,
+   "died_at_tick": null,
+   "x": 29,
+   "y": 27,
+   "coins": 0,
+   "food": 2,
+   "tools_made": 0,
+   "lessons_taught": 1
+  },
+  {
+   "id": "45199022ba4d",
+   "name": "Jade",
+   "role": "scholar",
+   "alive": true,
+   "died_at_tick": null,
+   "x": 28,
+   "y": 26,
+   "coins": 51,
+   "food": 0,
+   "tools_made": 0,
+   "lessons_taught": 6
+  },
+  {
+   "id": "c6d2c6face74",
+   "name": "Nova",
+   "role": "explorer",
+   "alive": true,
+   "died_at_tick": null,
+   "x": 22,
+   "y": 23,
+   "coins": 0,
+   "food": 2,
+   "tools_made": 0,
+   "lessons_taught": 0
+  },
+  {
+   "id": "1ab52bb5d901",
+   "name": "Echo",
+   "role": "builder",
+   "alive": true,
+   "died_at_tick": null,
+   "x": 2,
+   "y": 10,
+   "coins": 0,
+   "food": 7,
+   "tools_made": 2,
+   "lessons_taught": 0
+  },
+  {
+   "id": "790883d92d4e",
+   "name": "Iris",
+   "role": "gatherer",
+   "alive": true,
+   "died_at_tick": null,
+   "x": 4,
+   "y": 11,
+   "coins": 0,
+   "food": 3,
+   "tools_made": 0,
+   "lessons_taught": 0
+  },
+  {
+   "id": "a80e597e4364",
+   "name": "Onyx",
+   "role": "scholar",
+   "alive": true,
+   "died_at_tick": null,
+   "x": 16,
+   "y": 21,
+   "coins": 68,
+   "food": 3,
+   "tools_made": 0,
+   "lessons_taught": 4
+  },
+  {
+   "id": "14c0c95a9c1e",
+   "name": "Gale",
+   "role": "explorer",
+   "alive": true,
+   "died_at_tick": null,
+   "x": 27,
+   "y": 20,
+   "coins": 0,
+   "food": 0,
+   "tools_made": 0,
+   "lessons_taught": 0
+  },
+  {
+   "id": "259022e36904",
+   "name": "Quinn",
+   "role": "builder",
+   "alive": true,
+   "died_at_tick": null,
+   "x": 19,
+   "y": 4,
+   "coins": 0,
+   "food": 3,
+   "tools_made": 1,
+   "lessons_taught": 0
+  },
+  {
+   "id": "d5f5ef4de0df",
+   "name": "Thorn",
+   "role": "gatherer",
+   "alive": true,
+   "died_at_tick": null,
+   "x": 29,
+   "y": 22,
+   "coins": 0,
+   "food": 1,
+   "tools_made": 0,
+   "lessons_taught": 1
+  },
+  {
+   "id": "fc30a3b6d14b",
+   "name": "Moss",
+   "role": "scholar",
+   "alive": true,
+   "died_at_tick": null,
+   "x": 31,
+   "y": 24,
+   "coins": 0,
+   "food": 2,
+   "tools_made": 0,
+   "lessons_taught": 1
+  }
+ ]
+}
