@@ -21,7 +21,7 @@ This app lives in `web/`. In Vercel, create a **new project** from this repo wit
 ## Design system
 
 Warm black, bone white and one loud colour: the red (`#ff3131`) of the original
-BURMAN LABS wordmark (`public/brand/wordmark.webp`, from `Portfolio/burmanx.png`). Tokens live
+BURMAN LABS wordmark (`public/brand/burmanlabs-wordmark.webp`, from `Portfolio/burmanx.png`, built by `scripts/make-brand.mjs`). Tokens live
 in `app/globals.css` (`ink`, `bone`, `ash`, `signal`, `gold`, …).
 
 - Type: Instrument Serif for display, Inter Tight for UI (Latin), Noto Sans Myanmar for

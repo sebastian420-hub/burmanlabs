@@ -36,12 +36,12 @@ export default function Header({ lang, name, home, links, other }: Props) {
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-5 sm:px-8">
         <Link href={`/${lang}`} aria-label={home} className="group flex items-center gap-2.5">
           <Image
-            src="/logo-mark.png"
+            src="/brand/mark.png"
             alt=""
-            width={30}
-            height={30}
+            width={34}
+            height={34}
             priority
-            className="size-7 opacity-90 transition group-hover:opacity-100"
+            className="size-[34px] transition-transform duration-500 group-hover:-rotate-6"
           />
           <span className="text-[15px] font-semibold tracking-tight">{name}</span>
         </Link>
