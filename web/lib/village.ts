@@ -6,6 +6,8 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import zlib from "node:zlib";
+import { digestOf, parseTrace, type Digest } from "./villageTrace";
 
 const ROOT = path.join(process.cwd(), "public", "village");
 
@@ -86,3 +88,17 @@ export function getPeople(): Person[] {
 
 /** URL the replay loads, relative to the site root. */
 export const traceUrl = (e: EpisodeIndexEntry) => `/village/${e.path}trace.jsonl.gz`;
+
+/**
+ * The episode's poster, cast and chapters, worked out at build time from its
+ * trace, so the page shows the village and its moments before anything
+ * downloads. A few KB in the HTML instead of the 0.3 MB trace.
+ */
+export function getDigest(e: EpisodeIndexEntry): Digest | null {
+  try {
+    const raw = fs.readFileSync(path.join(ROOT, `${e.path}trace.jsonl.gz`));
+    return digestOf(parseTrace(zlib.gunzipSync(raw).toString("utf8")));
+  } catch {
+    return null;
+  }
+}

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Dict } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
 import { num } from "@/lib/i18n";
-import { getIndex, getPeople, traceUrl, type Story } from "@/lib/village";
+import { getDigest, getIndex, getPeople, traceUrl, type Story } from "@/lib/village";
 import { Container, SectionHead, Tag } from "@/components/ui";
 import VillageReplay from "./VillageReplay";
 
@@ -10,10 +10,13 @@ const ROLE_DOT: Record<string, string> = {
   explorer: "#7fb4d8", builder: "#e0a458", gatherer: "#8fbf7f", scholar: "#b99ad6",
 };
 
+/** Map coordinates mean nothing to a reader: "built at (15, 4)" -> "built". */
+const plain = (t: string) => t.replace(/\s*(?:at|to)? \(\d+, \d+\)/g, "");
+
 function factLines(s: Story): string[] {
   const f = s.facts;
   const out: string[] = [];
-  for (const b of f.built ?? []) out.push(`${b.by ? `${b.by} built a ${b.type}` : `A ${b.type} was built`} at (${b.x}, ${b.y}) — ${b.when}`);
+  for (const b of f.built ?? []) out.push(`${b.by ? `${b.by} built a ${b.type}` : `A ${b.type} was built`} — ${b.when}`);
   for (const b of f.born ?? []) out.push(`${b.name} (${b.role}) was born at ${b.house_owner}'s house — ${b.when}`);
   for (const d of f.died ?? []) out.push(`${d.name}: ${d.cause || "died"} — ${d.when}`);
   out.push(`${f.trades_completed} trades completed, ${f.lessons_taught} lessons taught, ${f.goods_sold_at_market} goods sold at market`);
@@ -26,6 +29,7 @@ export default function EpisodeView({ lang, d, story }: { lang: Locale; d: Dict;
   const index = getIndex();
   const latest = index.episodes.at(-1)?.episode === story.episode;
   const people = getPeople();
+  const digest = getDigest(story);
   const date = new Date(`${story.date}T12:00:00`).toLocaleDateString(lang === "my" ? "my-MM" : "en-GB", {
     day: "numeric", month: "short", year: "numeric",
   });
@@ -37,29 +41,20 @@ export default function EpisodeView({ lang, d, story }: { lang: Locale; d: Dict;
           ← {d.item.back}
         </Link>
 
-        <div className="mt-8 grid gap-6 pb-10 md:grid-cols-12 md:items-end">
-          <div className="md:col-span-7">
-            <div className="flex flex-wrap gap-2">
-              <Tag>{d.type.sim}</Tag>
-              <Tag>{d.categories.ai}</Tag>
-              <Tag tone="signal">{v.live}</Tag>
-            </div>
-            <h1 className="display intro mt-5 text-5xl sm:text-7xl">{v.title}</h1>
-          </div>
-          <p className="intro-2 text-lg text-ash md:col-span-5">{v.lead}</p>
-        </div>
-
-        {index.preview && (
-          <p className="mb-6 rounded-2xl border border-gold/40 px-4 py-3 text-sm text-gold">{v.preview}</p>
-        )}
-
-        <div className="mb-6 grid gap-4 md:grid-cols-12 md:items-end">
+        {/* One short header: the village, this episode, and straight into the map. */}
+        <div className="mt-6 mb-6 grid gap-4 md:grid-cols-12 md:items-end">
           <div className="md:col-span-8">
-            <p className="eyebrow num">
-              <span className="text-signal">({latest ? v.latest : v.episode})</span>&nbsp;&nbsp;
-              {v.episode} {num(story.episode, lang)} · {date}
+            <div className="flex flex-wrap items-center gap-2">
+              <Tag>{d.type.sim}</Tag>
+              <Tag tone="signal">{v.live}</Tag>
+              {index.preview && <Tag tone="gold">{v.previewTag}</Tag>}
+            </div>
+            <p className="eyebrow num mt-5">
+              <span className="text-signal">{v.title}</span>&nbsp;&nbsp;·&nbsp;&nbsp;
+              {latest ? `${v.latest} · ` : ""}{v.episode} {num(story.episode, lang)} · {date}
             </p>
-            <h2 className="display t-section mt-3" lang="en">{story.title}</h2>
+            <h1 className="display intro t-section mt-2" lang="en">{story.title}</h1>
+            <p className="intro-2 mt-3 max-w-2xl text-ash">{v.lead}</p>
           </div>
           <div className="flex flex-wrap gap-2 md:col-span-4 md:justify-end">
             <Tag>{num(story.alive, lang)} {v.living}</Tag>
@@ -69,25 +64,21 @@ export default function EpisodeView({ lang, d, story }: { lang: Locale; d: Dict;
           </div>
         </div>
 
-        <VillageReplay
-          url={traceUrl(story)}
-          lang={lang}
-          labels={{
-            start: v.start, startNote: v.startNote, loading: v.loading, failed: v.failed,
-            play: v.play, pause: v.pause, tick: v.tick, day: v.day, tapHint: v.tapHint,
-            thinking: v.thinking, carrying: v.carrying, nothing: v.nothing, feed: v.feed,
-            roles: v.roles,
-          }}
-        />
+        {digest ? (
+          <VillageReplay url={traceUrl(story)} lang={lang} v={v} digest={digest} />
+        ) : (
+          <p className="rounded-2xl border border-line px-4 py-3 text-ash">{v.failed}</p>
+        )}
+        {index.preview && <p className="mt-4 text-xs text-gold">{v.preview}</p>}
       </Container>
 
       <Container className="py-16">
-        <SectionHead index="01" eyebrow={v.story} title={<span lang="en">{story.summary}</span>} />
+        <SectionHead index="01" eyebrow={v.story} title={<span lang="en">{plain(story.summary)}</span>} />
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-7" lang="en">
             {v.englishOnly && <p className="mb-4 text-sm text-gold" lang="my">{v.englishOnly}</p>}
             {story.story.map((p, k) => (
-              <p key={k} className="mb-5 font-serif text-xl leading-relaxed text-bone/90">{p}</p>
+              <p key={k} className="mb-5 font-serif text-xl leading-relaxed text-bone/90">{plain(p)}</p>
             ))}
             <p className="mt-6 border-t border-line pt-4 text-sm text-dim" lang={lang}>
               {story.written_by === "model" ? v.storyModel : v.storyPlain}
