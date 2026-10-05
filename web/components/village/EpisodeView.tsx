@@ -3,7 +3,7 @@ import type { Dict } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
 import { num } from "@/lib/i18n";
 import { getDigest, getIndex, getPeople, traceUrl, type Story } from "@/lib/village";
-import { Container, SectionHead, Tag } from "@/components/ui";
+import { ButtonLink, Container, SectionHead, Tag } from "@/components/ui";
 import VillageReplay from "./VillageReplay";
 
 const ROLE_DOT: Record<string, string> = {
@@ -54,7 +54,12 @@ export default function EpisodeView({ lang, d, story }: { lang: Locale; d: Dict;
               {latest ? `${v.latest} · ` : ""}{v.episode} {num(story.episode, lang)} · {date}
             </p>
             <h1 className="display intro t-section mt-2" lang="en">{story.title}</h1>
-            <p className="intro-2 mt-3 max-w-2xl text-ash">{v.lead}</p>
+            <p className="intro-2 mt-3 max-w-2xl text-ash">
+              {v.lead}{" "}
+              <Link href={`/${lang}/sims/village/research`} className="whitespace-nowrap text-bone underline decoration-line-2 underline-offset-4 hover:decoration-bone">
+                {v.research} →
+              </Link>
+            </p>
           </div>
           <div className="flex flex-wrap gap-2 md:col-span-4 md:justify-end">
             <Tag>{num(story.alive, lang)} {v.living}</Tag>
@@ -132,7 +137,12 @@ export default function EpisodeView({ lang, d, story }: { lang: Locale; d: Dict;
       </Container>
 
       <Container className="pb-16">
-        <SectionHead index="03" eyebrow={v.aboutEyebrow} title={v.aboutTitle} />
+        <SectionHead
+          index="03"
+          eyebrow={v.aboutEyebrow}
+          title={v.aboutTitle}
+          aside={<ButtonLink href={`/${lang}/sims/village/research`} variant="ghost">{v.research}</ButtonLink>}
+        />
         <div className="grid gap-6 md:grid-cols-3">
           {v.about.map((a) => (
             <div key={a.t} className="border-t border-line pt-5">

@@ -72,6 +72,8 @@ hand; fix the engine and publish again.
 | `components/village/EpisodeView.tsx`          | The page: short header, replay, story and record, overheard, villagers, about, archive       |
 | `components/village/VillageReplay.tsx`        | The player: guided playback, camera, key moments, follow a villager, panels                   |
 | `components/village/iso.ts`                   | Drawing only: the angled (isometric) map, buildings, people, night, graves                    |
+| `app/[lang]/sims/village/research/page.tsx`  | The research page: goals, where the project is, findings, how the simulation works, roadmap   |
+| `content/villageResearch.ts`                  | That page's text in English and Burmese. Every number must come from a recorded run          |
 | `dictionaries/{en,my}.ts` → `village`         | All labels, including the key-moment and feed sentences (`moment`, `feedTrade`, …)            |
 | `content/catalog.ts` → `the-village`          | Catalog entry, `mode: "native"`, `target: "village"`                                         |
 

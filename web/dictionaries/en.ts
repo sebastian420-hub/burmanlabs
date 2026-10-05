@@ -135,6 +135,7 @@ const en: typeof my = {
     start: "Watch the episode",
     startNote: "The replay (about 0.3 MB) downloads only when you press play.",
     speed: "Speed",
+    research: "Read the research",
     chapters: "Key moments",
     nextMoment: "Next moment",
     whole: "Whole village",
