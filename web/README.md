@@ -81,6 +81,12 @@ To add a native sim: create `components/<Name>Sim.tsx`, a page under
 `app/[lang]/sims/<slug>/page.tsx`, add the dynamic import to `components/warm.ts` (so it is
 saved for offline), and a catalog row with `mode: "native"`.
 
+## The Village
+
+`/{lang}/sims/village` shows the daily AI village from the `digital_sim` repo, which
+publishes each episode into `public/village/`. How it fits together, how to publish an
+episode and what each file holds: [`docs/village.md`](docs/village.md).
+
 ## Language and Burmese text
 
 - Copy lives in `dictionaries/my.ts` and `dictionaries/en.ts` (English is typed from Burmese,
