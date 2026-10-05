@@ -43,22 +43,22 @@ export default function Header({ lang, name, home, links, other }: Props) {
             priority
             className="size-7 opacity-90 transition group-hover:opacity-100"
           />
-          <span className="text-[15px] font-semibold tracking-tight">{name}</span>
+          <span className="hidden text-[15px] font-semibold tracking-tight min-[400px]:inline">{name}</span>
         </Link>
 
-        <nav className="ml-auto flex items-center gap-1 text-sm">
+        <nav className="ml-auto flex items-center gap-0.5 text-sm whitespace-nowrap sm:gap-1">
           {links.map((l) => {
             const active = pathname.startsWith(l.href);
             return (
               <Link
                 key={l.href}
                 href={l.href}
-                className={`relative rounded-full px-3 py-1.5 transition-colors ${
+                className={`relative rounded-full px-2 py-1.5 transition-colors sm:px-3 ${
                   active ? "text-bone" : "text-ash hover:text-bone"
                 }`}
               >
                 {l.label}
-                {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-signal" />}
+                {active && <span className="absolute inset-x-2 -bottom-0.5 h-px bg-signal sm:inset-x-3" />}
               </Link>
             );
           })}

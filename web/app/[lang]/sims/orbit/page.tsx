@@ -26,7 +26,7 @@ export default async function OrbitPage({ params }: PageProps<"/[lang]/sims/orbi
       <div className="mt-8 grid gap-6 pb-10 md:grid-cols-12 md:items-end">
         <div className="md:col-span-7">
           <div className="flex flex-wrap gap-2">
-            <Tag>{type.sim}</Tag>
+            <Tag>{type.app}</Tag>
             <Tag>{categories.science}</Tag>
             <Tag tone="gold">{item.offline}</Tag>
           </div>

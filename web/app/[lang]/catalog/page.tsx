@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { catalog, categoryIds, itemHref } from "@/content/catalog";
+import { catalog, categoryIds, itemHref, itemTypes } from "@/content/catalog";
 import { getDictionary } from "@/lib/dictionaries";
 import { hasLocale, num } from "@/lib/i18n";
 import CatalogBrowser from "@/components/CatalogBrowser";
-import Cover from "@/components/Cover";
+import Cover, { coverArt } from "@/components/Cover";
 import { Container } from "@/components/ui";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/catalog">): Promise<Metadata> {
@@ -32,8 +32,9 @@ export default async function CatalogPage({ params }: PageProps<"/[lang]/catalog
     sizeLabel: i.sizeMB ? `~${num(i.sizeMB, lang)} MB` : undefined,
     offline: !!i.offline,
     soon: i.mode === "soon",
-    sample: !!i.sample,
-    cover: <Cover id={i.id} type={i.type} className="h-full w-full" />,
+    statusLabel: d.status[i.status],
+    live: i.status === "live",
+    cover: <Cover id={i.id} art={coverArt(i)} className="h-full w-full" />,
   }));
 
   return (
@@ -52,7 +53,7 @@ export default async function CatalogPage({ params }: PageProps<"/[lang]/catalog
           items={items}
           digits={lang}
           categories={categoryIds.map((id) => ({ id, label: d.categories[id] }))}
-          types={(["textbook", "app", "sim"] as const).map((id) => ({ id, label: d.typePlural[id] }))}
+          types={itemTypes.map((id) => ({ id, label: d.typePlural[id] }))}
           labels={{
             search: d.catalog.search,
             searchLabel: d.catalog.searchLabel,
@@ -64,7 +65,6 @@ export default async function CatalogPage({ params }: PageProps<"/[lang]/catalog
             zawgyi: d.catalog.zawgyi,
             offline: d.item.offline,
             soon: d.item.soon,
-            sample: d.item.sample,
           }}
         />
       </Suspense>

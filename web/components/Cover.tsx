@@ -1,8 +1,14 @@
-import type { ItemType } from "@/content/catalog";
+import type { CatalogItem } from "@/content/catalog";
+
+export type CoverArt = NonNullable<CatalogItem["art"]>;
+
+/** An item's cover style: its own, or one that suits its kind. */
+export const coverArt = (i: Pick<CatalogItem, "art" | "type">): CoverArt =>
+  i.art ?? (i.type === "learning" ? "lines" : i.type === "app" ? "tiles" : "orbits");
 
 /**
  * Generative cover art for a catalog item: deterministic from its id, pure SVG, zero
- * requests. Textbooks get lines of "text", apps a grid of tiles, simulations orbits.
+ * requests. "lines" is a page of text, "tiles" an app grid, "orbits" a simulation.
  * Swap in a real image later by giving the item a cover.
  */
 function rng(seed: string) {
@@ -20,16 +26,16 @@ function rng(seed: string) {
 const BONE = "#f2efe9";
 const RED = "#ff3131";
 
-export default function Cover({ id, type, className = "" }: { id: string; type: ItemType; className?: string }) {
+export default function Cover({ id, art, className = "" }: { id: string; art: CoverArt; className?: string }) {
   const r = rng(id);
   const W = 400;
   const H = 260;
-  let art: React.ReactNode;
+  let shapes: React.ReactNode;
 
-  if (type === "textbook") {
+  if (art === "lines") {
     const lines = 9;
     const mark = Math.floor(r() * lines);
-    art = (
+    shapes = (
       <g>
         {Array.from({ length: lines }, (_, i) => {
           const y = 52 + i * 19;
@@ -50,11 +56,11 @@ export default function Cover({ id, type, className = "" }: { id: string; type: 
         <rect x={W - 70} y={0} width={14} height={60 + r() * 40} fill={RED} />
       </g>
     );
-  } else if (type === "app") {
+  } else if (art === "tiles") {
     const cols = 6;
     const rows = 4;
     const hot = Math.floor(r() * cols * rows);
-    art = (
+    shapes = (
       <g>
         {Array.from({ length: cols * rows }, (_, i) => {
           const c = i % cols;
@@ -82,7 +88,7 @@ export default function Cover({ id, type, className = "" }: { id: string; type: 
     const rings = 5;
     const which = 1 + Math.floor(r() * (rings - 1));
     const tilt = -20 + r() * 40;
-    art = (
+    shapes = (
       <g transform={`rotate(${tilt} ${cx} ${cy})`}>
         {Array.from({ length: rings }, (_, i) => {
           const rx = 34 + i * 34;
@@ -106,7 +112,7 @@ export default function Cover({ id, type, className = "" }: { id: string; type: 
       role="presentation"
     >
       <rect width={W} height={H} fill="#131211" />
-      {art}
+      {shapes}
     </svg>
   );
 }

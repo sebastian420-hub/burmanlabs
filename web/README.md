@@ -1,6 +1,7 @@
 # Burmanlabs web
 
-Free, lean, Burmese-first site for interactive textbooks, apps and simulations.
+Zwe's personal lab: apps built for people who need them, my own research and experiments,
+what I'm learning on the way to robotics, and the original art studio. Lean and Burmese-first.
 Next.js (App Router) + Tailwind v4 + three.js. Burmese (`/my`) and English (`/en`).
 
 ```bash
@@ -58,21 +59,32 @@ The **archive** (`public/archive/`) serves the original Earth & Moon, the two ne
 visualizers and the technical analysis guide unchanged. They load three.js / TensorFlow from
 public CDNs, so they need internet. Earth's 8K textures were reduced to 2K (~1 MB total).
 
-## Adding to the catalog
+## Adding work
 
-Everything is driven by one list: `content/catalog.ts`. Add an item and the landing-page
-counts, the globe lights, search and the item page all update.
+Everything is driven by one list: `content/catalog.ts`. Add an item and the home page
+sections and counts, the globe lights, "All work", search and the item page all update.
+**Only real work goes in the list** (no placeholders).
+
+Each item has a `type` (what it is) and a `status` (where it stands):
+
+| `type`     | Home section             | Meaning                                         |
+| ---------- | ------------------------ | ----------------------------------------------- |
+| `app`      | Apps                     | Working software people use                     |
+| `research` | Research & experiments   | An experiment of my own, with findings          |
+| `learning` | Learning                 | Something I'm learning, usually by building it  |
+
+`status` is `live`, `ongoing` or `learning`. `stack` lists the tools it's built with, and
+`art` picks the generative cover (`lines`, `tiles`, `orbits`).
 
 | `mode`   | Behaviour                                                              |
 | -------- | ---------------------------------------------------------------------- |
-| `link`   | Opens the product's own site in a new tab.                             |
+| `link`   | Opens the product's own site (or App Store page) in a new tab.         |
 | `embed`  | Tap-to-load iframe. The product must allow framing (`frame-ancestors`). |
-| `native` | A page in this site at `/{lang}/sims/{target}` (three.js sims).        |
-| `soon`   | Listed, not launchable.                                                |
+| `native` | A page in this site at `/{lang}/sims/{target}`.                        |
+| `soon`   | Real, but no public link yet ("Link coming soon").                     |
 
-Entries marked `sample: true` are placeholders and show a "Sample" tag, and the landing page
-says how many there are. Delete them as real items arrive. `spikebook` has a guessed
-category: confirm it.
+The Golf Handicap app is `soon` until its App Store or download link is added: set
+`target` to the URL and `mode: "link"`.
 
 To add a Studio piece: add it to `content/studio.ts`, put the component in `components/art/`,
 register it in `components/ArtStage.tsx` and `components/warm.ts`, and add a poster.
@@ -120,15 +132,12 @@ episode and what each file holds: [`docs/village.md`](docs/village.md).
 
 Copy `.env.example` to `.env.local`.
 
-- `NEXT_PUBLIC_REQUEST_URL`: Messenger / Telegram / Viber / form link for the
-  "tell us what you need" page. The nav link stays hidden until this is set.
 - `NEXT_PUBLIC_CONTACT_EMAIL`: footer contact. Defaults to the address on the original
   portfolio (`lib/site.ts`).
 
 ## Not in this version
 
-- No accounts and no payments: everything is free. The catalog and gating are structured so
-  login could be added later without rewriting pages.
+- No accounts and no payments.
 - Wallet (KBZPay / Wave) and card payments were intentionally dropped for now.
 
 ## Test on real phones before launch

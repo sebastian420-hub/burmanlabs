@@ -1,12 +1,25 @@
 import type { Locale } from "@/lib/i18n";
 
-export type ItemType = "textbook" | "app" | "sim";
-export type CategoryId = "science" | "math" | "ai" | "tools";
+/**
+ * What a piece of work is:
+ * app      – working software people use (built for them, or for clients)
+ * research – an experiment of my own, with findings
+ * learning – something I am learning, usually by building it
+ */
+export type ItemType = "app" | "research" | "learning";
+export const itemTypes: ItemType[] = ["app", "research", "learning"];
+
+export type CategoryId = "ai" | "science" | "hardware" | "everyday";
+export const categoryIds: CategoryId[] = ["ai", "science", "hardware", "everyday"];
+
+/** Where it stands. Shown as a tag on cards and item pages. */
+export type Status = "live" | "ongoing" | "learning";
+
 /**
  * link   – opens the product's own site in a new tab
  * embed  – tap-to-load iframe (the product must allow framing)
  * native – a page inside this site, at /{lang}/sims/{slug}
- * soon   – listed but not launchable yet
+ * soon   – real, but no public link yet
  */
 export type LaunchMode = "link" | "embed" | "native" | "soon";
 
@@ -14,45 +27,94 @@ export interface CatalogItem {
   id: string;
   type: ItemType;
   category: CategoryId;
+  status: Status;
   title: Record<Locale, string>;
   summary: Record<Locale, string>;
   mode: LaunchMode;
-  /** External URL for link/embed, or the sim slug for native. */
+  /** External URL for link/embed, or the page slug for native. */
   target?: string;
+  /** Tools it is built with, shown as small tags. */
+  stack?: string[];
+  /** Generative cover style; defaults by type. */
+  art?: "lines" | "tiles" | "orbits";
   /** Rough data cost of opening it, in MB. */
   sizeMB?: number;
   /** True when the item keeps working after it has been opened once. */
   offline?: boolean;
-  /** Placeholder entry. Delete these as the real catalog is filled in. */
-  sample?: boolean;
 }
 
-export const categoryIds: CategoryId[] = ["science", "math", "ai", "tools"];
-
 /**
- * THE CATALOG. This is the single source of truth: the landing-page counts, the
- * globe lights, search and item pages are all built from this list. Add a row
- * and the whole site updates.
+ * EVERYTHING ON THE SITE. The home page, the globe lights, "All work", search and
+ * item pages are built from this list. Only real work goes here.
  */
 export const catalog: CatalogItem[] = [
   {
-    id: "spikebook",
-    type: "textbook",
+    // digital_sim's daily world, native here: /{lang}/sims/village reads the
+    // episodes the daily runner publishes into public/village/.
+    id: "the-village",
+    type: "research",
+    category: "ai",
+    status: "ongoing",
+    title: { my: "AI ကျေးရွာ", en: "The Village" },
+    summary: {
+      my: "AI အေးဂျင့်များ နေထိုင်သော ကျေးရွာတစ်ရွာ။ မည်သူမျှ မညွှန်ကြားဘဲ လူ့အဖွဲ့အစည်း ပေါ်လာမလား။ နေ့စဉ် ဆက်လည်ပတ်ပြီး ဘာဖြစ်ခဲ့သည်ကို ကြည့်နိုင်သည်။",
+      en: "A village of AI agents that nobody steers. Does a society form on its own? The world runs on every day, and you can watch what happened.",
+    },
+    mode: "native",
+    target: "village",
+    stack: ["Python", "LLM agents", "Gemini"],
+    art: "orbits",
+    sizeMB: 0.4,
+  },
+  {
+    id: "golf-handicap",
+    type: "app",
+    category: "everyday",
+    status: "live",
+    title: { my: "Golf Handicap", en: "Golf Handicap" },
+    summary: {
+      my: "ဂေါက်သမားများ၏ handicap ကို မှတ်သားပေးသော မိုဘိုင်းအက်ပ်။",
+      en: "A mobile app that keeps track of a golfer's handicap.",
+    },
+    // Add the App Store or download URL as `target` and set mode: "link".
+    mode: "soon",
+    art: "tiles",
+  },
+  {
+    id: "edusim",
+    type: "app",
     category: "science",
+    status: "live",
+    title: { my: "EduSim", en: "EduSim" },
+    summary: {
+      my: "GPU ပေါ်တွင် WebGPU ဖြင့် လည်ပတ်သော ရူပဗေဒ၊ ဇီဝဗေဒနှင့် ကွန်ပျူတာသိပ္ပံ အပြန်အလှန် စမ်းသပ်မှုများ။",
+      en: "Interactive physics, biology and computer-science simulations that run on your GPU with WebGPU.",
+    },
+    mode: "link",
+    target: "https://edusim-theta.vercel.app/",
+    stack: ["WebGPU"],
+    art: "orbits",
+  },
+  {
+    id: "spikebook",
+    type: "learning",
+    category: "hardware",
+    status: "learning",
     title: { my: "Spikebook", en: "Spikebook" },
     summary: {
-      my: "အပြန်အလှန်ဆက်သွယ်နိုင်သော ဖတ်စာအုပ်။",
-      en: "An interactive textbook.",
+      my: "Neuromorphic ချစ်ပ် ဒီဇိုင်းအကြောင်း အပြန်အလှန် စာအုပ်။ လေ့လာရင်း ကိုယ်တိုင် တည်ဆောက်ထားသည် — ကိုယ်တိုင်ပျံသန်းနိုင်သော ဒရုန်း တည်ဆောက်ရန် ပထမခြေလှမ်း။",
+      en: "An interactive book on neuromorphic chip design, built while I learn it: the first step toward building an autonomous drone.",
     },
     mode: "link",
     target: "https://spikebook.vercel.app",
-    // category, size and offline are guesses: confirm them.
-    sample: true,
+    stack: ["Neuromorphic computing"],
+    art: "lines",
   },
   {
     id: "orbit",
-    type: "sim",
+    type: "app",
     category: "science",
+    status: "live",
     title: { my: "ဂြိုဟ်လှည့်ပတ်မှု စမ်းသပ်ခန်း", en: "Orbit lab" },
     summary: {
       my: "နေ၏ ဆွဲအားအောက်တွင် ဂြိုဟ်တစ်လုံး ဘယ်လိုလှည့်ပတ်သည်ကို စမ်းကြည့်ပါ။",
@@ -60,61 +122,14 @@ export const catalog: CatalogItem[] = [
     },
     mode: "native",
     target: "orbit",
+    stack: ["three.js"],
+    art: "orbits",
     sizeMB: 0.3,
     offline: true,
   },
-  {
-    id: "edusim",
-    type: "sim",
-    category: "science",
-    title: { my: "EduSim", en: "EduSim" },
-    summary: {
-      my: "GPU ကို အသုံးပြု၍ ဖန်တီးထားသော အပြန်အလှန်ဆက်သွယ်နိုင်သော သိပ္ပံစမ်းသပ်မှုများ။",
-      en: "Interactive physics, biology and computer-science simulations that run on your GPU with WebGPU.",
-    },
-    mode: "link",
-    target: "https://edusim-theta.vercel.app/",
-  },
-  {
-    // digital_sim's daily world, native here: /{lang}/sims/village reads the
-    // episodes the daily runner publishes into public/village/.
-    // Burmese text: please have a native speaker check it.
-    id: "the-village",
-    type: "sim",
-    category: "ai",
-    title: { my: "AI ကျေးရွာ", en: "The Village" },
-    summary: {
-      my: "AI အေးဂျင့်များ နေထိုင်သော ကျေးရွာတစ်ရွာ။ နေ့စဉ် ကမ္ဘာက ဆက်လက်လည်ပတ်ပြီး ဘာဖြစ်ခဲ့သည်ကို ပြန်ကြည့်နိုင်သည်။",
-      en: "A village of AI agents that lives one day at a time. Every day the world runs on, and you can watch what happened.",
-    },
-    mode: "native",
-    target: "village",
-    sizeMB: 0.4,
-  },
-  ...(
-    [
-      ["math-textbook", "textbook", "math", "သင်္ချာ ဖတ်စာအုပ်", "Mathematics textbook"],
-      ["physics-sim", "sim", "science", "ရူပဗေဒ စမ်းသပ်မှု", "Physics simulation"],
-      ["chem-sim", "sim", "science", "ဓာတုဗေဒ စမ်းသပ်မှု", "Chemistry simulation"],
-      ["bio-textbook", "textbook", "science", "ဇီဝဗေဒ ဖတ်စာအုပ်", "Biology textbook"],
-      ["ai-basics", "textbook", "ai", "AI အခြေခံ ဖတ်စာအုပ်", "AI basics textbook"],
-      ["stat-sim", "sim", "math", "ဖြစ်နိုင်ခြေ စမ်းသပ်မှု", "Probability simulation"],
-      ["tools-converter", "app", "tools", "ယူနစ်ပြောင်းအက်ပ်", "Unit converter"],
-      ["tools-planner", "app", "tools", "လေ့လာရေး အချိန်ဇယား", "Study planner"],
-      ["tools-calc", "app", "tools", "တွက်ချက်ရေး အက်ပ်", "Calculator app"],
-    ] as const
-  ).map(
-    ([id, type, category, my, en]): CatalogItem => ({
-      id,
-      type,
-      category,
-      title: { my, en },
-      summary: { my: "မကြာမီ ရောက်လာမည်။", en: "Coming soon." },
-      mode: "soon",
-      sample: true,
-    }),
-  ),
 ];
+
+export const byType = (t: ItemType) => catalog.filter((i) => i.type === t);
 
 export const getItem = (id: string) => catalog.find((i) => i.id === id);
 

@@ -44,7 +44,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   const links = [
     { href: `/${lang}/catalog`, label: dict.nav.catalog },
     { href: `/${lang}/studio`, label: dict.nav.studio },
-    ...(site.requestUrl ? [{ href: `/${lang}/request`, label: dict.nav.request }] : []),
+    { href: `/${lang}#about`, label: dict.nav.about },
   ];
 
   return (

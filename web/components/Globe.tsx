@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { LAND_B64, LAND_H, LAND_W } from "@/lib/landMask";
 
-export type GlobeItem = { id: string; type: "textbook" | "app" | "sim" };
+export type GlobeItem = { id: string; type: "app" | "research" | "learning" };
 
 interface Props {
   items: GlobeItem[];
@@ -15,9 +15,9 @@ interface Props {
 // Myanmar (Naypyidaw-ish): the globe always settles facing here.
 const HOME = { lat: 21.5, lon: 96 };
 const TYPE_COLOR: Record<GlobeItem["type"], string> = {
-  textbook: "#f2efe9",
+  learning: "#f2efe9",
   app: "#c9a45c",
-  sim: "#ff3131",
+  research: "#ff3131",
 };
 
 const rad = (d: number) => (d * Math.PI) / 180;

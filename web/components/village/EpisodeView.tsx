@@ -45,7 +45,7 @@ export default function EpisodeView({ lang, d, story }: { lang: Locale; d: Dict;
         <div className="mt-6 mb-6 grid gap-4 md:grid-cols-12 md:items-end">
           <div className="md:col-span-8">
             <div className="flex flex-wrap items-center gap-2">
-              <Tag>{d.type.sim}</Tag>
+              <Tag>{d.type.research}</Tag>
               <Tag tone="signal">{v.live}</Tag>
               {index.preview && <Tag tone="gold">{v.previewTag}</Tag>}
             </div>

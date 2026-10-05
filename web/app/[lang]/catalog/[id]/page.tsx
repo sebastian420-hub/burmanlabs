@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { catalog, getItem } from "@/content/catalog";
 import { getDictionary } from "@/lib/dictionaries";
 import { hasLocale, locales, num } from "@/lib/i18n";
-import Cover from "@/components/Cover";
+import Cover, { coverArt } from "@/components/Cover";
 import EmbedFrame from "@/components/EmbedFrame";
 import { ButtonLink, Container, Tag } from "@/components/ui";
 
@@ -32,10 +32,10 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
 
   const facts: [string, string][] = [
     [d.item.type, d.type[item.type]],
+    [d.item.status, d.status[item.status]],
     [d.item.subject, d.categories[item.category]],
-    [d.item.access, d.item.free],
-    [d.item.size, item.sizeMB ? `~${num(item.sizeMB, lang)} MB` : "—"],
-    ["", item.offline ? d.item.offline : d.item.online],
+    ...(item.stack?.length ? [[d.item.stack, item.stack.join(" · ")] as [string, string]] : []),
+    ...(item.sizeMB ? [[d.item.size, `~${num(item.sizeMB, lang)} MB`] as [string, string]] : []),
   ];
 
   return (
@@ -48,14 +48,14 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
         <div className="mt-8 grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <div className="intro relative aspect-[400/260] overflow-hidden rounded-3xl border border-line">
-              <Cover id={item.id} type={item.type} className="h-full w-full" />
+              <Cover id={item.id} art={coverArt(item)} className="h-full w-full" />
             </div>
           </div>
 
           <div className="flex flex-col lg:col-span-5">
             <div className="flex flex-wrap gap-2">
               <Tag>{d.type[item.type]}</Tag>
-              {item.sample && <Tag tone="signal">{d.item.sample}</Tag>}
+              <Tag tone={item.status === "live" ? "gold" : "signal"}>{d.status[item.status]}</Tag>
             </div>
             <h1 className="display intro-2 mt-5 text-5xl sm:text-6xl">{item.title[lang]}</h1>
             <p className="intro-3 mt-5 text-lg text-ash">{item.summary[lang]}</p>

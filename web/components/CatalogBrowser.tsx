@@ -18,7 +18,8 @@ export interface BrowserItem {
   sizeLabel?: string;
   offline: boolean;
   soon: boolean;
-  sample: boolean;
+  statusLabel: string;
+  live: boolean;
   cover: React.ReactNode;
 }
 
@@ -37,7 +38,6 @@ interface Props {
     zawgyi: string;
     offline: string;
     soon: string;
-    sample: string;
   };
   digits: "my" | "en";
 }
@@ -110,14 +110,14 @@ export default function CatalogBrowser({ items, categories, types, labels, digit
               <Link href={it.href} className="group block">
                 <div
                   className={`relative aspect-[400/260] overflow-hidden rounded-2xl border border-line transition duration-500 group-hover:border-line-2 ${
-                    it.soon ? "opacity-60" : ""
+                    it.soon ? "opacity-80" : ""
                   }`}
                 >
                   <div className="h-full w-full transition duration-700 group-hover:scale-[1.04]">{it.cover}</div>
                   <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                    <Pill tone={it.live ? undefined : "signal"}>{it.statusLabel}</Pill>
                     {it.soon && <Pill>{labels.soon}</Pill>}
                     {it.offline && <Pill>{labels.offline}</Pill>}
-                    {it.sample && <Pill tone="signal">{labels.sample}</Pill>}
                   </div>
                 </div>
                 <div className="mt-4">
