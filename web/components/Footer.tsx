@@ -40,15 +40,15 @@ export default function Footer({ lang, labels, links, email }: Props) {
         </div>
       </div>
 
-      {/* The original Burmanlabs wordmark, set large. */}
-      <div className="mx-auto mt-20 max-w-7xl px-5 sm:px-8">
+      {/* The original Burmanlabs wordmark. */}
+      <div className="mx-auto mt-16 max-w-7xl border-t border-line px-5 pt-14 sm:px-8">
         <Image
-          src="/brand/wordmark.webp"
+          src="/brand/burmanlabs-wordmark.webp"
           alt="Burman Labs"
-          width={1100}
-          height={490}
-          sizes="(min-width: 1280px) 1200px, 100vw"
-          className="mx-auto h-auto w-full max-w-5xl opacity-95"
+          width={900}
+          height={401}
+          sizes="(min-width: 640px) 280px, 200px"
+          className="mx-auto h-auto w-[200px] opacity-90 sm:w-[280px]"
         />
       </div>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-8 text-xs text-dim sm:px-8">

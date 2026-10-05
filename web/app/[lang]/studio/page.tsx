@@ -23,15 +23,15 @@ export default async function StudioPage({ params }: PageProps<"/[lang]/studio">
         <Container className="flex min-h-[70svh] flex-col justify-center py-20 text-center">
           <p className="eyebrow intro">{studio.eyebrow}</p>
           <Image
-            src="/brand/wordmark.webp"
+            src="/brand/burmanlabs-wordmark.webp"
             alt="Burman Labs"
-            width={1100}
-            height={490}
+            width={900}
+            height={401}
             priority
-            sizes="(min-width: 1024px) 820px, 92vw"
-            className="intro-2 mx-auto mt-6 h-auto w-full max-w-[820px]"
+            sizes="(min-width: 640px) 420px, 260px"
+            className="intro-2 mx-auto mt-8 h-auto w-[260px] sm:w-[420px]"
           />
-          <h1 className="display intro-3 mx-auto mt-4 max-w-3xl text-3xl sm:text-5xl">{studio.title}</h1>
+          <h1 className="display intro-3 mx-auto mt-10 max-w-3xl text-3xl sm:text-5xl">{studio.title}</h1>
           <p className="intro-3 mx-auto mt-6 max-w-xl text-ash">{studio.artist}</p>
         </Container>
       </section>
