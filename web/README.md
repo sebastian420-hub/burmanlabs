@@ -103,8 +103,12 @@ Each item has a `type` (what it is) and a `status` (where it stands):
 | `native` | A page in this site at `/{lang}/sims/{target}`.                        |
 | `soon`   | Real, but no public link yet ("Link coming soon").                     |
 
-The Golf Handicap app is `soon` until its App Store or download link is added: set
-`target` to the URL and `mode: "link"`.
+`category` is the topic filter on All work: `ai`, `science`, `hardware`, `art`, `everyday`.
+
+Gentlemen (golf handicap), Cortex and Artcodex are `soon` until their store, package or
+site links exist: set `target` to the URL and `mode: "link"`. Their screenshots in
+`public/work/` were captured from the real products (the Expo web export, the editor on the
+`editor-only` branch, and a recorded Cortex session rendered through xterm.js).
 
 To add a Studio piece: add it to `content/studio.ts`, put the component in `components/art/`,
 register it in `components/ArtStage.tsx` and `components/warm.ts`, and add a poster.

@@ -11,8 +11,8 @@ type L = Record<Locale, string>;
 export type ItemType = "app" | "research" | "learning";
 export const itemTypes: ItemType[] = ["app", "research", "learning"];
 
-export type CategoryId = "ai" | "science" | "hardware" | "everyday";
-export const categoryIds: CategoryId[] = ["ai", "science", "hardware", "everyday"];
+export type CategoryId = "ai" | "science" | "hardware" | "art" | "everyday";
+export const categoryIds: CategoryId[] = ["ai", "science", "hardware", "art", "everyday"];
 
 /** Where it stands. Shown as a tag on cards and item pages. */
 export type Status = "live" | "ongoing" | "learning";
@@ -102,28 +102,31 @@ export const catalog: CatalogItem[] = [
     sizeMB: 0.4,
   },
   {
+    // Product name "Gentlemen". Monorepo: Expo app + Fastify API + handicap engine.
     id: "golf-handicap",
     code: "BL-002",
     type: "app",
     category: "everyday",
-    status: "live",
+    status: "ongoing",
     role: "build",
     year: 2026, // confirm
-    title: { my: "Golf Handicap", en: "Golf Handicap" },
+    title: { my: "Gentlemen Handicap", en: "Gentlemen golf handicap" },
     summary: {
-      my: "ဂေါက်သမားများ၏ handicap ကို မှတ်သားပေးသော မိုဘိုင်းအက်ပ်။",
-      en: "A mobile app that keeps track of a golfer's handicap.",
+      my: "မြန်မာ ဂေါက်သီးအသင်းများအတွက် handicap အက်ပ် — ပွဲတစ်ပွဲ ထည့်ပါ၊ အတူကစားသူက အတည်ပြုပါ၊ handicap ကို အလိုအလျောက် တွက်ပေးသည်။",
+      en: "A handicap app for Myanmar's golf societies: post a round, a partner confirms it, the handicap updates itself.",
     },
     about: {
-      my: "ရမှတ်များကို ထည့်သွင်းပြီး handicap ကို အလိုအလျောက် တွက်ချက်ပေးသော မိုဘိုင်းအက်ပ်။ ကွင်းထဲတွင် တစ်လက်တည်းဖြင့် သုံးနိုင်အောင် ဒီဇိုင်းထုတ်ထားသည်။",
-      en: "A mobile app for golfers: enter rounds, and it keeps the handicap current. Designed to be used one-handed, on the course.",
+      my: "မြန်မာနိုင်ငံရှိ အသင်းပွဲများနှင့် သီးသန့်ပွဲများအတွက် WHS ပုံစံ တရားဝင်မဟုတ်သော handicap။ ဖုန်းနံပါတ်ဖြင့် ဝင်ပြီး ကွင်းနှင့် တီးကို ရွေး၊ ပွဲကို တွင်းတစ်တွင်းချင်း ထည့်၊ အတူကစားသူက အတည်ပြုသည်။ ပွဲများကို ဖုန်းထဲတွင် သိမ်းပြီး နောက်မှ sync လုပ်ကာ handicap ကို အပတ်စဉ် ပြန်တွက်သည်။ ကွင်းစာရင်းတွင် မြန်မာ ကလပ်များ ပါဝင်ပြီး ကွင်းတစ်ခုချင်း၏ အချက်အလက် ပြည့်စုံမှုကို ပြထားသည်။",
+      en: "An unofficial, WHS-style handicap for society games and private events in Myanmar. Sign in with a phone number, pick the course and tees, enter the round hole by hole, and the person you played with confirms it. Rounds save on the phone and sync later, and the handicap recalculates every week. The course directory covers Myanmar's clubs, each marked by how complete its scorecard data is.",
     },
     standing: {
-      my: "အသုံးပြုနိုင်ပြီ။ အများပြည်သူ လင့်ခ်ကို မကြာမီ ထည့်ပါမည်။",
-      en: "Live with its users. A public link is coming.",
+      my: "ဂေါက်သီးအသင်းတစ်သင်းနှင့် iPhone/Android တွင် သီးသန့် စမ်းသပ်နေသည်။ ကွင်းအချက်အလက်များကို ကလပ်တစ်ခုချင်း စစ်ဆေးပြီးမှ အများသုံး ထုတ်ပါမည်။",
+      en: "In a private test with one golf society, on iPhone and Android. A public release follows once the course data is verified club by club.",
     },
-    // Add the App Store or download URL as `target` and set mode: "link".
+    // Add the store or download link as `target` and set mode: "link".
     mode: "soon",
+    stack: ["TypeScript", "Expo", "Fastify", "Postgres"],
+    shot: "golf-handicap",
     art: "tiles",
   },
   {
@@ -206,6 +209,60 @@ export const catalog: CatalogItem[] = [
     art: "orbits",
     sizeMB: 0.3,
     offline: true,
+  },
+  {
+    // Terminal agent. Private repo for now; add the install link as `target`, mode: "link".
+    id: "cortex",
+    code: "BL-006",
+    type: "app",
+    category: "ai",
+    status: "live",
+    role: "build",
+    year: 2026, // confirm
+    title: { my: "Cortex", en: "Cortex" },
+    summary: {
+      my: "ကုဒ်ရေးခြင်း၊ လုံခြုံရေးလုပ်ငန်းနှင့် နေ့စဉ်အလုပ်များအတွက် terminal AI အေးဂျင့် — မည်သည့် model နှင့်မဆို။",
+      en: "A terminal agent for coding, security work and everyday tasks, with any model behind it.",
+    },
+    about: {
+      my: "ပရောဂျက်ထဲတွင် တိုက်ရိုက် အလုပ်လုပ်သော command-line အေးဂျင့်။ ကုဒ်ကို ဖတ်၊ အစီအစဉ်ချ၊ ကိရိယာများ သုံးပြီး အန္တရာယ်ရှိနိုင်သည့်အရာ မလုပ်မီ မေးသည်။ Model ကို ကိုယ်တိုင်ရွေးနိုင်သည် — Ollama ဖြင့် စက်ထဲတွင်၊ သို့မဟုတ် OpenAI၊ Anthropic၊ DeepSeek၊ OpenRouter တို့မှ။ Session များကို သိမ်းပြီး နောက်မှ ဆက်လုပ်နိုင်သည်။ ပရောဂျက်အကြောင်း သင်ယူထားသည်များကို မှတ်ထားသော memory နှင့် ဖတ်ရုံသာ လုပ်သည့် plan mode ပါဝင်သည်။",
+      en: "A command-line agent that works inside your project: it reads the code, plans, runs tools and asks before anything risky. The model is yours to choose, local through Ollama or hosted through OpenAI, Anthropic, DeepSeek or OpenRouter, and sessions can be saved and picked up later. Optional layered memory keeps what it learned about a project, and a plan mode works read-only.",
+    },
+    standing: {
+      my: "ဗားရှင်း 1.2 ကို ကိုယ်တိုင် နေ့စဉ် သုံးနေသည်။ တပ်ဆင်ရန် package ကို မကြာမီ ထည့်ပါမည်။",
+      en: "Version 1.2 runs daily as my own tool. A package to install is coming.",
+    },
+    mode: "soon",
+    stack: ["Python", "LLM agents", "Ollama"],
+    shot: "cortex",
+    art: "lines",
+  },
+  {
+    // Browser 3D editor (React + three.js) with a Django API for accounts.
+    id: "artcodex",
+    code: "BL-007",
+    type: "app",
+    category: "art",
+    status: "live",
+    role: "build",
+    year: 2025,
+    title: { my: "Artcodex", en: "Artcodex" },
+    summary: {
+      my: "ဘရောက်ဇာထဲမှ 3D တည်းဖြတ်ကိရိယာ — ပုံသဏ္ဌာန်များ၊ အသင့်သုံး material များ၊ အလင်းအမှန်၊ ပုံ သို့မဟုတ် .glb အဖြစ် ထုတ်ယူနိုင်သည်။",
+      en: "A 3D editor in the browser: shapes, ready-made materials, real lighting, render to an image or a .glb.",
+    },
+    about: {
+      my: "ဘာမှ တပ်ဆင်စရာမလိုဘဲ ဘရောက်ဇာထဲတွင် လည်ပတ်သော scene တည်းဖြတ်ကိရိယာ။ အခြေခံပုံများဖြင့် တည်ဆောက်ပါ သို့မဟုတ် .glb၊ .fbx၊ .obj model များ ထည့်သွင်းပါ။ Material ၂၄ မျိုး (ရွှေ၊ ဖန်၊ ကားဆေး၊ ကတ္တီပါ၊ နီယွန်) ကို အရာဝတ္ထုပေါ် တစ်ချက်နှိပ်ရုံ၊ studio သို့မဟုတ် HDR ပတ်ဝန်းကျင်ဖြင့် အလင်းပေး၊ glow၊ focus blur နှင့် vignette ကို ဖွင့်နိုင်သည်။ Scene များကို ဘရောက်ဇာထဲတွင် အလိုအလျောက် သိမ်းပြီး ပုံ သို့မဟုတ် Blender တွင် ဖွင့်နိုင်သော .glb အဖြစ် ထုတ်ယူနိုင်သည်။",
+      en: "A scene editor that runs in the browser with nothing to install. Build from primitives or import .glb, .fbx and .obj models, drop one of 24 materials on an object (gold, glass, car paint, velvet, neon), light it with a studio or an HDR environment, and switch on glow, depth of field and vignette. Scenes autosave in the browser and export as an image or a .glb that opens in Blender.",
+    },
+    standing: {
+      my: "အခမဲ့ editor အဖြစ် အလုပ်လုပ်နေသည်။ နောက်တစ်ဆင့် — scene များကို အကောင့်တွင် သိမ်းပြီး မျှဝေခြင်း၊ ထို့နောက် စာကြောင်းတစ်ကြောင်းဖြင့် scene ကို ပြင်ပေးသော AI co-builder။",
+      en: "Working as a free editor. Next: saving scenes to an account and sharing them, then an AI co-builder that edits the scene from a sentence.",
+    },
+    mode: "soon",
+    stack: ["React", "three.js", "Django"],
+    shot: "artcodex",
+    art: "orbits",
   },
 ];
 

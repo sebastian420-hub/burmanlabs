@@ -237,6 +237,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
               ))}
             </ul>
             <p className="mono mt-4 text-dim">{h.about.built}</p>
+            <p className="mono mt-2 text-dim">{h.about.services}</p>
           </div>
         </div>
       </Container>
