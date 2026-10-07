@@ -26,17 +26,25 @@ const KIND_TONE: Record<string, string> = {
   trade: "bg-bone", teach: "bg-bone", collapse: "bg-ash",
 };
 
+async function gunzip(bytes: Uint8Array<ArrayBuffer>): Promise<string> {
+  // The browser's own decompressor where it exists (Chrome 80+, Safari 16.4+); a small
+  // JavaScript one on older phones, which is where most Myanmar traffic comes from.
+  if (typeof DecompressionStream === "function") {
+    try {
+      const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+      return await new Response(stream).text();
+    } catch {}
+  }
+  const { gunzipSync, strFromU8 } = await import("fflate");
+  return strFromU8(gunzipSync(bytes));
+}
+
 async function loadTrace(url: string): Promise<Trace> {
   const res = await fetch(url);
-  if (!res.ok) throw new Error(String(res.status));
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const bytes = new Uint8Array(await res.arrayBuffer());
-  let text: string;
-  if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
-    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
-    text = await new Response(stream).text();
-  } else {
-    text = new TextDecoder().decode(bytes); // the server already unpacked it
-  }
+  const text =
+    bytes[0] === 0x1f && bytes[1] === 0x8b ? await gunzip(bytes) : new TextDecoder().decode(bytes); // the server may already unpack it
   return parseTrace(text);
 }
 
@@ -48,6 +56,7 @@ const fill = (tpl: string, vars: Record<string, string>) => tpl.replace(/\{(\w+)
 export default function VillageReplay({ url, lang, v, digest }: { url: string; lang: Locale; v: V; digest: Digest }) {
   const [trace, setTrace] = useState<Trace | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [reason, setReason] = useState("");
   const [i, setI] = useState(0); // tick index shown in the panels
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(4);
@@ -97,7 +106,10 @@ export default function VillageReplay({ url, lang, v, digest }: { url: string; l
       setStatus("loading");
       loadTrace(url)
         .then((t) => { setTrace(t); setStatus("ready"); })
-        .catch(() => setStatus("error"));
+        .catch((e: unknown) => {
+          setReason(e instanceof Error ? e.message : String(e));
+          setStatus("error");
+        });
     },
     [trace, status, url],
   );
@@ -330,7 +342,13 @@ export default function VillageReplay({ url, lang, v, digest }: { url: string; l
             <div className="absolute inset-0 grid place-items-center bg-ink/35">
               <div className="text-center">
                 {status === "error" ? (
-                  <p className="rounded-full bg-ink/80 px-4 py-2 text-signal">{v.failed}</p>
+                  <>
+                    <button type="button" onClick={() => { setStatus("idle"); start(); }}
+                      className="rounded-full bg-ink/80 px-4 py-2 text-signal transition hover:bg-ink">
+                      {v.failed} · {v.retry}
+                    </button>
+                    {reason && <p className="mono mt-2 text-xs text-ash" lang="en">{reason}</p>}
+                  </>
                 ) : (
                   <>
                     <button type="button" onClick={() => start()} disabled={status === "loading"}

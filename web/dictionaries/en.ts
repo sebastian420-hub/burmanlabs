@@ -209,6 +209,7 @@ const en: typeof my = {
     feedTeach: "{a} taught {b}",
     loading: "Loading the replay…",
     failed: "Could not load the replay.",
+    retry: "Try again",
     play: "Play",
     pause: "Pause",
     tick: "Tick",
