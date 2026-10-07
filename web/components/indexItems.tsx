@@ -1,4 +1,4 @@
-import { itemHref, type CatalogItem } from "@/content/catalog";
+import { dossierHref, type CatalogItem } from "@/content/catalog";
 import type { Dict } from "@/lib/dictionaries";
 import { num, type Locale } from "@/lib/i18n";
 import Cover, { coverArt } from "./Cover";
@@ -21,7 +21,8 @@ export function toIndexItem(i: CatalogItem, lang: Locale, d: Dict): IndexItem {
     status: i.status,
     statusLabel: d.status[i.status],
     year: num(i.year, lang),
-    href: itemHref(i, lang),
+    // Rows open the dossier; the dossier opens the piece itself (sim page or site).
+    href: dossierHref(i, lang),
     shot: i.shot ? { full: `/work/${i.shot}.webp`, thumb: `/work/${i.shot}-sm.webp` } : undefined,
     cover: <Cover id={i.id} art={coverArt(i)} className="h-full w-full" />,
     soon: i.mode === "soon",
