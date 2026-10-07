@@ -48,7 +48,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   ];
 
   return (
-    <html lang={lang}>
+    <html lang={lang} data-scroll-behavior="smooth">
       <body>
         <Header
           lang={lang}

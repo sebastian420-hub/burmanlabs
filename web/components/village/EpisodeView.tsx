@@ -37,7 +37,7 @@ export default function EpisodeView({ lang, d, story }: { lang: Locale; d: Dict;
   return (
     <article>
       <Container className="pt-10">
-        <Link href={`/${lang}/catalog/the-village`} className="text-sm text-ash transition hover:text-bone">
+        <Link href={`/${lang}/catalog`} className="text-sm text-ash transition hover:text-bone">
           ← {d.item.back}
         </Link>
 
