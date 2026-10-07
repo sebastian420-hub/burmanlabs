@@ -6,6 +6,7 @@ export const warmAll = () =>
   Promise.allSettled([
     import("./Globe"),
     import("./OrbitSim"),
+    import("./HoverPreview"),
     import("./art/Quantum"),
     import("./art/Pulse"),
     import("./art/Mandalay"),

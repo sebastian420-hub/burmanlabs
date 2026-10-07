@@ -106,6 +106,7 @@ self.addEventListener("fetch", (event) => {
     url.pathname.startsWith("/_next/static/") ||
     url.pathname.startsWith("/_next/image") ||
     url.pathname.startsWith("/studio/") ||
+    url.pathname.startsWith("/work/") ||
     url.pathname.startsWith("/brand/") ||
     url.pathname.startsWith("/fonts/") ||
     /\.(?:png|jpg|jpeg|webp|svg|woff2?|ico)$/.test(url.pathname)

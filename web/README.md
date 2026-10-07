@@ -25,13 +25,33 @@ Warm black, bone white and one loud colour: the red (`#ff3131`) of the original
 BURMAN LABS wordmark (`public/brand/burmanlabs-wordmark.webp`, from `Portfolio/burmanx.png`, built by `scripts/make-brand.mjs`). Tokens live
 in `app/globals.css` (`ink`, `bone`, `ash`, `signal`, `gold`, …).
 
-- Type: Instrument Serif for display, Inter Tight for UI (Latin), Noto Sans Myanmar for
-  Burmese. All self-hosted in `public/fonts/`. Burmese gets its own, smaller display scale
-  (`.t-hero`, `.t-section`, `.t-row`) and generous line-height; it never uses uppercase or
-  letter-spacing.
-- Layout pieces: `components/ui.tsx` (`Container`, `SectionHead`, `ButtonLink`, `Tag`).
-- Catalog items get generative SVG covers (`components/Cover.tsx`), deterministic from the id,
-  with zero downloads.
+- Three voices of type, all self-hosted in `public/fonts/`: Instrument Serif for titles,
+  Inter Tight for body (Latin), **Geist Mono for data** (designations, status, stack, years,
+  readouts: the `.mono` and `.eyebrow` classes), Noto Sans Myanmar for Burmese. Burmese gets
+  its own, smaller display scale (`.t-hero`, `.t-section`, `.t-row`) and generous line-height;
+  it never uses uppercase or letter-spacing.
+- The tone is a mission log, not a brochure: dense, hairline rules, metadata in mono, one
+  accent. No HUD decoration (brackets, scanlines, cyan): the only "readout" is the real one,
+  Mandalay's coordinates and local time (`components/Readout.tsx`).
+- Layout pieces: `components/ui.tsx` (`Container`, `SectionHead`, `ButtonLink`, `Tag`,
+  `StatusDot`).
+- Every work item has a permanent designation (`BL-001`…), a year, a role and a status.
+  Items with a real screenshot in `public/work/{shot}.webp` (1600×1000, plus `{shot}-sm.webp`)
+  show it; the rest get generative SVG covers (`components/Cover.tsx`). Capture new
+  screenshots at 1600×1000 and desaturate ~15% so they sit on the palette.
+
+## The work index
+
+`components/WorkIndex.tsx` lists work as rows (designation · title · kind · built with ·
+status · year) with a list/grid toggle remembered in `localStorage` (`bl-view`). On devices
+with a fine pointer and WebGL, hovering a row floats its screenshot beside the cursor through
+a small three.js shader (`components/HoverPreview.tsx`: lens bulge + RGB split that scales with
+cursor speed); the other rows dim. Keyboard focus anchors the preview beside the row. On touch
+there is no preview: rows are 72 px tap targets with the facts on a second line. The chunk is
+lazy and ~40 KB on top of the globe's three.js.
+
+Item pages (`/{lang}/catalog/{id}`) are dossiers: designation, facts block, the screenshot,
+"what it is" and "where it stands" (`about` / `standing` in `content/catalog.ts`), prev/next.
 - Motion: CSS-only entrance animations, plus scroll reveals where the browser supports
   scroll-driven animation. Both are off with reduced motion.
 
