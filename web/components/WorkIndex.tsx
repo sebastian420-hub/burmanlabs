@@ -115,7 +115,8 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
 
   const enter = (it: IndexItem, anchor?: { x: number; y: number }) => {
     setHover(it.id);
-    if (fancy && it.shot) setPreview({ src: it.shot.full, anchor });
+    // Rows without a screenshot clear the preview rather than leaving the last one up.
+    setPreview(fancy && it.shot ? { src: it.shot.full, anchor } : null);
   };
   const leave = () => {
     setHover(null);
@@ -185,7 +186,7 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
           <p className="mono mt-2 text-dim">{labels.zawgyi}</p>
         </div>
       ) : view === "list" ? (
-        <div className="index" data-hover={hover ? "1" : "0"} onMouseLeave={leave}>
+        <div className="index" data-hover={hover ? "1" : "0"} data-preview={preview?.src ?? ""} onMouseLeave={leave}>
           {/* Column heads (desktop) */}
           <div className="mono hidden grid-cols-[4.5rem_1fr_7rem_1fr_7.5rem_3.5rem_2.5rem] gap-x-4 border-b border-line py-2 text-dim md:grid">
             <span>{labels.code}</span>
