@@ -72,6 +72,7 @@ const en: typeof my = {
       ],
       contact: "Contact",
       built: "Free, Burmese first, light on data, works offline.",
+      services: "Also available for client work: web and mobile apps, 3D and simulations, AI tools. Email to talk.",
     },
   },
   save: {
@@ -281,6 +282,7 @@ const en: typeof my = {
     ai: "AI",
     science: "Science",
     hardware: "Chips & robotics",
+    art: "Art & 3D",
     everyday: "Everyday",
   },
 };
