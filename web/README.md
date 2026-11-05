@@ -105,8 +105,8 @@ Each item has a `type` (what it is) and a `status` (where it stands):
 
 `category` is the topic filter on All work: `ai`, `science`, `hardware`, `art`, `everyday`.
 
-Gentlemen (golf handicap), Cortex and Artcodex are `soon` until their store, package or
-site links exist: set `target` to the URL and `mode: "link"`. Their screenshots in
+Gentlemen (golf handicap) and Cortex are `soon` until their store or package links
+exist: set `target` to the URL and `mode: "link"`. Their screenshots in
 `public/work/` were captured from the real products (the Expo web export, the editor on the
 `editor-only` branch, and a recorded Cortex session rendered through xterm.js).
 
