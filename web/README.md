@@ -110,8 +110,9 @@ Cortex is `soon` until its package link exists: set `target` to the URL and
 (the Artcodex editor on its `editor-only` branch, and a recorded Cortex session rendered
 through xterm.js).
 
-The Village (BL-001), Gentlemen (BL-002) and Orbit lab (BL-005) were taken off the site.
-Their codes stay retired, and their old URLs redirect to All work (see `next.config.ts`).
+The Village, Gentlemen and Orbit lab were taken off the site in November 2026 and the
+remaining work was renumbered BL-001 to BL-004. Their old URLs redirect to All work
+(see `next.config.ts`).
 The All work filters show only kinds and topics that have work in them.
 
 To add a Studio piece: add it to `content/studio.ts`, put the component in `components/art/`,

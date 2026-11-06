@@ -73,7 +73,7 @@ export interface CatalogItem {
 export const catalog: CatalogItem[] = [
   {
     id: "edusim",
-    code: "BL-003",
+    code: "BL-001",
     type: "app",
     category: "education",
     status: "live",
@@ -99,7 +99,7 @@ export const catalog: CatalogItem[] = [
   },
   {
     id: "spikebook",
-    code: "BL-004",
+    code: "BL-002",
     type: "learning",
     category: "education",
     status: "learning",
@@ -126,7 +126,7 @@ export const catalog: CatalogItem[] = [
   {
     // Terminal agent. Private repo for now; add the install link as `target`, mode: "link".
     id: "cortex",
-    code: "BL-006",
+    code: "BL-003",
     type: "app",
     category: "ai",
     status: "live",
@@ -153,7 +153,7 @@ export const catalog: CatalogItem[] = [
   {
     // Browser 3D editor (React + three.js) with a Django API for accounts.
     id: "artcodex",
-    code: "BL-007",
+    code: "BL-004",
     type: "app",
     category: "art",
     status: "live",
