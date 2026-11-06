@@ -7,14 +7,12 @@ import { pieces } from "@/content/studio";
 import { getDictionary } from "@/lib/dictionaries";
 import { hasLocale, num } from "@/lib/i18n";
 import { site } from "@/lib/site";
-import { getDigest, getIndex } from "@/lib/village";
 import HeroGlobe from "@/components/HeroGlobe";
 import Readout from "@/components/Readout";
 import SaveOffline from "@/components/SaveOffline";
 import WorkIndex from "@/components/WorkIndex";
 import { indexLabels, toIndexItem } from "@/components/indexItems";
-import { ButtonLink, Container, SectionHead, Tag } from "@/components/ui";
-import VillagePoster from "@/components/village/VillagePoster";
+import { ButtonLink, Container, SectionHead } from "@/components/ui";
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -39,18 +37,17 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     ...pieces.map((p) => `/${lang}/studio/${p.id}`),
   ];
 
-  // The Village, featured: its latest episode and a still of the village.
-  const latest = getIndex().episodes.at(-1);
-  const digest = latest ? getDigest(latest) : null;
-
   const [pre, em, post] = d.hero.title;
-  const statLine = [
-    [catalog.length, d.readout.entries],
-    [byType("app").length, d.stats.app],
-    [byType("research").length, d.stats.research],
-    [byType("learning").length, d.stats.learning],
-    [pieces.length, d.stats.studio],
-  ] as const;
+  // Counted from the catalog; a kind with nothing in it is left out rather than shown as zero.
+  const statLine = (
+    [
+      [catalog.length, d.readout.entries],
+      [byType("app").length, d.stats.app],
+      [byType("research").length, d.stats.research],
+      [byType("learning").length, d.stats.learning],
+      [pieces.length, d.stats.studio],
+    ] as const
+  ).filter(([n]) => n > 0);
 
   return (
     <>
@@ -72,12 +69,12 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             <p className="intro-3 mt-5 max-w-lg text-[17px] text-ash">{d.hero.sub}</p>
             <div className="intro-3 mt-6 flex flex-wrap items-center gap-3">
               <ButtonLink href={`/${lang}/catalog`}>{d.hero.cta}</ButtonLink>
-              <ButtonLink href={`/${lang}/sims/village`} variant="ghost">
-                {d.hero.ctaSim}
+              <ButtonLink href={`/${lang}/studio`} variant="ghost">
+                {d.studio.viewAll}
               </ButtonLink>
             </div>
             <div className="intro-3 mt-8">
-              <Readout place={d.readout.place} local={d.readout.local} extra={latest ? `${d.village.episode} ${num(latest.episode, lang)} ${d.readout.live}` : undefined} />
+              <Readout place={d.readout.place} local={d.readout.local} />
             </div>
           </div>
           <div className="mx-auto w-full max-w-[300px] sm:max-w-[360px] lg:col-span-5 lg:ml-auto lg:max-w-[400px]">
@@ -127,59 +124,10 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         </Suspense>
       </Container>
 
-      {/* ------------------------------------------------ 02 Running now */}
-      {latest && digest && (
-        <Container className="mt-16 md:mt-20">
-          <SectionHead index="02" eyebrow={h.featured.eyebrow} title={d.village.title} aside={<p className="mono text-ash">{catalog[0].code}</p>} />
-          <div className="reveal grid overflow-hidden border border-line bg-ink-2 md:grid-cols-12">
-            <Link href={`/${lang}/sims/village`} className="group relative block aspect-[16/10] bg-ink md:col-span-7 md:aspect-auto md:min-h-[300px]">
-              <VillagePoster digest={digest} className="absolute inset-0 size-full transition duration-700 group-hover:scale-[1.02]" />
-              <span className="absolute top-3 left-3">
-                <Tag tone="signal">{d.village.live}</Tag>
-              </span>
-            </Link>
-            <div className="flex flex-col justify-between gap-6 p-6 md:col-span-5 md:p-8">
-              <div>
-                <p className="text-[15px] leading-relaxed text-ash">{h.featured.lead}</p>
-                <p className="mono mt-6 text-gold">
-                  {h.featured.latest} · {d.village.episode} {num(latest.episode, lang)}
-                </p>
-                <p className="display mt-1 text-2xl" lang="en">
-                  {latest.title}
-                </p>
-                <p className="mono mt-3 flex flex-wrap gap-x-3 text-dim">
-                  <span>
-                    <span className="text-bone">{num(latest.alive, lang)}</span> {d.village.living}
-                  </span>
-                  {latest.born > 0 && (
-                    <span>
-                      <span className="text-gold">{num(latest.born, lang)}</span> {d.village.born}
-                    </span>
-                  )}
-                  {latest.died > 0 && (
-                    <span>
-                      <span className="text-signal">{num(latest.died, lang)}</span> {d.village.died}
-                    </span>
-                  )}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <ButtonLink href={`/${lang}/sims/village`} small>
-                  {h.featured.watch}
-                </ButtonLink>
-                <ButtonLink href={`/${lang}/sims/village/research`} variant="ghost" small>
-                  {h.featured.research}
-                </ButtonLink>
-              </div>
-            </div>
-          </div>
-        </Container>
-      )}
-
-      {/* ----------------------------------------------------- 03 Studio */}
+      {/* ----------------------------------------------------- 02 Studio */}
       <Container className="mt-16 md:mt-20">
         <SectionHead
-          index="03"
+          index="02"
           eyebrow={d.studio.eyebrow}
           title={d.studio.title}
           aside={
@@ -212,10 +160,10 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         </ul>
       </Container>
 
-      {/* ------------------------------------------------------ 04 About */}
+      {/* ------------------------------------------------------ 03 About */}
       <div id="about" className="scroll-mt-24" />
       <Container className="mt-16 md:mt-20">
-        <SectionHead index="04" eyebrow={h.about.eyebrow} title={h.about.title} />
+        <SectionHead index="03" eyebrow={h.about.eyebrow} title={h.about.title} />
         <div className="grid gap-8 md:grid-cols-12">
           <div className="md:col-span-7">
             <p className="font-serif text-xl leading-relaxed text-bone/90 sm:text-2xl">{h.about.bio}</p>

@@ -11,8 +11,8 @@ type L = Record<Locale, string>;
 export type ItemType = "app" | "research" | "learning";
 export const itemTypes: ItemType[] = ["app", "research", "learning"];
 
-export type CategoryId = "ai" | "science" | "hardware" | "art" | "everyday";
-export const categoryIds: CategoryId[] = ["ai", "science", "hardware", "art", "everyday"];
+export type CategoryId = "ai" | "education" | "art" | "science" | "hardware" | "everyday";
+export const categoryIds: CategoryId[] = ["ai", "education", "art", "science", "hardware", "everyday"];
 
 /** Where it stands. Shown as a tag on cards and item pages. */
 export type Status = "live" | "ongoing" | "learning";
@@ -72,68 +72,10 @@ export interface CatalogItem {
  */
 export const catalog: CatalogItem[] = [
   {
-    // digital_sim's daily world, native here: /{lang}/sims/village reads the
-    // episodes the daily runner publishes into public/village/.
-    id: "the-village",
-    code: "BL-001",
-    type: "research",
-    category: "ai",
-    status: "ongoing",
-    role: "research",
-    year: 2026,
-    title: { my: "AI ကျေးရွာ", en: "The Village" },
-    summary: {
-      my: "AI အေးဂျင့်များ နေထိုင်သော ကျေးရွာတစ်ရွာ။ မည်သူမျှ မညွှန်ကြားဘဲ လူ့အဖွဲ့အစည်း ပေါ်လာမလား။",
-      en: "A village of AI agents that nobody steers. Does a society form on its own?",
-    },
-    about: {
-      my: "AI အေးဂျင့် ၁၂ ဦးကို သူတို့ကမ္ဘာအကြောင်း အမှန်တရားကိုသာ ပြောပြထားသည် — လက်လှမ်းမီသည့်အရာ၊ ယူဆောင်ထားသည့်အရာ၊ အနီးရှိသူများ။ ကုန်သွယ်ရန်၊ သင်ပေးရန်၊ ဆောက်လုပ်ရန် မည်သူမျှ မပြောပါ။ ကမ္ဘာသည် ဘယ်တော့မှ အစမှ ပြန်မစဘဲ နေ့စဉ် ရပ်ခဲ့သည့်နေရာမှ ဆက်လည်ပတ်သည်။",
-      en: "Twelve AI agents are told only what is true about their world: what they can reach, what they carry, who is nearby. Nothing tells them to trade, teach or build. The world never resets; each day runs on from where the last one stopped, and every day is published here as an episode you can replay.",
-    },
-    standing: {
-      my: "နေ့စဉ် လည်ပတ်နေသည်။ အပိုင်းတိုင်းကို ဤဆိုက်တွင် ပြန်ကြည့်နိုင်ပြီး သုတေသန စာမျက်နှာတွင် ရည်မှန်းချက်၊ တွေ့ရှိချက်နှင့် လမ်းပြမြေပုံကို ဖတ်နိုင်သည်။",
-      en: "Running daily. Every episode is replayable here, and the research page carries the goals, findings so far and the roadmap.",
-    },
-    mode: "native",
-    target: "village",
-    stack: ["Python", "LLM agents", "Gemini"],
-    shot: "the-village",
-    art: "orbits",
-    sizeMB: 0.4,
-  },
-  {
-    // Product name "Gentlemen". Monorepo: Expo app + Fastify API + handicap engine.
-    id: "golf-handicap",
-    code: "BL-002",
-    type: "app",
-    category: "everyday",
-    status: "ongoing",
-    role: "build",
-    year: 2026, // confirm
-    title: { my: "Gentlemen Handicap", en: "Gentlemen golf handicap" },
-    summary: {
-      my: "မြန်မာ ဂေါက်သီးအသင်းများအတွက် handicap အက်ပ် — ပွဲတစ်ပွဲ ထည့်ပါ၊ အတူကစားသူက အတည်ပြုပါ၊ handicap ကို အလိုအလျောက် တွက်ပေးသည်။",
-      en: "A handicap app for Myanmar's golf societies: post a round, a partner confirms it, the handicap updates itself.",
-    },
-    about: {
-      my: "မြန်မာနိုင်ငံရှိ အသင်းပွဲများနှင့် သီးသန့်ပွဲများအတွက် WHS ပုံစံ တရားဝင်မဟုတ်သော handicap။ ဖုန်းနံပါတ်ဖြင့် ဝင်ပြီး ကွင်းနှင့် တီးကို ရွေး၊ ပွဲကို တွင်းတစ်တွင်းချင်း ထည့်၊ အတူကစားသူက အတည်ပြုသည်။ ပွဲများကို ဖုန်းထဲတွင် သိမ်းပြီး နောက်မှ sync လုပ်ကာ handicap ကို အပတ်စဉ် ပြန်တွက်သည်။ ကွင်းစာရင်းတွင် မြန်မာ ကလပ်များ ပါဝင်ပြီး ကွင်းတစ်ခုချင်း၏ အချက်အလက် ပြည့်စုံမှုကို ပြထားသည်။",
-      en: "An unofficial, WHS-style handicap for society games and private events in Myanmar. Sign in with a phone number, pick the course and tees, enter the round hole by hole, and the person you played with confirms it. Rounds save on the phone and sync later, and the handicap recalculates every week. The course directory covers Myanmar's clubs, each marked by how complete its scorecard data is.",
-    },
-    standing: {
-      my: "ဂေါက်သီးအသင်းတစ်သင်းနှင့် iPhone/Android တွင် သီးသန့် စမ်းသပ်နေသည်။ ကွင်းအချက်အလက်များကို ကလပ်တစ်ခုချင်း စစ်ဆေးပြီးမှ အများသုံး ထုတ်ပါမည်။",
-      en: "In a private test with one golf society, on iPhone and Android. A public release follows once the course data is verified club by club.",
-    },
-    // Add the store or download link as `target` and set mode: "link".
-    mode: "soon",
-    stack: ["TypeScript", "Expo", "Fastify", "Postgres"],
-    shot: "golf-handicap",
-    art: "tiles",
-  },
-  {
     id: "edusim",
-    code: "BL-003",
+    code: "BL-001",
     type: "app",
-    category: "science",
+    category: "education",
     status: "live",
     role: "build",
     year: 2026, // confirm
@@ -157,9 +99,9 @@ export const catalog: CatalogItem[] = [
   },
   {
     id: "spikebook",
-    code: "BL-004",
+    code: "BL-002",
     type: "learning",
-    category: "hardware",
+    category: "education",
     status: "learning",
     role: "study",
     year: 2026, // confirm
@@ -182,38 +124,9 @@ export const catalog: CatalogItem[] = [
     art: "lines",
   },
   {
-    id: "orbit",
-    code: "BL-005",
-    type: "app",
-    category: "science",
-    status: "live",
-    role: "build",
-    year: 2026,
-    title: { my: "ဂြိုဟ်လှည့်ပတ်မှု စမ်းသပ်ခန်း", en: "Orbit lab" },
-    summary: {
-      my: "နေ၏ ဆွဲအားအောက်တွင် ဂြိုဟ်တစ်လုံး ဘယ်လိုလှည့်ပတ်သည်ကို စမ်းကြည့်ပါ။",
-      en: "See how a planet moves under the Sun's gravity.",
-    },
-    about: {
-      my: "ဂြိုဟ်တစ်လုံး၏ စတင်အမြန်နှုန်းနှင့် နေမှ အကွာအဝေးကို ပြောင်းပြီး ပတ်လမ်း ဘယ်လို ပြောင်းသွားသည်ကို ကြည့်ပါ — စက်ဝိုင်း၊ ဘဲဥပုံ၊ သို့မဟုတ် လွတ်မြောက်သွားခြင်း။ ရလဒ်ကို တွက်ချက်မှုဖြင့် တိတိကျကျ ပြသည်။",
-      en: "Change a planet's starting speed and its distance from the Sun and watch the orbit change: circular, elliptical, or escape. The readout gives the exact eccentricity and period from the physics, not from the picture.",
-    },
-    standing: {
-      my: "အသုံးပြုနိုင်ပြီ။ ဖုန်းပေါ်တွင် လည်ပတ်ပြီး အင်တာနက်မရှိလည်း သုံးနိုင်သည်။",
-      en: "Live. Runs on a phone and works offline.",
-    },
-    mode: "native",
-    target: "orbit",
-    stack: ["three.js"],
-    shot: "orbit",
-    art: "orbits",
-    sizeMB: 0.3,
-    offline: true,
-  },
-  {
     // Terminal agent. Private repo for now; add the install link as `target`, mode: "link".
     id: "cortex",
-    code: "BL-006",
+    code: "BL-003",
     type: "app",
     category: "ai",
     status: "live",
@@ -240,7 +153,7 @@ export const catalog: CatalogItem[] = [
   {
     // Browser 3D editor (React + three.js) with a Django API for accounts.
     id: "artcodex",
-    code: "BL-007",
+    code: "BL-004",
     type: "app",
     category: "art",
     status: "live",

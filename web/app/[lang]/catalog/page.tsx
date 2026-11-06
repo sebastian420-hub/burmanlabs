@@ -40,8 +40,11 @@ export default async function CatalogPage({ params }: PageProps<"/[lang]/catalog
             labels={indexLabels(d)}
             digits={lang}
             filters={{
-              kinds: itemTypes.map((id) => ({ id, label: d.typePlural[id] })),
-              categories: categoryIds.map((id) => ({ id, label: d.categories[id] })),
+              // Only kinds and topics that have work in them, so no filter leads to an empty list.
+              kinds: itemTypes.filter((id) => catalog.some((i) => i.type === id)).map((id) => ({ id, label: d.typePlural[id] })),
+              categories: categoryIds
+                .filter((id) => catalog.some((i) => i.category === id))
+                .map((id) => ({ id, label: d.categories[id] })),
             }}
           />
         </Suspense>
