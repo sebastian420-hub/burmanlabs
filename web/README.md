@@ -105,10 +105,14 @@ Each item has a `type` (what it is) and a `status` (where it stands):
 
 `category` is the topic filter on All work: `ai`, `science`, `hardware`, `art`, `everyday`.
 
-Gentlemen (golf handicap) and Cortex are `soon` until their store or package links
-exist: set `target` to the URL and `mode: "link"`. Their screenshots in
-`public/work/` were captured from the real products (the Expo web export, the editor on the
-`editor-only` branch, and a recorded Cortex session rendered through xterm.js).
+Cortex is `soon` until its package link exists: set `target` to the URL and
+`mode: "link"`. The screenshots in `public/work/` were captured from the real products
+(the Artcodex editor on its `editor-only` branch, and a recorded Cortex session rendered
+through xterm.js).
+
+The Village (BL-001), Gentlemen (BL-002) and Orbit lab (BL-005) were taken off the site.
+Their codes stay retired, and their old URLs redirect to All work (see `next.config.ts`).
+The All work filters show only kinds and topics that have work in them.
 
 To add a Studio piece: add it to `content/studio.ts`, put the component in `components/art/`,
 register it in `components/ArtStage.tsx` and `components/warm.ts`, and add a poster.
@@ -116,12 +120,6 @@ register it in `components/ArtStage.tsx` and `components/warm.ts`, and add a pos
 To add a native sim: create `components/<Name>Sim.tsx`, a page under
 `app/[lang]/sims/<slug>/page.tsx`, add the dynamic import to `components/warm.ts` (so it is
 saved for offline), and a catalog row with `mode: "native"`.
-
-## The Village
-
-`/{lang}/sims/village` shows the daily AI village from the `digital_sim` repo, which
-publishes each episode into `public/village/`. How it fits together, how to publish an
-episode and what each file holds: [`docs/village.md`](docs/village.md).
 
 ## Language and Burmese text
 
@@ -174,5 +172,5 @@ phone with a Zawgyi system font.
 2. Home loads on 3G or with Data Saver on and shows no 3D; turning 3D on works and stays smooth.
 3. Dragging the globe sideways rotates it and does not block vertical scrolling; tapping a light opens its card.
 4. Catalog search works with the Burmese keyboard you actually use (Unicode and Zawgyi).
-5. "Save on this phone", then airplane mode: home, catalog and the orbit lab still open.
+5. "Save on this phone", then airplane mode: home, catalog and the Studio pieces still open.
 6. Add to Home Screen; the icon and standalone launch look right.

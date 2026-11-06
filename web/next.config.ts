@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Pages for work that was taken off the site. Temporary (307), so they can come back.
+  async redirects() {
+    return [
+      { source: "/:lang(my|en)/sims/:slug(village|orbit)/:path*", destination: "/:lang/catalog", permanent: false },
+      { source: "/:lang(my|en)/catalog/:id(the-village|golf-handicap|orbit)", destination: "/:lang/catalog", permanent: false },
+    ];
+  },
   async headers() {
     return [
       {
