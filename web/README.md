@@ -105,6 +105,12 @@ Each item has a `type` (what it is) and a `status` (where it stands):
 
 `category` is the topic filter on All work: `ai`, `science`, `hardware`, `art`, `everyday`.
 
+Topics listed in `groupedCategories` (in `content/catalog.ts`; now `education`) show as ONE
+row in the index that opens in place to list their work, in both the list and grid views.
+A search or filter shows every match flat, and a topic with a single piece is a plain row.
+To group another topic, add its id there; the row's label, count and names come from the
+catalog and `index.works` / `index.expand` / `index.collapse` in the dictionaries.
+
 Cortex is `soon` until its package link exists: set `target` to the URL and
 `mode: "link"`. The screenshots in `public/work/` were captured from the real products
 (the Artcodex editor on its `editor-only` branch, and a recorded Cortex session rendered

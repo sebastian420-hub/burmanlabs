@@ -244,6 +244,22 @@ html:lang(en) body {
   }
 }
 
+/* Rows that open in place (an index group): they drop in, then settle. "backwards" so the
+   hover dimming below still applies once the animation has ended. */
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.row-in {
+  animation: drop 0.4s var(--ease-out-expo) backwards;
+}
+
 /* Index rows: when one is hovered, the others step back. */
 .index[data-hover="1"] .row:not([data-on="1"]) {
   opacity: 0.38;

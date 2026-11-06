@@ -14,6 +14,12 @@ export const itemTypes: ItemType[] = ["app", "research", "learning"];
 export type CategoryId = "ai" | "education" | "art" | "science" | "hardware" | "everyday";
 export const categoryIds: CategoryId[] = ["ai", "education", "art", "science", "hardware", "everyday"];
 
+/**
+ * Topics shown as ONE expandable row in the index (they open in place to list their work).
+ * A topic with a single piece is shown as a plain row.
+ */
+export const groupedCategories: CategoryId[] = ["education"];
+
 /** Where it stands. Shown as a tag on cards and item pages. */
 export type Status = "live" | "ongoing" | "learning";
 
@@ -177,6 +183,35 @@ export const catalog: CatalogItem[] = [
     stack: ["React", "three.js", "Django"],
     shot: "artcodex",
     art: "orbits",
+  },
+  {
+    // Interactive economics textbook (Astro + MDX + Svelte), in its own repo and site.
+    // Chapter counts move: check the repo before quoting a number here.
+    id: "economy-book",
+    code: "BL-005",
+    type: "learning",
+    category: "education",
+    status: "ongoing",
+    role: "build",
+    year: 2026, // confirm
+    title: { my: "The Economy, From the Ground Up", en: "The Economy, From the Ground Up" },
+    summary: {
+      my: "အပြန်အလှန် ဆက်သွယ်နိုင်သော စီးပွားရေးဗေဒ ဖတ်စာအုပ် — ဦးစွာ ခန့်မှန်းပါ၊ ထို့နောက် မော်ဒယ်ဖြင့် ကစားကြည့်ပါ၊ နောက်ဆုံး အစစ်အမှန် ဒေတာနှင့် တိုက်ကြည့်ပါ။",
+      en: "An interactive economics textbook: predict first, then play with the model, then check it against real data.",
+    },
+    about: {
+      my: "ရှားပါးမှုနှင့် ဖလှယ်မှုမှ စတင်၍ စျေးကွက်များ၊ ဗျူဟာနှင့် နိုင်ငံ့စီးပွားရေးတစ်ခုလုံးအထိ သင်ပေးသော စာအုပ်။ အခန်းတိုင်းတွင် လှုပ်ရှားကြည့်နိုင်သော simulator များ ပါပြီး (လေးဆယ်ကျော်) တစ်ခုမကိုင်မီ ခန့်မှန်းချက်တစ်ခု ဦးစွာ ပေးရသည်။ စာထဲမှ မေးခွန်းများသည် သင့်ဘရောက်ဇာထဲရှိ spaced-repetition ကတ်များအဖြစ် ဝင်ပြီး မမေ့မီ ပြန်မေးပေးသည်။ ဇယားများကို အစစ်အမှန် ဒေတာဖြင့် ရင်းမြစ်နှင့် ရက်စွဲပြကာ ဆွဲထားပြီး အခန်းတိုင်းက ၎င်း၏ မော်ဒယ် ဘယ်နေရာတွင် မမှန်တော့သည်ကို ပြောပြသည်။ တစ်ကြိမ်ဖွင့်ပြီးလျှင် အင်တာနက်မရှိလည်း ဖတ်နိုင်သည်။",
+      en: "A book that teaches economics from scarcity and exchange through markets, strategy and the economy as a whole. Every chapter has simulators you can move (more than forty so far), and each one asks you to commit to a prediction before you touch it. Prompts inside the text join a spaced-repetition deck that lives in your browser, charts are built from real data with the source and date shown, and every chapter says where its model breaks. After one visit it also reads offline.",
+    },
+    standing: {
+      my: "ဖွင့်ထားပြီး အများရှေ့တွင် ဆက်ရေးနေသည် — စီစဉ်ထားသော အခန်းများ၏ တစ်ဝက်နီးပါး မူကြမ်း ရေးပြီးပြီ။ စာအုပ်သည် အင်္ဂလိပ်ဘာသာဖြင့်သာ ရှိသည်။",
+      en: "Live and still being written in public: nearly half of the planned chapters are drafted. The book is in English only.",
+    },
+    mode: "link",
+    target: "https://economy-from-the-ground-up.vercel.app/",
+    stack: ["Astro", "Svelte", "TypeScript"],
+    shot: "economy-book",
+    art: "lines",
   },
 ];
 
