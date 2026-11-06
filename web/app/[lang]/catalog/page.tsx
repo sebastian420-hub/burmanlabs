@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { catalog, categoryIds, itemTypes } from "@/content/catalog";
+import { catalog, categoryIds, groupedCategories, itemTypes } from "@/content/catalog";
 import { getDictionary } from "@/lib/dictionaries";
 import { hasLocale, num } from "@/lib/i18n";
 import WorkIndex from "@/components/WorkIndex";
@@ -39,6 +39,7 @@ export default async function CatalogPage({ params }: PageProps<"/[lang]/catalog
             items={catalog.map((i) => toIndexItem(i, lang, d))}
             labels={indexLabels(d)}
             digits={lang}
+            groups={groupedCategories}
             filters={{
               // Only kinds and topics that have work in them, so no filter leads to an empty list.
               kinds: itemTypes.filter((id) => catalog.some((i) => i.type === id)).map((id) => ({ id, label: d.typePlural[id] })),

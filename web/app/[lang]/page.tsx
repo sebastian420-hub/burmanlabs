@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { byType, catalog, itemHref } from "@/content/catalog";
+import { byType, catalog, groupedCategories, itemHref } from "@/content/catalog";
 import { pieces } from "@/content/studio";
 import { getDictionary } from "@/lib/dictionaries";
 import { hasLocale, num } from "@/lib/i18n";
@@ -120,7 +120,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           }
         />
         <Suspense>
-          <WorkIndex items={catalog.map((i) => toIndexItem(i, lang, d))} labels={indexLabels(d)} digits={lang} />
+          <WorkIndex items={catalog.map((i) => toIndexItem(i, lang, d))} labels={indexLabels(d)} digits={lang} groups={groupedCategories} />
         </Suspense>
       </Container>
 
