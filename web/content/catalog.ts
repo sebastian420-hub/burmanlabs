@@ -190,10 +190,10 @@ export const catalog: CatalogItem[] = [
     mode: "link",
     target: "https://artcodex.vercel.app/",
     stack: ["React", "three.js", "Django"],
-    shot: "artcodex-editor",
+    shot: "artcodex-cover",
     gallery: [
-      { shot: "artcodex-start", caption: { my: "စာကြောင်းတစ်ကြောင်းဖြင့် စတင်ပါ", en: "Start with a sentence" } },
-      { shot: "artcodex-world", caption: { my: "မြေ၊ ရေ၊ သစ်ပင်နှင့် ကောင်းကင်", en: "Land, water, trees and sky" } },
+      { shot: "artcodex-times", caption: { my: "နံနက်စောစော၊ ညနေစောင်း၊ ညဉ့်နက် — တူညီသော မြင်ကွင်း", en: "Dawn, dusk and night — one scene" } },
+      { shot: "artcodex-camera", caption: { my: "ကင်မရာမှ ကြည့်ပါ", en: "Look through a camera" } },
       { shot: "artcodex-play", caption: { my: "ထဲသို့ လျှောက်ဝင်ကြည့်ပါ", en: "Walk through it" } },
       { shot: "artcodex-plan", caption: { my: "ပုံစံပြဇယား ထုတ်ယူခြင်း", en: "Plan drawings out" } },
     ],
