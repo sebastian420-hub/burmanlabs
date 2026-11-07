@@ -7,6 +7,7 @@ import { getDictionary } from "@/lib/dictionaries";
 import { hasLocale, locales, num } from "@/lib/i18n";
 import Cover, { coverArt } from "@/components/Cover";
 import EmbedFrame from "@/components/EmbedFrame";
+import Gallery from "@/components/Gallery";
 import { ButtonLink, Container, StatusDot } from "@/components/ui";
 
 export function generateStaticParams() {
@@ -137,25 +138,7 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
         </div>
 
         {item.gallery && item.gallery.length > 0 && (
-          <ul className="mt-5 grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-4">
-            {item.gallery.map((g, i) => (
-              <li key={g.shot}>
-                <div className="relative aspect-[16/10] overflow-hidden border border-line bg-ink-2">
-                  <Image
-                    src={`/work/${g.shot}.webp`}
-                    alt={g.caption[lang]}
-                    fill
-                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-                <p className="mt-2.5 flex items-baseline gap-3 text-[15px] text-bone/90">
-                  <span className="mono text-dim">{String(i + 1).padStart(2, "0")}</span>
-                  {g.caption[lang]}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <Gallery gallery={item.gallery} lang={lang} />
         )}
 
         {item.mode === "embed" && item.target && (

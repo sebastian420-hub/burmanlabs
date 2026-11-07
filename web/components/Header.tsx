@@ -29,11 +29,11 @@ export default function Header({ lang, name, home, links, other }: Props) {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-colors duration-500 ${
+      className={`fixed inset-x-0 top-0 z-40 pt-[env(safe-area-inset-top,0px)] transition-colors duration-500 ${
         scrolled ? "border-b border-line/80 bg-ink/75 backdrop-blur-md" : "border-b border-transparent"
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-5 sm:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-5 pl-[max(1.25rem,env(safe-area-inset-left,0px))] pr-[max(1.25rem,env(safe-area-inset-right,0px))] sm:px-8">
         <Link href={`/${lang}`} aria-label={home} className="group flex items-center gap-2.5">
           <Image
             src="/brand/mark.png"

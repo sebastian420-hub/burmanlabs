@@ -51,7 +51,7 @@ export default function Footer({ lang, labels, links, email }: Props) {
           className="mx-auto h-auto w-[200px] opacity-90 sm:w-[280px]"
         />
       </div>
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-8 text-xs text-dim sm:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-8 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] text-xs text-dim sm:px-8">
         <span>© {new Date().getFullYear()} Burmanlabs</span>
         <span className="eyebrow !text-dim">Mandalay · Myanmar</span>
       </div>

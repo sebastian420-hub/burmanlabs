@@ -13,6 +13,7 @@ export const viewport: Viewport = {
   themeColor: "#0b0a09",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export function generateStaticParams() {
@@ -27,6 +28,11 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
     title: { default: dict.site.name, template: `%s · ${dict.site.name}` },
     description: dict.site.description,
     applicationName: dict.site.name,
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "black-translucent",
+      title: dict.site.name,
+    },
     icons: { icon: "/icon-192.png", apple: "/apple-touch-icon.png" },
     alternates: { languages: { my: "/my", en: "/en" } },
   };
@@ -57,7 +63,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
           links={links}
           other={{ label: dict.lang.other, aria: dict.lang.otherLabel }}
         />
-        <main className="pt-16">{children}</main>
+        <main className="pt-[calc(4rem+env(safe-area-inset-top,0px))]">{children}</main>
         <Footer lang={lang} labels={dict.footer} links={links} email={site.email} />
         <SWRegister />
       </body>
