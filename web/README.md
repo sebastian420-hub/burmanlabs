@@ -75,9 +75,9 @@ smooths it.
 Posters in `public/studio/*.webp` are screenshots of the live pieces. They show before a piece
 starts and on cards. Re-capture them if a piece changes.
 
-The **archive** (`public/archive/`) serves the original Earth & Moon, the two neural network
-visualizers and the technical analysis guide unchanged. They load three.js / TensorFlow from
-public CDNs, so they need internet. Earth's 8K textures were reduced to 2K (~1 MB total).
+The original Earth & Moon page, the two neural network visualizers and the technical analysis
+guide were taken off the site in November 2026 (they are in git history, and most are still in
+`Portfolio/`). `/archive/*` redirects to the home page.
 
 ## Adding work
 

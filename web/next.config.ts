@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/:lang(my|en)/sims/:slug(village|orbit)/:path*", destination: "/:lang/catalog", permanent: false },
+      { source: "/archive/:path*", destination: "/", permanent: false },
       { source: "/:lang(my|en)/catalog/:id(the-village|golf-handicap|orbit)", destination: "/:lang/catalog", permanent: false },
     ];
   },
