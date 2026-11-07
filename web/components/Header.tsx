@@ -29,8 +29,10 @@ export default function Header({ lang, name, home, links, other }: Props) {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 pt-[env(safe-area-inset-top,0px)] transition-colors duration-500 ${
-        scrolled ? "border-b border-line/80 bg-ink/75 backdrop-blur-md" : "border-b border-transparent"
+      className={`fixed inset-x-0 top-0 z-40 isolate pt-[env(safe-area-inset-top,0px)] [transform:translateZ(0)] [-webkit-transform:translateZ(0)] will-change-transform transition-colors duration-500 ${
+        scrolled
+          ? "border-b border-line/80 bg-ink/75 backdrop-blur-md"
+          : "border-b border-line/40 bg-ink/60 backdrop-blur-md sm:border-transparent sm:bg-transparent sm:backdrop-blur-none"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-5 pl-[max(1.25rem,env(safe-area-inset-left,0px))] pr-[max(1.25rem,env(safe-area-inset-right,0px))] sm:px-8">
