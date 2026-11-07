@@ -11,7 +11,7 @@ const en: typeof my = {
   hero: {
     eyebrow: "Zwe's lab · Mandalay",
     title: ["Software that works. Books that ", "teach", "."],
-    sub: "AI tools, a 3D editor, an intelligence platform, simulations and interactive books, built in Mandalay. Robotics is next.",
+    sub: "AI tools, simulations and interactive books. Robotics is next.",
     cta: "All work",
     hint: "Drag · tap a light",
     globeAria: "Interactive 3D globe where each light is one piece of work",
