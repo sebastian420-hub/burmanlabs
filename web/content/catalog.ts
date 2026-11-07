@@ -61,6 +61,11 @@ export interface CatalogItem {
    * Items without one get generative cover art.
    */
   shot?: string;
+  /**
+   * More pictures of the same thing, each in public/work/{shot}.webp (1600×1000) with a caption.
+   * Shown under the main picture on its dossier, for work with more to show than one view.
+   */
+  gallery?: { shot: string; caption: L }[];
   /** Generative cover style; defaults by type. */
   art?: "lines" | "tiles" | "orbits";
   /** Rough data cost of opening it, in MB. */
@@ -158,7 +163,10 @@ export const catalog: CatalogItem[] = [
     art: "lines",
   },
   {
-    // Browser 3D editor (React + three.js) with a Django API for accounts.
+    // Browser 3D editor (React + three.js) with an AI co-builder; Django backend for AI relay, accounts and
+    // cloud save. Copy is from the project's README and docs/STATUS.md (live site: the editor, AI with the
+    // visitor's own key; cloud save and the connector wait for the hosted backend; check before editing).
+    // Screenshots are of the current main branch; the scenes were built with the editor's own commands.
     id: "artcodex",
     code: "BL-004",
     type: "app",
@@ -168,21 +176,27 @@ export const catalog: CatalogItem[] = [
     year: 2025,
     title: { my: "Artcodex", en: "Artcodex" },
     summary: {
-      my: "ဘရောက်ဇာထဲမှ 3D တည်းဖြတ်ကိရိယာ — ပုံသဏ္ဌာန်များ၊ အသင့်သုံး material များ၊ အလင်းအမှန်၊ ပုံ သို့မဟုတ် .glb အဖြစ် ထုတ်ယူနိုင်သည်။",
-      en: "A 3D editor in the browser: shapes, ready-made materials, real lighting, render to an image or a .glb.",
+      my: "ဘရောက်ဇာထဲမှ 3D တည်းဖြတ်ကိရိယာ၊ AI ကူညီသူပါ — အခန်း၊ အိမ် သို့မဟုတ် ရှုခင်းတစ်ခုကို ဖော်ပြပါ၊ တည်ဆောက်သည်ကို ကြည့်ပါ၊ ထို့နောက် ထဲသို့ လျှောက်ဝင်ကြည့်ပါ။",
+      en: "A 3D editor in the browser with an AI co-builder: describe a room, a house or a landscape, watch it get built, then walk through it.",
     },
     about: {
-      my: "ဘာမှ တပ်ဆင်စရာမလိုဘဲ ဘရောက်ဇာထဲတွင် လည်ပတ်သော scene တည်းဖြတ်ကိရိယာ။ အခြေခံပုံများဖြင့် တည်ဆောက်ပါ သို့မဟုတ် .glb၊ .fbx၊ .obj model များ ထည့်သွင်းပါ။ Material ၂၄ မျိုး (ရွှေ၊ ဖန်၊ ကားဆေး၊ ကတ္တီပါ၊ နီယွန်) ကို အရာဝတ္ထုပေါ် တစ်ချက်နှိပ်ရုံ၊ studio သို့မဟုတ် HDR ပတ်ဝန်းကျင်ဖြင့် အလင်းပေး၊ glow၊ focus blur နှင့် vignette ကို ဖွင့်နိုင်သည်။ Scene များကို ဘရောက်ဇာထဲတွင် အလိုအလျောက် သိမ်းပြီး ပုံ သို့မဟုတ် Blender တွင် ဖွင့်နိုင်သော .glb အဖြစ် ထုတ်ယူနိုင်သည်။",
-      en: "A scene editor that runs in the browser with nothing to install. Build from primitives or import .glb, .fbx and .obj models, drop one of 24 materials on an object (gold, glass, car paint, velvet, neon), light it with a studio or an HDR environment, and switch on glow, depth of field and vignette. Scenes autosave in the browser and export as an image or a .glb that opens in Blender.",
+      my: "ဘာမှ တပ်ဆင်စရာမလိုပါ — လိုချင်တာကို ဖော်ပြလိုက်ရုံဖြင့် AI ကူညီသူက တည်းဖြတ်ကိရိယာ၏ ကိုယ်ပိုင်ကိရိယာများဖြင့် အဆင့်ဆင့် တည်ဆောက်ပေးသည်၊ တောင်းဆိုမှုတစ်ခုလျှင် undo တစ်ကြိမ်။ လက်ဖြင့်လည်း တည်ဆောက်နိုင်သည် — တံခါးနှင့် ပြတင်းပေါက်ပါသော အခန်းများ၊ အလွှာနှင့် လှေကားပါသော တိုက်ခန်းတစ်ခုလုံး၊ ချိန်ညှိနိုင်သော ပရိဘောဂ၊ တစ်ချက်နှိပ်ရုံ material ၃၄ မျိုး၊ ရေ၊ ကြီးထွားလာသော သစ်ပင်များနှင့် နေ့အချိန်အလိုက် ပြောင်းသော ကောင်းကင်ပါသည့် မြေပြင်။ ဘယ်အရာ မျောနေ၊ ထပ်နေ၊ တံခါးကို ပိတ်နေသည်ကို စစ်ဆေးကိရိယာက ပြောပြသည်။ Play ကိုနှိပ်၍ မြင်ကွင်းထဲတွင် ပထမလူအမြင်ဖြင့် တကယ့်တိုက်မိမှုများနှင့်အတူ လျှောက်ကြည့်နိုင်ပြီး behaviour နှင့် script များဖြင့် ဂိမ်းအဖြစ် ပြောင်းနိုင်သည်။ ပုံစံပြဇယား (SVG၊ PDF၊ DXF)၊ ray-traced render ပုံများနှင့် .glb ဖိုင်များအဖြစ် ထုတ်ယူနိုင်သည်။",
+      en: "Nothing to install. Describe what you want and an AI co-builder builds it with the editor's own tools, step by step, one undo per request. Or build by hand: rooms with doors and windows, whole apartments with levels and stairs, furniture with settings, 34 one-click materials, and terrain with water, grown trees and a sky that follows the time of day. A checker tells you what floats, overlaps or blocks a door. Press Play and walk through the scene in first person with real collisions; behaviours and scripts turn it into a game. Drawings come out as plan sheets (SVG, PDF, DXF), pictures as path-traced renders, and scenes as .glb.",
     },
     standing: {
-      my: "အခမဲ့ editor အဖြစ် အလုပ်လုပ်နေသည်။ နောက်တစ်ဆင့် — scene များကို အကောင့်တွင် သိမ်းပြီး မျှဝေခြင်း၊ ထို့နောက် စာကြောင်းတစ်ကြောင်းဖြင့် scene ကို ပြင်ပေးသော AI co-builder။",
-      en: "Working as a free editor. Next: saving scenes to an account and sharing them, then an AI co-builder that edits the scene from a sentence.",
+      my: "ဘရောက်ဇာထဲတွင် အခမဲ့ ဖွင့်ထားသည်။ AI ကူညီသူသည် သင့်ကိုယ်ပိုင် Anthropic key ဖြင့် အလုပ်လုပ်သည်။ cloud သိမ်းဆည်းမှု၊ မျှဝေလင့်ခ်များနှင့် Claude၊ ChatGPT၊ Cursor အတွက် ချိတ်ဆက်မှုတို့ ပြီးစီးပြီး backend ကို အွန်လိုင်းတင်ပြီးသည်နှင့် ဖွင့်ပါမည်။",
+      en: "Live and free in the browser. The AI co-builder works with your own Anthropic key. Cloud save, share links and the connector for Claude, ChatGPT and Cursor are built and switch on when the backend is hosted.",
     },
     mode: "link",
     target: "https://artcodex.vercel.app/",
     stack: ["React", "three.js", "Django"],
-    shot: "artcodex",
+    shot: "artcodex-cover",
+    gallery: [
+      { shot: "artcodex-times", caption: { my: "နံနက်စောစော၊ ညနေစောင်း၊ ညဉ့်နက် — တူညီသော မြင်ကွင်း", en: "Dawn, dusk and night — one scene" } },
+      { shot: "artcodex-camera", caption: { my: "ကင်မရာမှ ကြည့်ပါ", en: "Look through a camera" } },
+      { shot: "artcodex-play", caption: { my: "ထဲသို့ လျှောက်ဝင်ကြည့်ပါ", en: "Walk through it" } },
+      { shot: "artcodex-plan", caption: { my: "ပုံစံပြဇယား ထုတ်ယူခြင်း", en: "Plan drawings out" } },
+    ],
     art: "orbits",
   },
   {
@@ -241,7 +255,7 @@ export const catalog: CatalogItem[] = [
     },
     mode: "private",
     stack: ["Python", "PostgreSQL", "React", "Cesium"],
-    shot: "pia",
+    shot: "pia-diagram",
     art: "orbits",
   },
 ];
