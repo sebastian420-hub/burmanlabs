@@ -36,7 +36,7 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
   const next = catalog[(idx + 1) % catalog.length];
 
   const linkHref =
-    item.mode === "native" && item.target ? `/${lang}/sims/${item.target}` : item.mode !== "soon" ? item.target : undefined;
+    item.mode === "native" && item.target ? `/${lang}/sims/${item.target}` : item.mode !== "soon" && item.mode !== "private" ? item.target : undefined;
 
   const facts: [string, React.ReactNode][] = [
     [d.dossier.code, item.code],
@@ -66,7 +66,7 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
           </a>
         )
       ) : (
-        d.item.soon
+        item.mode === "private" ? d.item.private : d.item.soon
       ),
     ],
   ];
@@ -105,8 +105,10 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
               {item.mode === "native" && item.target && (
                 <ButtonLink href={`/${lang}/sims/${item.target}`}>{d.item.open}</ButtonLink>
               )}
-              {item.mode === "soon" && (
-                <span className="mono inline-flex rounded-full border border-line-2 px-5 py-2.5 text-ash">{d.item.soon}</span>
+              {(item.mode === "soon" || item.mode === "private") && (
+                <span className="mono inline-flex rounded-full border border-line-2 px-5 py-2.5 text-ash">
+                  {item.mode === "private" ? d.item.private : d.item.soon}
+                </span>
               )}
             </div>
           </div>

@@ -30,9 +30,10 @@ export type Role = "build" | "research" | "study";
  * link   – opens the product's own site in a new tab
  * embed  – tap-to-load iframe (the product must allow framing)
  * native – a page inside this site, at /{lang}/sims/{slug}
- * soon   – real, but no public link yet
+ * soon    – real, but no public link yet
+ * private – real and kept private: no link, and none promised
  */
-export type LaunchMode = "link" | "embed" | "native" | "soon";
+export type LaunchMode = "link" | "embed" | "native" | "soon" | "private";
 
 export interface CatalogItem {
   id: string;
@@ -212,6 +213,36 @@ export const catalog: CatalogItem[] = [
     stack: ["Astro", "Svelte", "TypeScript"],
     shot: "economy-book",
     art: "lines",
+  },
+  {
+    // Three private repos: pia (agents, database, compose), pia-api (FastAPI), pia-ui (React + Cesium).
+    // Facts are from their READMEs and docs/STATUS.md; the image is a diagram, not a screenshot
+    // (PIA's data lives on the author's machine). The repos' own README names Myanmar as the
+    // first focus; the public copy leaves the country out on purpose.
+    id: "pia",
+    code: "BL-006",
+    type: "app",
+    category: "ai",
+    status: "ongoing",
+    role: "build",
+    year: 2026,
+    title: { my: "PIA · Personal Intelligence Agency", en: "PIA · Personal Intelligence Agency" },
+    summary: {
+      my: "အများပြည်သူသိ အချက်အလက်များကို စုဆောင်း၍ လူပုဂ္ဂိုလ်၊ အဖွဲ့အစည်းနှင့် နေရာများအကြောင်း စစ်ဆေးပြီး အချက်များအဖြစ် ပြောင်းလဲကာ ၎င်းတို့ ဆက်စပ်ပုံကို ပြသည့် အချက်အလက် ပေါင်းစပ်ပလက်ဖောင်း။",
+      en: "An intelligence platform for open sources: it collects public reports, turns them into checked facts about people, organisations and places, and shows how they connect.",
+    },
+    about: {
+      my: "PIA သည် ဆော့ဖ်ဝဲထဲရှိ သတင်းထောက်လှမ်းရေး အဖွဲ့အစည်းတစ်ခုလို အလုပ်လုပ်သည်။ အေးဂျင့်တစ်ခုချင်းက အများပြည်သူသိ အချက်အလက်တစ်မျိုးစီကို စုဆောင်းသည် — အင်္ဂလိပ်နှင့် မြန်မာဘာသာ သတင်းများ၊ ပိတ်ဆို့အရေးယူစာရင်းများ၊ ကုမ္ပဏီမှတ်ပုံတင်များ၊ သဘာဝဘေးအန္တရာယ်ဒေတာ၊ ဂြိုဟ်တုများ၊ သင်္ဘောများ၊ လေယာဉ်များနှင့် ကင်မရာများ။ AI မော်ဒယ်တစ်ခုက ဆောင်းပါးတိုင်းကို ကိုးကားချက်အတိအကျပါသော ပြောဆိုချက်များအဖြစ် ပြောင်းပေးပြီး ဒုတိယ မော်ဒယ်က ကိုးကားချက်တစ်ခုချင်းကို ပြန်ဖတ်စစ်သည်။ အတည်ပြုပြီးသော ပြောဆိုချက်များကိုသာ ဘယ်သူက ဘယ်သူ့ကို ဘာလုပ်သည်၊ ဘယ်မှာ၊ ဘယ်အချိန်ဆိုသည့် ဆက်စပ်မှုကွန်ရက်အဖြစ် ချိတ်ဆက်သည်။ အချက်တိုင်းတွင် ကိုးကားချက်၊ ရင်းမြစ်နှင့် A မှ E အထိ အဆင့်သတ်မှတ်ချက် ပါသည်။ အချိန်ဘားပါသော 3D ကမ္ဘာလုံးမြေပုံနှင့် ကတ်များ၊ အချိန်စဉ်များ၊ အမှုများ ပါသော စားပွဲ (Desk) တို့ဖြင့် ပြသပြီး၊ အကူအညီပေးသူက ဝါကျတိုင်းကို အမှတ်စဉ်ပါ ရင်းမြစ်နှင့် ဖြေကြားသည်။",
+      en: "PIA works like an intelligence agency in software. Separate agents each collect one kind of public data: news in English and Burmese, sanctions lists, company registers, hazard feeds, satellites, ships, planes and cameras. A model reads every article into claims with their exact quotes, and a second model re-reads each quote. Only confirmed claims join names into a web of who did what to whom, where and when. Every fact keeps its quote, its source and a source grade from A to E. A 3D globe with a time bar and a desk of cards, timelines and cases show it, and an assistant answers from the data with a numbered source for every sentence.",
+    },
+    standing: {
+      my: "အလုပ်လုပ်သော စမ်းသပ်ပုံစံ (prototype) ဖြစ်ပြီး စက်တစ်လုံးတည်းတွင် စမ်းသပ်ကာလများအတွင်း လည်ပတ်ထားသည်။ အမြဲဖွင့်မထားသေးသလို မရောင်းချသေးပါ။ လောလောဆယ် အများသုံးရန် မဖွင့်ထားပါ။",
+      en: "A working prototype, run for test windows on one machine. It is not always on yet and not for sale yet. It stays private for now.",
+    },
+    mode: "private",
+    stack: ["Python", "PostgreSQL", "React", "Cesium"],
+    shot: "pia",
+    art: "orbits",
   },
 ];
 

@@ -25,7 +25,7 @@ export function toIndexItem(i: CatalogItem, lang: Locale, d: Dict): IndexItem {
     href: dossierHref(i, lang),
     shot: i.shot ? { full: `/work/${i.shot}.webp`, thumb: `/work/${i.shot}-sm.webp` } : undefined,
     cover: <Cover id={i.id} art={coverArt(i)} className="h-full w-full" />,
-    soon: i.mode === "soon",
+    soon: i.mode === "soon" || i.mode === "private",
   };
 }
 

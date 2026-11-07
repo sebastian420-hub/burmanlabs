@@ -102,6 +102,7 @@ Each item has a `type` (what it is) and a `status` (where it stands):
 | `embed`  | Tap-to-load iframe. The product must allow framing (`frame-ancestors`). |
 | `native` | A page in this site at `/{lang}/sims/{target}`.                        |
 | `soon`   | Real, but no public link yet ("Link coming soon").                     |
+| `private`| Real, kept private: no link and none promised ("Private for now").     |
 
 `category` is the topic filter on All work: `ai`, `science`, `hardware`, `art`, `everyday`.
 
