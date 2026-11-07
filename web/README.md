@@ -114,8 +114,10 @@ catalog and `index.works` / `index.expand` / `index.collapse` in the dictionarie
 
 Cortex is `soon` until its package link exists: set `target` to the URL and
 `mode: "link"`. The screenshots in `public/work/` were captured from the real products
-(the Artcodex editor on its `editor-only` branch, and a recorded Cortex session rendered
-through xterm.js).
+(the Artcodex editor from its `main` branch, with scenes built by the editor's own commands, and a
+recorded Cortex session rendered through xterm.js). An item can also carry a `gallery` of captioned
+extra pictures (`public/work/{shot}.webp`, 1600×1000), shown under its main picture; Artcodex has four. When you replace a picture, give it a NEW file name: the offline cache and the
+image optimiser keep the old file under the old name.
 
 The Village, Gentlemen and Orbit lab were taken off the site in November 2026 and the
 remaining work was renumbered BL-001 to BL-004. Their old URLs redirect to All work
