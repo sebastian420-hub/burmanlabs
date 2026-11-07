@@ -9,7 +9,6 @@ import { hasLocale, num } from "@/lib/i18n";
 import { site } from "@/lib/site";
 import HeroGlobe from "@/components/HeroGlobe";
 import Readout from "@/components/Readout";
-import SaveOffline from "@/components/SaveOffline";
 import WorkIndex from "@/components/WorkIndex";
 import { indexLabels, toIndexItem } from "@/components/indexItems";
 import { ButtonLink, Container, Phrases, SectionHead } from "@/components/ui";
@@ -27,15 +26,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     href: itemHref(i, lang),
     typeLabel: d.type[i.type],
   }));
-
-  const offlineUrls = [
-    `/${lang}`,
-    `/${lang}/catalog`,
-    `/${lang}/studio`,
-    ...catalog.filter((i) => i.mode !== "soon" && i.mode !== "private").map((i) => itemHref(i, lang)),
-    ...catalog.map((i) => `/${lang}/catalog/${i.id}`),
-    ...pieces.map((p) => `/${lang}/studio/${p.id}`),
-  ];
 
   const [pre, em, post] = d.hero.title;
   // Counted from the catalog; a kind with nothing in it is left out rather than shown as zero.
@@ -191,14 +181,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             <p className="mono mt-4 text-dim">{h.about.built}</p>
             <p className="mono mt-2 text-dim">{h.about.services}</p>
           </div>
-        </div>
-      </Container>
-
-      {/* ------------------------------------------------- Offline row */}
-      <Container className="mt-14 md:mt-16">
-        <div className="reveal flex flex-col gap-4 border-y border-line py-5 md:flex-row md:items-center md:justify-between">
-          <h2 className="display text-2xl sm:text-3xl">{d.save.title}</h2>
-          <SaveOffline urls={offlineUrls} labels={d.save} />
         </div>
       </Container>
     </>
