@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { archive, P5_COLLECTION, pieces } from "@/content/studio";
+import { pieces } from "@/content/studio";
 import { getDictionary } from "@/lib/dictionaries";
 import { hasLocale } from "@/lib/i18n";
 import { Container, SectionHead } from "@/components/ui";
@@ -63,49 +63,6 @@ export default async function StudioPage({ params }: PageProps<"/[lang]/studio">
             </Link>
           ))}
         </div>
-      </Container>
-
-      <Container className="mt-32">
-        <SectionHead
-          index="02"
-          eyebrow={studio.eyebrow}
-          title={studio.archive}
-          aside={<p className="text-sm text-ash">{studio.archiveNote}</p>}
-        />
-        <ul className="border-b border-line">
-          {archive.map((a) => (
-            <li key={a.id} className="border-t border-line">
-              <a
-                href={a.href}
-                target="_blank"
-                rel="noopener"
-                lang="en"
-                className="group flex items-baseline justify-between gap-4 py-6"
-              >
-                <span className="display text-2xl transition-colors group-hover:text-signal sm:text-3xl">
-                  {a.title}
-                </span>
-                <span className="flex shrink-0 items-center gap-4 text-sm text-dim">
-                  <span className="hidden sm:inline">{a.note[lang]}</span>
-                  <span aria-hidden>↗</span>
-                </span>
-              </a>
-            </li>
-          ))}
-          <li className="border-t border-line">
-            <a
-              href={P5_COLLECTION}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-baseline justify-between gap-4 py-6"
-            >
-              <span className="text-lg text-ash transition-colors group-hover:text-bone">{studio.sketches}</span>
-              <span aria-hidden className="text-sm text-dim">
-                ↗
-              </span>
-            </a>
-          </li>
-        </ul>
       </Container>
     </>
   );

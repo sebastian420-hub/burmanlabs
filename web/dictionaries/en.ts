@@ -129,9 +129,6 @@ const en: typeof my = {
     artist:
       "Burmanlabs was started by Zwe, an artist and programmer from Mandalay, to mix code and art and share them in a way that sticks with you.",
     pieces: "Pieces",
-    archive: "Archive",
-    archiveNote: "The original experiments, kept as they were. English only, and they need an internet connection.",
-    sketches: "More sketches on the p5.js editor",
     interact: "How to play",
     medium: "Medium",
     source: "Original",
