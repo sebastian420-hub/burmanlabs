@@ -58,11 +58,11 @@ const en: typeof my = {
     about: {
       eyebrow: "About",
       title: "Hi, I'm Zwe.",
-      bio: "I'm an artist and programmer from Mandalay. Burmanlabs is where I put what I make: software built for people who need it, experiments I run in the open, and the things I'm learning on the way to building an autonomous drone.",
+      bio: "I'm an artist and programmer from Mandalay. Burmanlabs is where I put what I make: software built for people who need it, interactive books and simulations that teach, and the things I'm learning on the way to building an autonomous drone.",
       nowTitle: "Right now",
       now: [
         "Building apps for people who need them",
-        "Running my own experiments",
+        "Writing interactive books and simulations",
         "Learning neuromorphic chip design, toward an autonomous drone",
       ],
       contact: "Contact",
@@ -132,7 +132,7 @@ const en: typeof my = {
     view: "View",
   },
   footer: {
-    line: "Zwe's lab: software for people, experiments of my own, and what I'm learning.",
+    line: "Zwe's lab: software that works, books that teach, and what I'm learning.",
     explore: "Explore",
     contact: "Contact",
     language: "Language",
