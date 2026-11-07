@@ -70,15 +70,6 @@ const en: typeof my = {
       services: "Also available for client work: web and mobile apps, 3D and simulations, AI tools. Email to talk.",
     },
   },
-  save: {
-    title: "Keep it on your phone",
-    button: "Save on this phone",
-    hint: "Saves the pages so they open without internet.",
-    saving: "Saving…",
-    done: "Saved",
-    failed: "Some pages could not be saved. Try again later.",
-    unsupported: "This browser can't save pages.",
-  },
   catalog: {
     eyebrow: "Work",
     title: "All work",

@@ -2,8 +2,8 @@
  *
  *  - Pages and Next.js RSC data: network first (3.5 s), then the cached copy, then /offline.html.
  *  - Hashed static assets (/_next/static/*, fonts, icons): cache first, they never change.
- *  - "Save on this phone" posts the page list here; we download the pages and the JS/CSS/fonts
- *    they reference so they open with no network at all.
+ *  - A "precache" message with a page list downloads those pages and the JS/CSS/fonts they
+ *    reference (no button sends it any more; kept so it can be used again).
  *
  * Bump VERSION to drop every old cache.
  */

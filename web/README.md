@@ -156,8 +156,7 @@ saved for offline), and a catalog row with `mode: "native"`.
   and stops drawing when off-screen or when the tab is hidden.
 - **Sims download only after a tap**, then run in a lazy chunk.
 - **Service worker** (`public/sw.js`): network-first pages with a 3.5 s timeout, cache-first
-  hashed assets, an offline page, and a "Save on this phone" button that downloads every
-  page plus its JS/CSS. Production build only. Bump `VERSION` in `sw.js` to reset caches.
+  hashed assets, and an offline page; pages open offline once visited. Production build only. Bump `VERSION` in `sw.js` to reset caches.
 - External products (`link` / `embed`) are not cached; only this site is.
 
 ## Configuration
@@ -182,5 +181,5 @@ phone with a Zawgyi system font.
 2. Home loads on 3G or with Data Saver on and shows no 3D; turning 3D on works and stays smooth.
 3. Dragging the globe sideways rotates it and does not block vertical scrolling; tapping a light opens its card.
 4. Catalog search works with the Burmese keyboard you actually use (Unicode and Zawgyi).
-5. "Save on this phone", then airplane mode: home, catalog and the Studio pieces still open.
+5. Visit home, the catalog and a Studio piece, then airplane mode: those pages still open.
 6. Add to Home Screen; the icon and standalone launch look right.
