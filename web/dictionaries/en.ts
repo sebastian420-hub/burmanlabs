@@ -4,14 +4,14 @@ const en: typeof my = {
   site: {
     name: "Burmanlabs",
     description:
-      "Zwe's lab: apps built for people who need them, my own research and experiments, and what I'm learning on the way to robotics.",
+      "Zwe's lab in Mandalay: working software, AI tools, simulations and interactive books, on the way to robotics.",
   },
   nav: { catalog: "Work", studio: "Studio", about: "About", home: "Home", menu: "Menu" },
   lang: { other: "မြန်မာ", otherLabel: "မြန်မာဘာသာသို့ ပြောင်းမည်", current: "EN" },
   hero: {
     eyebrow: "Zwe's lab · Mandalay",
-    title: ["Apps for people. ", "Experiments", " of my own."],
-    sub: "Working software built for others, research run as experiments, and what I'm learning on the way to robotics.",
+    title: ["Software that works. Books that ", "teach", "."],
+    sub: "AI tools, a 3D editor, an intelligence platform, simulations and interactive books, built in Mandalay. Robotics is next.",
     cta: "All work",
     hint: "Drag · tap a light",
     globeAria: "Interactive 3D globe where each light is one piece of work",
@@ -100,6 +100,7 @@ const en: typeof my = {
     open: "Open",
     openNew: "Open the site",
     soon: "Link coming soon",
+    private: "Private for now",
     offline: "Works offline",
     online: "Needs internet",
     size: "Data",

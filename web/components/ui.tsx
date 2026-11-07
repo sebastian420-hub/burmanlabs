@@ -84,3 +84,23 @@ export function StatusDot({ status }: { status: "live" | "ongoing" | "learning" 
   const c = status === "live" ? "bg-gold" : status === "ongoing" ? "bg-signal" : "bg-ash";
   return <span aria-hidden className={`inline-block size-1.5 rounded-full ${c}`} />;
 }
+
+/**
+ * Burmese has no spaces between words, so a browser may split a word across two lines. The spaces
+ * we do write mark phrase boundaries; keep each phrase whole and break only there.
+ * English needs none of this and is returned as it is.
+ */
+export function Phrases({ text, lang }: { text: string; lang: "my" | "en" }) {
+  if (lang !== "my") return <>{text}</>;
+  return (
+    <>
+      {text.split(/(\s+)/).map((chunk, i) =>
+        /^\s*$/.test(chunk) ? chunk : (
+          <span key={i} className="whitespace-nowrap">
+            {chunk}
+          </span>
+        ),
+      )}
+    </>
+  );
+}

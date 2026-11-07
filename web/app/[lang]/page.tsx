@@ -12,7 +12,7 @@ import Readout from "@/components/Readout";
 import SaveOffline from "@/components/SaveOffline";
 import WorkIndex from "@/components/WorkIndex";
 import { indexLabels, toIndexItem } from "@/components/indexItems";
-import { ButtonLink, Container, SectionHead } from "@/components/ui";
+import { ButtonLink, Container, Phrases, SectionHead } from "@/components/ui";
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -32,7 +32,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     `/${lang}`,
     `/${lang}/catalog`,
     `/${lang}/studio`,
-    ...catalog.filter((i) => i.mode !== "soon").map((i) => itemHref(i, lang)),
+    ...catalog.filter((i) => i.mode !== "soon" && i.mode !== "private").map((i) => itemHref(i, lang)),
     ...catalog.map((i) => `/${lang}/catalog/${i.id}`),
     ...pieces.map((p) => `/${lang}/studio/${p.id}`),
   ];
@@ -62,11 +62,15 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           <div className="lg:col-span-7">
             <p className="eyebrow intro">{d.hero.eyebrow}</p>
             <h1 className="display t-hero intro-2 mt-4 max-w-3xl">
-              {pre}
-              <em>{em}</em>
-              {post}
+              <Phrases text={pre} lang={lang} />
+              <em>
+                <Phrases text={em} lang={lang} />
+              </em>
+              <Phrases text={post} lang={lang} />
             </h1>
-            <p className="intro-3 mt-5 max-w-lg text-[17px] text-ash">{d.hero.sub}</p>
+            <p className="intro-3 mt-5 max-w-lg text-[17px] text-ash">
+              <Phrases text={d.hero.sub} lang={lang} />
+            </p>
             <div className="intro-3 mt-6 flex flex-wrap items-center gap-3">
               <ButtonLink href={`/${lang}/catalog`}>{d.hero.cta}</ButtonLink>
               <ButtonLink href={`/${lang}/studio`} variant="ghost">
