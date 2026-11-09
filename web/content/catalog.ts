@@ -194,6 +194,7 @@ export const catalog: CatalogItem[] = [
     gallery: [
       { shot: "artcodex-atmosphere", caption: { my: "နေ၊ ကောင်းကင်နှင့် ရာသီဥတု တိုက်ရိုက်ထိန်းချုပ်မှုများ", en: "Live editor studio with atmospheric and lighting controls" } },
       { shot: "artcodex-lake-sunset", caption: { my: "ကန်စပ်နေဝင်ချိန်နှင့် ဆိပ်ခံတံတား ရှုခင်း", en: "Lakeside sunset and dock walkthrough" } },
+      { shot: "artcodex-lake-pagoda", caption: { my: "နေဝင်ချိန် ကန်စပ်ရှုခင်းနှင့် တောင်ကုန်းပေါ်ရှိ စေတီတော်ကို တည်းဖြတ်နေသည့် မြင်ကွင်း", en: "Sunset lakeside cottage and hilltop pagoda in the live editor" } },
       { shot: "artcodex-engineer-house", caption: { my: "ဗိသုကာအတွင်းပိုင်းနှင့် အဆင့်မြင့် အလင်းပြန်လက်ရာ", en: "Architectural interior and raytraced materials" } },
       { shot: "artcodex-art-pieces", caption: { my: "PBR Material များနှင့် 3D အနုပညာပုံသဏ္ဌာန်များ", en: "PBR materials and curated 3D art primitives" } },
     ],

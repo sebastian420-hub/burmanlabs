@@ -35,9 +35,16 @@ export default function Gallery({ gallery, lang }: GalleryProps) {
 
   if (!gallery || gallery.length === 0) return null;
 
+  const gridClass =
+    gallery.length === 5
+      ? "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
+      : gallery.length === 3
+        ? "sm:grid-cols-2 lg:grid-cols-3"
+        : "sm:grid-cols-2 lg:grid-cols-4";
+
   return (
     <>
-      <ul className="mt-5 grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className={`mt-5 grid gap-x-5 gap-y-7 ${gridClass}`}>
         {gallery.map((g, i) => (
           <li key={g.shot}>
             <button
