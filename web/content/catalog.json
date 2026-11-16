@@ -204,10 +204,10 @@
     "id": "pia",
     "code": "BL-006",
     "type": "app",
-    "category": "ai",
+    "category": "everyday",
     "status": "ongoing",
     "role": "build",
-    "year": 2026,
+    "year": 2025,
     "title": {
       "my": "PIA · Personal Intelligence Agency",
       "en": "PIA · Personal Intelligence Agency"
@@ -232,6 +232,7 @@
       "Cesium"
     ],
     "shot": "pia-diagram",
-    "art": "orbits"
+    "art": "orbits",
+    "offline": false
   }
 ]
