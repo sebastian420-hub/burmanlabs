@@ -14,7 +14,10 @@ export const viewport: Viewport = {
   themeColor: "#0b0a09",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   viewportFit: "cover",
+  interactiveWidget: "resizes-visual",
 };
 
 export function generateStaticParams() {

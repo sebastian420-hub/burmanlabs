@@ -39,7 +39,7 @@ export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm border border-line bg-ink p-6 shadow-2xl"
+        className="w-full max-w-sm border border-line bg-ink p-5 sm:p-6 shadow-2xl touch-manipulation"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between pb-4 border-b border-line">
@@ -50,9 +50,11 @@ export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="text-xs text-muted hover:text-paper px-2 py-1 transition-colors"
+            aria-label="Close"
+            className="px-2.5 py-1 text-xs rounded bg-ink-2 border border-line-2 hover:border-white text-bone font-mono transition-all active:scale-95 flex items-center gap-1 cursor-pointer"
           >
-            ✕
+            <span>✕</span>
+            <span>Close</span>
           </button>
         </div>
 
@@ -82,12 +84,18 @@ export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-2">
-            <span className="font-mono text-[10px] text-muted hidden sm:inline">Press Esc to cancel</span>
+          <div className="flex items-center justify-between gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-3.5 py-2 sm:py-1.5 border border-line font-mono text-xs text-muted hover:text-paper hover:border-line-2 transition-colors rounded cursor-pointer active:scale-95"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
               disabled={isPending || !password}
-              className="w-full sm:w-auto px-4 py-2 sm:py-1.5 bg-paper text-ink font-mono text-xs font-medium hover:bg-white disabled:opacity-50 transition-opacity"
+              className="flex-1 sm:flex-initial px-5 py-2 sm:py-1.5 bg-paper text-ink font-mono text-xs font-semibold hover:bg-white disabled:opacity-50 transition-opacity rounded cursor-pointer active:scale-95 shadow-md"
             >
               {isPending ? "Unlocking…" : "Unlock"}
             </button>

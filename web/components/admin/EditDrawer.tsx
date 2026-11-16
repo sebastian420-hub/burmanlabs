@@ -21,9 +21,10 @@ interface EditDrawerProps {
   activeTarget: EditTarget | null;
   onClose: () => void;
   onSelectTarget: (target: EditTarget | null) => void;
+  onLogout?: () => void;
 }
 
-export function EditDrawer({ isOpen, activeTarget, onClose, onSelectTarget }: EditDrawerProps) {
+export function EditDrawer({ isOpen, activeTarget, onClose, onSelectTarget, onLogout }: EditDrawerProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<ContentCategory>("all");
@@ -70,7 +71,7 @@ export function EditDrawer({ isOpen, activeTarget, onClose, onSelectTarget }: Ed
       onClick={onClose}
     >
       <aside
-        className="w-full max-w-xl h-dvh max-h-screen bg-ink border-l border-line shadow-2xl flex flex-col justify-between overflow-hidden"
+        className="w-full max-w-xl h-[100dvh] max-h-[100dvh] bg-ink border-l border-line shadow-2xl flex flex-col justify-between overflow-hidden overscroll-contain touch-manipulation"
         onClick={(e) => e.stopPropagation()}
       >
         {activeTarget ? (
@@ -90,6 +91,7 @@ export function EditDrawer({ isOpen, activeTarget, onClose, onSelectTarget }: Ed
             setSelectedCategory={setSelectedCategory}
             onSelectTarget={(target) => onSelectTarget(target)}
             onClose={onClose}
+            onLogout={onLogout}
           />
         )}
       </aside>
@@ -158,6 +160,7 @@ interface NavigatorViewProps {
   setSelectedCategory: (cat: ContentCategory) => void;
   onSelectTarget: (t: EditTarget) => void;
   onClose: () => void;
+  onLogout?: () => void;
 }
 
 function NavigatorView({
@@ -169,23 +172,40 @@ function NavigatorView({
   setSelectedCategory,
   onSelectTarget,
   onClose,
+  onLogout,
 }: NavigatorViewProps) {
   return (
     <>
       {/* Top Header */}
-      <div className="p-6 pb-4 border-b border-line bg-ink shrink-0 space-y-4">
-        <div className="flex items-center justify-between">
+      <div className="p-4 sm:p-6 pb-4 border-b border-line bg-ink shrink-0 space-y-3.5 pt-[max(1rem,env(safe-area-inset-top,0px))]">
+        <div className="flex items-center justify-between gap-2">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-wider text-muted">Burmanlabs Admin</div>
             <h2 className="font-mono text-base font-semibold text-paper mt-0.5">Content Manager</h2>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-muted hover:text-paper px-2 py-1 font-mono text-xs cursor-pointer transition-colors"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            {onLogout && (
+              <button
+                type="button"
+                onClick={onLogout}
+                className="px-2.5 py-1.5 rounded bg-ink-3 border border-red-900/60 hover:border-red-500 text-red-300 font-mono text-[11px] transition-colors cursor-pointer flex items-center gap-1 active:scale-95"
+                title="Log out of Admin Mode"
+              >
+                <span>⎋</span>
+                <span className="hidden sm:inline">Exit Admin</span>
+                <span className="sm:hidden">Exit</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-3 py-1.5 rounded bg-ink-2 border border-line-2 hover:border-white text-bone font-mono text-xs cursor-pointer transition-all active:scale-95 flex items-center gap-1.5"
+              aria-label="Close Content Manager"
+            >
+              <span>✕</span>
+              <span>Close</span>
+            </button>
+          </div>
         </div>
 
         {/* Live Search */}
@@ -196,13 +216,13 @@ function NavigatorView({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search all copy (e.g. drone, Artcodex, bio, email)…"
-            className="w-full bg-ink-2 border border-line px-3.5 py-2 text-xs text-paper font-mono placeholder:text-muted/60 focus:border-paper focus:outline-none"
+            className="w-full bg-ink-2 border border-line px-3.5 py-2 text-base sm:text-xs text-paper font-mono placeholder:text-muted/60 focus:border-paper focus:outline-none"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-2 text-muted hover:text-paper font-mono text-xs cursor-pointer"
+              className="absolute right-2.5 top-2.5 text-muted hover:text-paper font-mono text-xs cursor-pointer p-1"
             >
               ✕
             </button>
@@ -218,7 +238,7 @@ function NavigatorView({
                 key={tab.id}
                 type="button"
                 onClick={() => setSelectedCategory(tab.id)}
-                className={`px-2.5 py-1 font-mono text-[11px] whitespace-nowrap transition-colors cursor-pointer rounded border ${
+                className={`px-2.5 py-1 font-mono text-[11px] whitespace-nowrap transition-colors cursor-pointer rounded border touch-manipulation ${
                   isActive
                     ? "bg-black border-bone text-white font-semibold shadow-sm"
                     : "bg-ink-2 border-line text-ash hover:text-white hover:border-line-2"
@@ -232,7 +252,7 @@ function NavigatorView({
       </div>
 
       {/* Scrollable Results List */}
-      <div className="flex-1 min-h-0 overflow-y-auto p-6 divide-y divide-line">
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 divide-y divide-line">
         {entries.length === 0 ? (
           <div className="py-12 text-center">
             <p className="font-mono text-xs text-muted">No text matches &ldquo;{searchQuery}&rdquo;</p>
@@ -275,12 +295,38 @@ function NavigatorView({
         )}
       </div>
 
-      {/* Footer Info */}
-      <div className="border-t border-line px-6 py-3 bg-ink shrink-0 flex items-center justify-between text-muted font-mono text-[11px]">
-        <span>Showing {entries.length} of {totalCount} editable fields</span>
-        <div className="flex items-center gap-3">
-          <GitHubTestButton />
-          <span>Esc to close</span>
+      {/* Bottom Footer Actions (Desktop & Mobile with safe-area padding) */}
+      <div className="border-t border-line px-4 sm:px-6 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] bg-ink shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 font-mono text-[11px] text-muted">
+          <div className="flex items-center justify-between sm:justify-start gap-3">
+            <span>Showing {entries.length} of {totalCount} editable fields</span>
+            <span className="hidden sm:inline">·</span>
+            <span className="hidden sm:inline">Esc to close</span>
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <GitHubTestButton />
+            {onLogout && (
+              <button
+                type="button"
+                onClick={onLogout}
+                className="flex-1 sm:flex-none justify-center px-3 py-2 sm:py-1.5 rounded bg-ink-3 border border-red-900/60 hover:border-red-500 text-red-300 font-mono text-xs transition-colors cursor-pointer flex items-center gap-1.5 active:scale-95"
+                title="Log out of Admin Mode"
+              >
+                <span>⎋</span>
+                <span>Exit Admin</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 sm:flex-none justify-center px-4 py-2 sm:py-1.5 rounded bg-bone text-ink font-mono text-xs font-semibold hover:bg-white transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 shadow-md"
+              title="Close Content Manager"
+            >
+              <span>✕</span>
+              <span>Close Manager</span>
+            </button>
+          </div>
         </div>
       </div>
     </>
@@ -468,8 +514,8 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
   return (
     <>
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-line bg-ink shrink-0">
-        <div>
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-line bg-ink shrink-0 pt-[max(0.875rem,env(safe-area-inset-top,0px))]">
+        <div className="min-w-0 pr-2">
           <button
             type="button"
             onClick={onBack}
@@ -477,40 +523,41 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
           >
             ← All Content
           </button>
-          <h2 className="font-mono text-base font-semibold text-paper mt-1">{target.label}</h2>
+          <h2 className="font-mono text-base font-semibold text-paper mt-1 truncate">{target.label}</h2>
           {target.type === "dictionary" && target.description && (
-            <p className="font-mono text-xs text-muted mt-0.5">{target.description}</p>
+            <p className="font-mono text-xs text-muted mt-0.5 truncate">{target.description}</p>
           )}
         </div>
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
             onClick={handleSave}
             disabled={isPending}
-            className="px-3.5 py-1.5 bg-black border border-line-2 text-white font-mono text-xs font-medium hover:border-white disabled:opacity-50 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+            className="px-3.5 py-1.5 bg-black border border-line-2 text-white font-mono text-xs font-medium hover:border-white disabled:opacity-50 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
           >
             {isPending ? (
               <>
                 <span className="inline-block h-2.5 w-2.5 animate-spin rounded-full border border-white border-t-transparent" />
-                <span>Saving…</span>
+                <span className="hidden sm:inline">Saving…</span>
               </>
             ) : (
-              <span>Save & Publish</span>
+              <span>Save</span>
             )}
           </button>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close editor"
-            className="text-muted hover:text-paper px-2 py-1 font-mono text-xs transition-colors cursor-pointer"
+            className="px-2.5 py-1.5 rounded bg-ink-2 border border-line-2 hover:border-white text-bone font-mono text-xs cursor-pointer transition-all active:scale-95 flex items-center gap-1"
           >
-            ✕
+            <span>✕</span>
+            <span className="hidden sm:inline">Close</span>
           </button>
         </div>
       </div>
 
       {/* Scrollable Form Content */}
-      <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6">
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-6">
         {/* CASE 1: Dictionary target */}
         {target.type === "dictionary" && (
           <>
@@ -1059,8 +1106,8 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
         )}
       </div>
 
-      {/* Footer Actions */}
-      <div className="border-t border-line px-6 py-4 bg-ink shrink-0">
+      {/* Footer Actions (Desktop & Mobile with safe-area padding) */}
+      <div className="border-t border-line px-4 sm:px-6 py-3.5 pb-[max(1rem,env(safe-area-inset-bottom,0px))] bg-ink shrink-0">
         {error && (
           <div className="mb-3 font-mono text-xs text-red-400 bg-red-950/30 border border-red-900/50 p-2.5">
             {error}
@@ -1073,21 +1120,30 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
           </div>
         )}
 
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={onBack}
-            disabled={isPending}
-            className="px-4 py-2 border border-line font-mono text-xs text-white hover:border-line-2 transition-colors cursor-pointer"
-          >
-            ← Back to All
-          </button>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onBack}
+              disabled={isPending}
+              className="px-3.5 py-2 rounded border border-line bg-ink-2 font-mono text-xs text-white hover:border-line-2 transition-colors cursor-pointer active:scale-95"
+            >
+              ← Back
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-3.5 py-2 rounded border border-line-2 font-mono text-xs text-ash hover:text-white transition-colors cursor-pointer active:scale-95"
+            >
+              ✕ Close
+            </button>
+          </div>
 
           <button
             type="button"
             onClick={handleSave}
             disabled={isPending}
-            className="px-5 py-2 bg-black border border-line-2 text-white font-mono text-xs font-medium hover:border-white disabled:opacity-50 transition-all flex items-center gap-2 cursor-pointer shadow-sm"
+            className="px-4 sm:px-5 py-2 rounded bg-black border border-line-2 text-white font-mono text-xs font-medium hover:border-white disabled:opacity-50 transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
           >
             {isPending ? (
               <>

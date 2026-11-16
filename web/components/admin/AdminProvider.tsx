@@ -153,6 +153,7 @@ export function AdminProvider({ children }: AdminProviderProps) {
         activeTarget={activeEdit}
         onClose={handleCloseDrawer}
         onSelectTarget={(target) => setActiveEdit(target)}
+        onLogout={handleLogout}
       />
     </AdminContext.Provider>
   );
