@@ -68,7 +68,7 @@
     "category": "ai",
     "status": "live",
     "role": "build",
-    "year": 2026,
+    "year": 2024,
     "title": {
       "my": "Cortex",
       "en": "Cortex"
@@ -88,13 +88,11 @@
     "mode": "link",
     "target": "https://github.com/sebastian420-hub/cortex",
     "stack": [
-      "Python",
-      "Rust",
-      "LLM agents",
-      "Ollama"
+      "Python 96.6% | Rust 1.6% | Shell 0.9% | Go 0.7% | PowerShell 0.1% | Makefile 0.1%"
     ],
     "shot": "cortex",
-    "art": "lines"
+    "art": "lines",
+    "offline": false
   },
   {
     "id": "artcodex",
