@@ -82,12 +82,14 @@
       "en": "A command-line agent that works inside your project: it reads the code, plans, runs tools and asks before anything risky. The model is yours to choose, local through Ollama or hosted through OpenAI, Anthropic, DeepSeek or OpenRouter, and sessions can be saved and picked up later. Optional layered memory keeps what it learned about a project, and a plan mode works read-only."
     },
     "standing": {
-      "my": "ဗားရှင်း 1.2 ကို ကိုယ်တိုင် နေ့စဉ် သုံးနေသည်။ တပ်ဆင်ရန် package ကို မကြာမီ ထည့်ပါမည်။",
-      "en": "Version 1.2 runs daily as my own tool. A package to install is coming."
+      "my": "ဗားရှင်း 1.2 ကို GitHub တွင် cortex-cli အဖြစ် ထုတ်ပိုးထားသည်။ pipx သို့မဟုတ် uv tool ဖြင့် တပ်ဆင်နိုင်သည်။",
+      "en": "Version 1.2 packaged as cortex-cli on GitHub. Installable via pipx or uv tool."
     },
-    "mode": "soon",
+    "mode": "link",
+    "target": "https://github.com/sebastian420-hub/cortex",
     "stack": [
       "Python",
+      "Rust",
       "LLM agents",
       "Ollama"
     ],
