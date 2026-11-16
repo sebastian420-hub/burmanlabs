@@ -17,8 +17,26 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (pathname.startsWith("/api/")) return;
 
+  // Direct /admin shortcut -> redirect to /[locale]?admin=1
+  if (pathname === "/admin" || pathname === "/admin/") {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${pickLocale(request)}`;
+    url.searchParams.set("admin", "1");
+    return NextResponse.redirect(url);
+  }
+
   const first = pathname.split("/")[1] ?? "";
-  if (hasLocale(first)) return;
+  if (hasLocale(first)) {
+    // Also handle /[locale]/admin
+    const second = pathname.split("/")[2] ?? "";
+    if (second === "admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${first}`;
+      url.searchParams.set("admin", "1");
+      return NextResponse.redirect(url);
+    }
+    return;
+  }
 
   const url = request.nextUrl.clone();
   url.pathname = `/${pickLocale(request)}${pathname === "/" ? "" : pathname}`;

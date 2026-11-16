@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
+import { useAdmin } from "@/components/admin";
 
 interface Props {
   lang: Locale;
@@ -10,6 +13,8 @@ interface Props {
 }
 
 export default function Footer({ lang, labels, links, email }: Props) {
+  const { setLoginModalOpen, isAdmin, openManager } = useAdmin();
+
   return (
     <footer className="relative mt-32 overflow-hidden border-t border-line">
       <div className="mx-auto max-w-7xl px-5 pt-16 sm:px-8">
@@ -52,7 +57,20 @@ export default function Footer({ lang, labels, links, email }: Props) {
         />
       </div>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-8 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] text-xs text-dim sm:px-8">
-        <span>© {new Date().getFullYear()} Burmanlabs</span>
+        <button
+          type="button"
+          onClick={() => {
+            if (isAdmin) {
+              openManager();
+            } else {
+              setLoginModalOpen(true);
+            }
+          }}
+          className="text-left text-dim hover:text-ash transition-colors cursor-default select-none"
+          title="Burmanlabs"
+        >
+          © {new Date().getFullYear()} Burmanlabs
+        </button>
         <span className="eyebrow !text-dim">Mandalay · Myanmar</span>
       </div>
     </footer>

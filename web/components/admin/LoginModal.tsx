@@ -65,10 +65,14 @@ export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
               id="admin-pwd"
               type="password"
               autoFocus
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck="false"
+              enterKeyHint="go"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter admin password…"
-              className="w-full bg-ink-2 border border-line px-3 py-2 text-sm text-paper placeholder:text-muted/50 focus:border-paper focus:outline-none font-mono"
+              className="w-full bg-ink-2 border border-line px-3 py-2 text-base sm:text-sm text-paper placeholder:text-muted/50 focus:border-paper focus:outline-none font-mono"
             />
           </div>
 
@@ -79,11 +83,11 @@ export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
           )}
 
           <div className="flex items-center justify-between pt-2">
-            <span className="font-mono text-[10px] text-muted">Press Esc to cancel</span>
+            <span className="font-mono text-[10px] text-muted hidden sm:inline">Press Esc to cancel</span>
             <button
               type="submit"
               disabled={isPending || !password}
-              className="px-4 py-1.5 bg-paper text-ink font-mono text-xs font-medium hover:bg-white disabled:opacity-50 transition-opacity"
+              className="w-full sm:w-auto px-4 py-2 sm:py-1.5 bg-paper text-ink font-mono text-xs font-medium hover:bg-white disabled:opacity-50 transition-opacity"
             >
               {isPending ? "Unlocking…" : "Unlock"}
             </button>

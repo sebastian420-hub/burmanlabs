@@ -12,7 +12,7 @@ export function AdminBar({ isAdmin, onLogout, onOpenManager }: AdminBarProps) {
   return (
     <aside
       aria-label="Admin mode bar"
-      className="fixed bottom-4 right-4 z-40 flex items-center gap-3 border border-line bg-ink/90 px-3.5 py-2 shadow-xl backdrop-blur-md"
+      className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))] max-w-[calc(100vw-2rem)] z-40 flex items-center gap-2.5 sm:gap-3 border border-line bg-ink/95 px-3 py-1.5 sm:px-3.5 sm:py-2 shadow-xl backdrop-blur-md"
     >
       <div className="flex items-center gap-2">
         <span className="relative flex h-2 w-2">

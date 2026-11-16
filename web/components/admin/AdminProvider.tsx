@@ -38,10 +38,14 @@ export function AdminProvider({ children }: AdminProviderProps) {
         setIsLoading(false);
 
         // Check if query param ?admin=1 is set
-        if (!authenticated && typeof window !== "undefined") {
+        if (typeof window !== "undefined") {
           const params = new URLSearchParams(window.location.search);
           if (params.get("admin") === "1" || params.get("edit") === "1") {
-            setLoginModalOpen(true);
+            if (authenticated) {
+              setIsManagerOpen(true);
+            } else {
+              setLoginModalOpen(true);
+            }
           }
         }
       }
