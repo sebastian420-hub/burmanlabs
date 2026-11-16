@@ -103,7 +103,7 @@
     "category": "art",
     "status": "ongoing",
     "role": "build",
-    "year": 2025,
+    "year": 2024,
     "title": {
       "my": "Artcodex",
       "en": "Artcodex"
@@ -165,7 +165,8 @@
         }
       }
     ],
-    "art": "orbits"
+    "art": "orbits",
+    "offline": false
   },
   {
     "id": "economy-book",
