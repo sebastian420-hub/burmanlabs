@@ -8,7 +8,6 @@ import { getDictionary } from "@/lib/dictionaries";
 import { hasLocale, num } from "@/lib/i18n";
 import { site } from "@/lib/site";
 import HeroGlobe from "@/components/HeroGlobe";
-import Readout from "@/components/Readout";
 import WorkIndex from "@/components/WorkIndex";
 import { indexLabels, toIndexItem } from "@/components/indexItems";
 import { ButtonLink, Container, Phrases, SectionHead } from "@/components/ui";
@@ -95,9 +94,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
               <ButtonLink href={`/${lang}/studio`} variant="ghost">
                 {d.studio.viewAll}
               </ButtonLink>
-            </div>
-            <div className="intro-3 mt-8">
-              <Readout place={d.readout.place} local={d.readout.local} />
             </div>
           </div>
           <div className="mx-auto w-full max-w-[300px] sm:max-w-[360px] lg:col-span-5 lg:ml-auto lg:max-w-[400px]">
@@ -261,8 +257,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                 </li>
               ))}
             </ul>
-            <p className="mono mt-4 text-dim">{h.about.built}</p>
-            <p className="mono mt-2 text-dim">{h.about.services}</p>
           </div>
         </div>
       </Container>

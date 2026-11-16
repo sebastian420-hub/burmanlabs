@@ -33,8 +33,6 @@
     "scroll": "Scroll"
   },
   "readout": {
-    "place": "Mandalay",
-    "local": "local time",
     "entries": "entries",
     "live": "running"
   },
@@ -81,9 +79,7 @@
         "Writing interactive books and simulations (The Economy and EduSim)",
         "Studying neuromorphic hardware, toward building an autonomous drone"
       ],
-      "contact": "Contact",
-      "built": "Free, Burmese first, light on data, works offline.",
-      "services": "Also available for client work: web and mobile apps, 3D and simulations, AI tools. Email to talk."
+      "contact": "Contact"
     }
   },
   "catalog": {

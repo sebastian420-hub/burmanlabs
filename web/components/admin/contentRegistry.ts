@@ -82,8 +82,6 @@ export function buildContentRegistry(
   addDict("hero_sub", "hero", "Hero & Landing", "Hero Subtitle", "hero.sub", en.hero.sub, my.hero.sub, "textarea", "Sentence below the main headline");
   addDict("hero_cta", "hero", "Hero & Landing", "Hero CTA Button", "hero.cta", en.hero.cta, my.hero.cta, "text", "Primary button link text");
   addDict("hero_hint", "hero", "Hero & Landing", "Globe Hint", "hero.hint", en.hero.hint, my.hero.hint, "text", "Hint text below the 3D globe");
-  addDict("readout_place", "hero", "Hero & Landing", "Live Readout City", "readout.place", en.readout.place, my.readout.place, "text", "City displayed next to the clock");
-  addDict("readout_local", "hero", "Hero & Landing", "Live Readout Label", "readout.local", en.readout.local, my.readout.local, "text", "Label next to the live time readout");
 
   // --- 2. ABOUT ZWE ---
   addDict("about_eyebrow", "about", "About Zwe", "About Eyebrow", "home.about.eyebrow", en.home.about.eyebrow, my.home.about.eyebrow, "text", "Tag above the About section");
@@ -92,8 +90,6 @@ export function buildContentRegistry(
   addDict("about_now_title", "about", "About Zwe", "Right Now Title", "home.about.nowTitle", en.home.about.nowTitle, my.home.about.nowTitle, "text", "Headline for current active focuses");
   addDict("about_now", "about", "About Zwe", "Right Now (Focus Items)", "home.about.now", en.home.about.now, my.home.about.now, "stringArray", "Numbered focus bullets (01, 02, 03)");
   addDict("about_contact", "about", "About Zwe", "Contact Button", "home.about.contact", en.home.about.contact, my.home.about.contact, "text", "Contact CTA button text");
-  addDict("about_built", "about", "About Zwe", "Built Principle Note", "home.about.built", en.home.about.built, my.home.about.built, "textarea", "Free, offline, low-data principle note");
-  addDict("about_services", "about", "About Zwe", "Services Note", "home.about.services", en.home.about.services, my.home.about.services, "textarea", "Consulting and development services note");
   addDict("site_email", "about", "About Zwe", "Contact Email", "site.email", en.site.email || "lwinzwezarni@gmail.com", my.site.email || "lwinzwezarni@gmail.com", "text", "Public contact email displayed in bio & footer");
 
   // --- 3. CATALOG PROJECTS ---
