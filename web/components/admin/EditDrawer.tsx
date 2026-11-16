@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import type { CatalogItem, Piece, Status } from "@/lib/types";
+import type { CatalogItem, CategoryId, ItemType, LaunchMode, Piece, Role, Status } from "@/lib/types";
 import { saveCatalogItemField, saveDictionaryField, saveStudioPieceField } from "@/lib/adminClient";
 import type { EditTarget } from "./types";
 import {
@@ -311,26 +311,64 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
   );
 
   // Catalog item state
+  const [catCode, setCatCode] = useState(
+    target.type === "catalogItem" ? target.item.code || "" : ""
+  );
+  const [catTitleEn, setCatTitleEn] = useState(
+    target.type === "catalogItem" ? target.item.title?.en || "" : ""
+  );
+  const [catTitleMy, setCatTitleMy] = useState(
+    target.type === "catalogItem" ? target.item.title?.my || "" : ""
+  );
   const [catStatus, setCatStatus] = useState<Status>(
     target.type === "catalogItem" ? target.item.status : "ongoing"
   );
+  const [catType, setCatType] = useState<ItemType>(
+    target.type === "catalogItem" ? target.item.type : "app"
+  );
+  const [catCategory, setCatCategory] = useState<CategoryId>(
+    target.type === "catalogItem" ? target.item.category : "art"
+  );
+  const [catRole, setCatRole] = useState<Role>(
+    target.type === "catalogItem" ? target.item.role : "build"
+  );
+  const [catYear, setCatYear] = useState<string>(
+    target.type === "catalogItem" ? String(target.item.year || "") : "2025"
+  );
+  const [catStack, setCatStack] = useState<string>(
+    target.type === "catalogItem" ? (target.item.stack || []).join(", ") : ""
+  );
+  const [catSizeMB, setCatSizeMB] = useState<string>(
+    target.type === "catalogItem" && target.item.sizeMB !== undefined
+      ? String(target.item.sizeMB)
+      : ""
+  );
+  const [catOffline, setCatOffline] = useState<boolean>(
+    target.type === "catalogItem" ? Boolean(target.item.offline) : false
+  );
+  const [catMode, setCatMode] = useState<LaunchMode>(
+    target.type === "catalogItem" ? target.item.mode : "link"
+  );
+  const [catTarget, setCatTarget] = useState<string>(
+    target.type === "catalogItem" ? target.item.target || "" : ""
+  );
   const [catStandingEn, setCatStandingEn] = useState(
-    target.type === "catalogItem" ? target.item.standing.en || "" : ""
+    target.type === "catalogItem" ? target.item.standing?.en || "" : ""
   );
   const [catStandingMy, setCatStandingMy] = useState(
-    target.type === "catalogItem" ? target.item.standing.my || "" : ""
+    target.type === "catalogItem" ? target.item.standing?.my || "" : ""
   );
   const [catSummaryEn, setCatSummaryEn] = useState(
-    target.type === "catalogItem" ? target.item.summary.en || "" : ""
+    target.type === "catalogItem" ? target.item.summary?.en || "" : ""
   );
   const [catSummaryMy, setCatSummaryMy] = useState(
-    target.type === "catalogItem" ? target.item.summary.my || "" : ""
+    target.type === "catalogItem" ? target.item.summary?.my || "" : ""
   );
   const [catAboutEn, setCatAboutEn] = useState(
-    target.type === "catalogItem" ? target.item.about.en || "" : ""
+    target.type === "catalogItem" ? target.item.about?.en || "" : ""
   );
   const [catAboutMy, setCatAboutMy] = useState(
-    target.type === "catalogItem" ? target.item.about.my || "" : ""
+    target.type === "catalogItem" ? target.item.about?.my || "" : ""
   );
 
   // Studio piece state
@@ -372,8 +410,27 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
             return;
           }
         } else if (target.type === "catalogItem") {
+          const stackArray = catStack
+            .split(/[,\n·]/)
+            .map((s) => s.trim())
+            .filter(Boolean);
+
+          const parsedYear = parseInt(catYear, 10);
+          const parsedSize = parseFloat(catSizeMB);
+
           const patch: Partial<CatalogItem> = {
+            code: catCode.trim(),
+            title: { en: catTitleEn, my: catTitleMy },
             status: catStatus,
+            type: catType,
+            category: catCategory,
+            role: catRole,
+            year: !isNaN(parsedYear) ? parsedYear : new Date().getFullYear(),
+            stack: stackArray,
+            sizeMB: !isNaN(parsedSize) && parsedSize > 0 ? parsedSize : undefined,
+            offline: catOffline,
+            mode: catMode,
+            target: catTarget.trim() || undefined,
             standing: { en: catStandingEn, my: catStandingMy },
             summary: { en: catSummaryEn, my: catSummaryMy },
             about: { en: catAboutEn, my: catAboutMy },
@@ -660,37 +717,207 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
         {/* CASE 2: Catalog item target */}
         {target.type === "catalogItem" && (
           <div className="space-y-6">
-            <div>
-              <label className="block font-mono text-[11px] text-paper/90 mb-1.5">Project Status</label>
-              <select
-                value={catStatus}
-                onChange={(e) => setCatStatus(e.target.value as Status)}
-                className="w-full bg-ink-2 border border-line px-3 py-2 text-xs text-paper font-mono focus:border-paper focus:outline-none"
-              >
-                <option value="live">live (Live / Production)</option>
-                <option value="ongoing">ongoing (Work in progress / Beta)</option>
-                <option value="learning">learning (Study / Exploration)</option>
-              </select>
+            {/* Section 1: Identification */}
+            <div className="space-y-3 pb-4 border-b border-line">
+              <div className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                Identification & Titles
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block font-mono text-[11px] text-paper/90 mb-1">Designation</label>
+                  <input
+                    type="text"
+                    value={catCode}
+                    onChange={(e) => setCatCode(e.target.value)}
+                    placeholder="BL-004"
+                    className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block font-mono text-[11px] text-paper/90 mb-1">Title (English)</label>
+                  <input
+                    type="text"
+                    value={catTitleEn}
+                    onChange={(e) => setCatTitleEn(e.target.value)}
+                    placeholder="Artcodex"
+                    className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block font-mono text-[11px] text-paper/90 mb-1">Title (Burmese)</label>
+                  <input
+                    type="text"
+                    value={catTitleMy}
+                    onChange={(e) => setCatTitleMy(e.target.value)}
+                    placeholder="Artcodex"
+                    className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-sans focus:border-paper focus:outline-none"
+                  />
+                </div>
+              </div>
             </div>
 
+            {/* Section 2: Facts & Metadata */}
+            <div className="space-y-3 pb-4 border-b border-line">
+              <div className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                Project Metadata & Facts
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="block font-mono text-[11px] text-paper/90 mb-1">Status</label>
+                  <select
+                    value={catStatus}
+                    onChange={(e) => setCatStatus(e.target.value as Status)}
+                    className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none"
+                  >
+                    <option value="ongoing">Ongoing (Beta / In development)</option>
+                    <option value="live">Live (Production / Running)</option>
+                    <option value="learning">Learning (Study / Research)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[11px] text-paper/90 mb-1">Kind (Type)</label>
+                  <select
+                    value={catType}
+                    onChange={(e) => setCatType(e.target.value as ItemType)}
+                    className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none"
+                  >
+                    <option value="app">App (Software tool / Web app)</option>
+                    <option value="research">Research (Experiments / Exploration)</option>
+                    <option value="learning">Learning (Simulations & Books)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[11px] text-paper/90 mb-1">Topic (Category)</label>
+                  <select
+                    value={catCategory}
+                    onChange={(e) => setCatCategory(e.target.value as CategoryId)}
+                    className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none"
+                  >
+                    <option value="art">Art & 3D</option>
+                    <option value="ai">AI & Neural computing</option>
+                    <option value="education">Education</option>
+                    <option value="science">Science</option>
+                    <option value="hardware">Hardware & robotics</option>
+                    <option value="everyday">Everyday</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[11px] text-paper/90 mb-1">Role</label>
+                  <select
+                    value={catRole}
+                    onChange={(e) => setCatRole(e.target.value as Role)}
+                    className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none"
+                  >
+                    <option value="build">Design & build</option>
+                    <option value="research">Research & build</option>
+                    <option value="study">Independent study</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[11px] text-paper/90 mb-1">Started (Year)</label>
+                  <input
+                    type="number"
+                    value={catYear}
+                    onChange={(e) => setCatYear(e.target.value)}
+                    placeholder="2025"
+                    className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[11px] text-paper/90 mb-1">Data / Size (MB)</label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={catSizeMB}
+                    onChange={(e) => setCatSizeMB(e.target.value)}
+                    placeholder="Leave blank for —"
+                    className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[11px] text-paper/90 mb-1">Launch Mode</label>
+                  <select
+                    value={catMode}
+                    onChange={(e) => setCatMode(e.target.value as LaunchMode)}
+                    className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none"
+                  >
+                    <option value="link">External Link</option>
+                    <option value="native">Native / Internal Sim</option>
+                    <option value="embed">Embed</option>
+                    <option value="soon">Coming Soon</option>
+                    <option value="private">Private</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[11px] text-paper/90 mb-1">Link Target / URL</label>
+                  <input
+                    type="text"
+                    value={catTarget}
+                    onChange={(e) => setCatTarget(e.target.value)}
+                    placeholder="https://artcodex.vercel.app"
+                    className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <label className="block font-mono text-[11px] text-paper/90 mb-1">
+                  Built with (Stack)
+                </label>
+                <input
+                  type="text"
+                  value={catStack}
+                  onChange={(e) => setCatStack(e.target.value)}
+                  placeholder="React, three.js, Django"
+                  className="w-full bg-ink-2 border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none"
+                />
+                <span className="block font-mono text-[10px] text-muted mt-1">
+                  Separate with commas or bullets (e.g. React, three.js, Django)
+                </span>
+              </div>
+
+              <div className="pt-1">
+                <label className="inline-flex items-center gap-2 cursor-pointer font-mono text-xs text-paper/90">
+                  <input
+                    type="checkbox"
+                    checked={catOffline}
+                    onChange={(e) => setCatOffline(e.target.checked)}
+                    className="size-3.5 rounded border border-line bg-ink-2 text-white focus:ring-0"
+                  />
+                  <span>Works offline</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Section 3: Descriptive Dossier */}
             <div className="space-y-4">
+              <div className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                Dossier & Descriptive Copy
+              </div>
               <div>
-                <label className="block font-mono text-[11px] text-paper/90 mb-1.5">
+                <label className="block font-mono text-[11px] text-paper/90 mb-1">
                   Standing Note (English)
                 </label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   value={catStandingEn}
                   onChange={(e) => setCatStandingEn(e.target.value)}
                   className="w-full bg-ink-2 border border-line p-3 text-xs text-paper font-mono leading-relaxed focus:border-paper focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block font-mono text-[11px] text-paper/90 mb-1.5">
+                <label className="block font-mono text-[11px] text-paper/90 mb-1">
                   Standing Note (Burmese · မြန်မာ)
                 </label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   value={catStandingMy}
                   onChange={(e) => setCatStandingMy(e.target.value)}
                   className="w-full bg-ink-2 border border-line p-3 text-xs text-paper font-sans leading-relaxed focus:border-paper focus:outline-none"
@@ -700,7 +927,7 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
 
             <div className="space-y-4">
               <div>
-                <label className="block font-mono text-[11px] text-paper/90 mb-1.5">Summary (English)</label>
+                <label className="block font-mono text-[11px] text-paper/90 mb-1">Summary (English)</label>
                 <textarea
                   rows={3}
                   value={catSummaryEn}
@@ -709,7 +936,7 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
                 />
               </div>
               <div>
-                <label className="block font-mono text-[11px] text-paper/90 mb-1.5">Summary (Burmese · မြန်မာ)</label>
+                <label className="block font-mono text-[11px] text-paper/90 mb-1">Summary (Burmese · မြန်မာ)</label>
                 <textarea
                   rows={3}
                   value={catSummaryMy}
@@ -721,7 +948,7 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
 
             <div className="space-y-4">
               <div>
-                <label className="block font-mono text-[11px] text-paper/90 mb-1.5">About (English Dossier)</label>
+                <label className="block font-mono text-[11px] text-paper/90 mb-1">About (English Dossier)</label>
                 <textarea
                   rows={5}
                   value={catAboutEn}
@@ -730,7 +957,7 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
                 />
               </div>
               <div>
-                <label className="block font-mono text-[11px] text-paper/90 mb-1.5">About (Burmese Dossier)</label>
+                <label className="block font-mono text-[11px] text-paper/90 mb-1">About (Burmese Dossier)</label>
                 <textarea
                   rows={5}
                   value={catAboutMy}

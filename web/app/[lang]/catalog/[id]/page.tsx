@@ -126,14 +126,27 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
           </div>
 
           {/* Facts block */}
-          <dl className="intro-3 self-start border-t border-line lg:col-span-5 lg:border-t-0 lg:border-l lg:pl-8">
-            {facts.map(([k, v]) => (
-              <div key={k} className="mono grid grid-cols-[7rem_1fr] gap-4 border-b border-line py-2.5">
-                <dt className="text-dim">{k}</dt>
-                <dd className="text-bone/90">{v}</dd>
-              </div>
-            ))}
-          </dl>
+          <div className="intro-3 self-start border-t border-line lg:col-span-5 lg:border-t-0 lg:border-l lg:pl-8">
+            <div className="flex items-center justify-between pb-2 border-b border-line">
+              <span className="mono text-[10px] uppercase tracking-wider text-dim">Metadata & Facts</span>
+              <EditBadge
+                target={{
+                  type: "catalogItem",
+                  itemId: item.id,
+                  label: `${item.title.en} (${item.code})`,
+                  item,
+                }}
+              />
+            </div>
+            <dl>
+              {facts.map(([k, v]) => (
+                <div key={k} className="mono grid grid-cols-[7rem_1fr] gap-4 border-b border-line py-2.5">
+                  <dt className="text-dim">{k}</dt>
+                  <dd className="text-bone/90">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </div>
 
         {/* The piece */}
