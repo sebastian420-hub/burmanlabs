@@ -95,6 +95,28 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                 {d.studio.viewAll}
               </ButtonLink>
             </div>
+            {d.hero.dispatch && (
+              <div className="intro-3 mt-7 flex items-center gap-2.5">
+                <span className="relative flex size-2 shrink-0">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-signal opacity-70" />
+                  <span className="relative inline-flex size-2 rounded-full bg-signal" />
+                </span>
+                <span className="mono text-xs text-ash tracking-wide">
+                  {d.hero.dispatch}
+                </span>
+                <EditBadge
+                  target={{
+                    type: "dictionary",
+                    keyPath: "hero.dispatch",
+                    label: "Live Dispatch Status",
+                    currentEn: enDict.hero.dispatch,
+                    currentMy: myDict.hero.dispatch,
+                    kind: "text",
+                    description: "Current focus note under the hero buttons",
+                  }}
+                />
+              </div>
+            )}
           </div>
           <div className="mx-auto w-full max-w-[300px] sm:max-w-[360px] lg:col-span-5 lg:ml-auto lg:max-w-[400px]">
             <HeroGlobe

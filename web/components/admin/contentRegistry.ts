@@ -81,6 +81,7 @@ export function buildContentRegistry(
   addDict("hero_title", "hero", "Hero & Landing", "Hero Headline", "hero.title", en.hero.title, my.hero.title, "heroTitle", "3-part headline: prefix, italic word, punctuation");
   addDict("hero_sub", "hero", "Hero & Landing", "Hero Subtitle", "hero.sub", en.hero.sub, my.hero.sub, "textarea", "Sentence below the main headline");
   addDict("hero_cta", "hero", "Hero & Landing", "Hero CTA Button", "hero.cta", en.hero.cta, my.hero.cta, "text", "Primary button link text");
+  addDict("hero_dispatch", "hero", "Hero & Landing", "Live Dispatch Status", "hero.dispatch", en.hero.dispatch, my.hero.dispatch, "text", "Status badge under hero buttons (e.g. Currently: shipping Artcodex)");
   addDict("hero_hint", "hero", "Hero & Landing", "Globe Hint", "hero.hint", en.hero.hint, my.hero.hint, "text", "Hint text below the 3D globe");
 
   // --- 2. ABOUT ZWE ---
