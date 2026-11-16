@@ -1,8 +1,10 @@
-import my from "@/dictionaries/my";
-import en from "@/dictionaries/en";
+import my from "@/dictionaries/my.json";
+import en from "@/dictionaries/en.json";
 import type { Locale } from "./i18n";
+import type { Dict } from "./types";
 
-const dictionaries = { my, en } satisfies Record<Locale, typeof my>;
+export type { Dict } from "./types";
 
-export type Dict = typeof my;
+const dictionaries: Record<Locale, Dict> = { my, en };
+
 export const getDictionary = (lang: Locale): Dict => dictionaries[lang];

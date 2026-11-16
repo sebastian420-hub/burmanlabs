@@ -12,6 +12,9 @@ import Readout from "@/components/Readout";
 import WorkIndex from "@/components/WorkIndex";
 import { indexLabels, toIndexItem } from "@/components/indexItems";
 import { ButtonLink, Container, Phrases, SectionHead } from "@/components/ui";
+import enDict from "@/dictionaries/en.json";
+import myDict from "@/dictionaries/my.json";
+import { EditBadge } from "@/components/admin";
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -50,14 +53,40 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         />
         <Container className="grid items-center gap-6 pt-8 pb-6 lg:min-h-[56svh] lg:grid-cols-12 lg:gap-4 lg:pt-4">
           <div className="lg:col-span-7">
-            <p className="eyebrow intro">{d.hero.eyebrow}</p>
-            <h1 className="display t-hero intro-2 mt-4 max-w-3xl">
-              <Phrases text={pre} lang={lang} />
-              <em>
-                <Phrases text={em} lang={lang} />
-              </em>
-              <Phrases text={post} lang={lang} />
-            </h1>
+            <div className="flex items-center gap-3">
+              <p className="eyebrow intro">{d.hero.eyebrow}</p>
+              <EditBadge
+                target={{
+                  type: "dictionary",
+                  keyPath: "hero.eyebrow",
+                  label: "Hero Eyebrow",
+                  currentEn: enDict.hero.eyebrow,
+                  currentMy: myDict.hero.eyebrow,
+                  kind: "text",
+                }}
+              />
+            </div>
+            <div className="group relative">
+              <h1 className="display t-hero intro-2 mt-4 max-w-3xl">
+                <Phrases text={pre} lang={lang} />
+                <em>
+                  <Phrases text={em} lang={lang} />
+                </em>
+                <Phrases text={post} lang={lang} />
+              </h1>
+              <div className="mt-2.5">
+                <EditBadge
+                  target={{
+                    type: "dictionary",
+                    keyPath: "hero.title",
+                    label: "Hero Headline",
+                    currentEn: enDict.hero.title,
+                    currentMy: myDict.hero.title,
+                    kind: "heroTitle",
+                  }}
+                />
+              </div>
+            </div>
             <p className="intro-3 mt-5 max-w-lg text-[17px] text-ash">
               <Phrases text={d.hero.sub} lang={lang} />
             </p>
@@ -157,19 +186,73 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       {/* ------------------------------------------------------ 03 About */}
       <div id="about" className="scroll-mt-24" />
       <Container className="mt-16 md:mt-20">
-        <SectionHead index="03" eyebrow={h.about.eyebrow} title={h.about.title} />
+        <SectionHead
+          index="03"
+          eyebrow={h.about.eyebrow}
+          title={
+            <span className="inline-flex items-center gap-3">
+              <span>{h.about.title}</span>
+              <EditBadge
+                target={{
+                  type: "dictionary",
+                  keyPath: "home.about.title",
+                  label: "About Section Title",
+                  currentEn: enDict.home.about.title,
+                  currentMy: myDict.home.about.title,
+                  kind: "text",
+                }}
+              />
+            </span>
+          }
+        />
         <div className="grid gap-8 md:grid-cols-12">
           <div className="md:col-span-7">
             <p className="font-serif text-xl leading-relaxed text-bone/90 sm:text-2xl">{h.about.bio}</p>
+            <div className="mt-3">
+              <EditBadge
+                target={{
+                  type: "dictionary",
+                  keyPath: "home.about.bio",
+                  label: "About Bio",
+                  currentEn: enDict.home.about.bio,
+                  currentMy: myDict.home.about.bio,
+                  kind: "textarea",
+                }}
+              />
+            </div>
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <ButtonLink href={`mailto:${site.email}`} external>
                 {h.about.contact}
               </ButtonLink>
-              <span className="mono text-ash">{site.email}</span>
+              <div className="flex items-center gap-2">
+                <span className="mono text-ash">{site.email}</span>
+                <EditBadge
+                  target={{
+                    type: "dictionary",
+                    keyPath: "site.email",
+                    label: "Contact Email",
+                    currentEn: enDict.site.email,
+                    currentMy: myDict.site.email,
+                    kind: "text",
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div className="md:col-span-5">
-            <p className="mono text-gold">{h.about.nowTitle}</p>
+            <div className="flex items-center justify-between">
+              <p className="mono text-gold">{h.about.nowTitle}</p>
+              <EditBadge
+                target={{
+                  type: "dictionary",
+                  keyPath: "home.about.now",
+                  label: "Right Now (Focus Items)",
+                  currentEn: enDict.home.about.now,
+                  currentMy: myDict.home.about.now,
+                  kind: "stringArray",
+                }}
+              />
+            </div>
             <ul className="mt-3 divide-y divide-line border-y border-line">
               {h.about.now.map((n, i) => (
                 <li key={n} className="flex gap-4 py-3">

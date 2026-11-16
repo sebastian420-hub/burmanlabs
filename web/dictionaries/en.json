@@ -1,0 +1,179 @@
+{
+  "site": {
+    "name": "Burmanlabs",
+    "description": "Zwe's lab: useful tools, interactive books, simulations and research toward robotics.",
+    "email": "lwinzwezarni@gmail.com"
+  },
+  "nav": {
+    "catalog": "Work",
+    "studio": "Studio",
+    "about": "About",
+    "home": "Home",
+    "menu": "Menu"
+  },
+  "lang": {
+    "other": "မြန်မာ",
+    "otherLabel": "မြန်မာဘာသာသို့ ပြောင်းမည်",
+    "current": "EN"
+  },
+  "hero": {
+    "eyebrow": "Zwe's lab",
+    "title": [
+      "Useful tools. First principle ",
+      "books",
+      "."
+    ],
+    "sub": "AI tools, simulations and interactive books. Robotics is next.",
+    "cta": "All work",
+    "hint": "Drag · tap a light",
+    "globeAria": "Interactive 3D globe where each light is one piece of work",
+    "globeOff": "3D off",
+    "globeOn": "3D on",
+    "open": "Open",
+    "scroll": "Scroll"
+  },
+  "readout": {
+    "place": "Mandalay",
+    "local": "local time",
+    "entries": "entries",
+    "live": "running"
+  },
+  "stats": {
+    "app": "apps",
+    "research": "experiments",
+    "learning": "learning",
+    "studio": "studio pieces"
+  },
+  "index": {
+    "eyebrow": "Index",
+    "title": "Selected work",
+    "all": "All work",
+    "code": "No.",
+    "name": "Title",
+    "kind": "Kind",
+    "stack": "Built with",
+    "status": "Status",
+    "year": "Year",
+    "view": "View",
+    "list": "List",
+    "grid": "Grid",
+    "open": "Open",
+    "count": "{n} entries",
+    "works": "{n} works",
+    "expand": "Show the work in {title}",
+    "collapse": "Hide the work in {title}",
+    "hint": "Hover a row to preview"
+  },
+  "role": {
+    "build": "Design & build",
+    "research": "Research",
+    "study": "Study"
+  },
+  "home": {
+    "all": "See all work",
+    "about": {
+      "eyebrow": "About",
+      "title": "I am Zwe.",
+      "bio": "I'm an artist and programmer. Burmanlabs is my independent lab for things built with care: useful creative tools, books that explain complex ideas from first principles, and research bridging code to physical robotics.",
+      "nowTitle": "Right now",
+      "now": [
+        "Polishing Artcodex, a browser 3D studio with an AI co-builder",
+        "Writing interactive books and simulations (The Economy and EduSim)",
+        "Studying neuromorphic hardware, toward building an autonomous drone"
+      ],
+      "contact": "Contact",
+      "built": "Free, Burmese first, light on data, works offline.",
+      "services": "Also available for client work: web and mobile apps, 3D and simulations, AI tools. Email to talk."
+    }
+  },
+  "catalog": {
+    "eyebrow": "Work",
+    "title": "All work",
+    "lead": "Everything I've built, am running, or am learning.",
+    "search": "Search…",
+    "searchLabel": "Search my work",
+    "all": "All",
+    "categories": "Topics",
+    "types": "Kind",
+    "results": "{n} found",
+    "empty": "Nothing found. Try another word.",
+    "zawgyi": "Type Unicode Burmese when searching."
+  },
+  "type": {
+    "app": "App",
+    "research": "Research",
+    "learning": "Learning"
+  },
+  "typePlural": {
+    "app": "Apps",
+    "research": "Research",
+    "learning": "Learning"
+  },
+  "status": {
+    "live": "Live",
+    "ongoing": "Ongoing",
+    "learning": "In progress"
+  },
+  "item": {
+    "back": "All work",
+    "open": "Open",
+    "openNew": "Open the site",
+    "soon": "Link coming soon",
+    "private": "Private for now",
+    "offline": "Works offline",
+    "online": "Needs internet",
+    "size": "Data",
+    "type": "Kind",
+    "subject": "Topic",
+    "status": "Status",
+    "stack": "Built with",
+    "loadEmbed": "Open here",
+    "embedNote": "Nothing downloads until you tap."
+  },
+  "dossier": {
+    "code": "Designation",
+    "role": "Role",
+    "year": "Started",
+    "link": "Link",
+    "what": "What it is",
+    "standing": "Where it stands",
+    "facts": "Facts",
+    "next": "Next",
+    "prev": "Previous",
+    "none": "—"
+  },
+  "studio": {
+    "eyebrow": "Studio",
+    "title": "Art, code, and everything in between.",
+    "lead": "Where Burmanlabs began: an art studio. Four pieces, rebuilt to run on any phone.",
+    "artist": "Burmanlabs was started by Zwe, an artist and programmer, to mix code and art and share them in a way that sticks with you.",
+    "pieces": "Pieces",
+    "interact": "How to play",
+    "medium": "Medium",
+    "source": "Original",
+    "play": "Play",
+    "playNote": "Uses about 140 KB for the 3D engine",
+    "next": "Next piece",
+    "back": "All pieces",
+    "viewAll": "Visit the studio",
+    "view": "View"
+  },
+  "footer": {
+    "line": "Zwe's lab: useful tools, first principle books, and what I'm learning.",
+    "explore": "Explore",
+    "contact": "Contact",
+    "language": "Language"
+  },
+  "offline": {
+    "title": "You are offline",
+    "body": "Pages you opened before are still available."
+  },
+  "categories": {
+    "ai": "AI",
+    "education": "Education",
+    "science": "Science",
+    "hardware": "Chips & robotics",
+    "art": "Art & 3D",
+    "everyday": "Everyday"
+  }
+}

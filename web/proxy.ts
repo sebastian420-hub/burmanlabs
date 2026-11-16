@@ -15,6 +15,8 @@ function pickLocale(request: NextRequest): Locale {
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  if (pathname.startsWith("/api/")) return;
+
   const first = pathname.split("/")[1] ?? "";
   if (hasLocale(first)) return;
 
@@ -24,6 +26,6 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip Next internals and anything with a file extension (sw.js, icons, manifest…).
-  matcher: ["/((?!_next|.*\\..*).*)"],
+  // Skip API routes, Next internals, and anything with a file extension (sw.js, icons, manifest…).
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };

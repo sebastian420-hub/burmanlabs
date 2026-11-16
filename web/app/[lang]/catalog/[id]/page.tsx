@@ -9,6 +9,7 @@ import Cover, { coverArt } from "@/components/Cover";
 import EmbedFrame from "@/components/EmbedFrame";
 import Gallery from "@/components/Gallery";
 import { ButtonLink, Container, StatusDot } from "@/components/ui";
+import { EditBadge } from "@/components/admin";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => catalog.map((i) => ({ lang, id: i.id })));
@@ -87,14 +88,24 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
         {/* Header */}
         <div className="mt-6 grid gap-8 border-t border-line pt-6 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <p className="mono intro flex items-center gap-3">
-              <span className="text-signal">{item.code}</span>
-              <span className="text-line-2">/</span>
-              <span className="inline-flex items-center gap-2 text-ash">
-                <StatusDot status={item.status} />
-                {d.status[item.status]}
-              </span>
-            </p>
+            <div className="intro flex items-center gap-3">
+              <p className="mono flex items-center gap-3">
+                <span className="text-signal">{item.code}</span>
+                <span className="text-line-2">/</span>
+                <span className="inline-flex items-center gap-2 text-ash">
+                  <StatusDot status={item.status} />
+                  {d.status[item.status]}
+                </span>
+              </p>
+              <EditBadge
+                target={{
+                  type: "catalogItem",
+                  itemId: item.id,
+                  label: `${item.title.en} (${item.code})`,
+                  item,
+                }}
+              />
+            </div>
             <h1 className="display intro-2 mt-3 text-5xl sm:text-6xl lg:text-7xl">{item.title[lang]}</h1>
             <p className="intro-3 mt-4 max-w-xl text-lg text-ash">{item.summary[lang]}</p>
             <div className="intro-3 mt-6">
@@ -149,17 +160,24 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
 
         {/* What it is / where it stands */}
         <div className="mt-10 divide-y divide-line border-y border-line">
-          {(
-            [
-              [d.dossier.what, item.about[lang]],
-              [d.dossier.standing, item.standing[lang]],
-            ] as const
-          ).map(([k, v]) => (
-            <div key={k} className="grid gap-3 py-6 md:grid-cols-12 md:gap-6">
-              <p className="mono text-dim md:col-span-3">{k}</p>
-              <p className="text-[17px] leading-relaxed text-bone/90 md:col-span-7">{v}</p>
+          <div className="grid gap-3 py-6 md:grid-cols-12 md:gap-6">
+            <p className="mono text-dim md:col-span-3">{d.dossier.what}</p>
+            <p className="text-[17px] leading-relaxed text-bone/90 md:col-span-7">{item.about[lang]}</p>
+          </div>
+          <div className="grid gap-3 py-6 md:grid-cols-12 md:gap-6">
+            <div className="md:col-span-3 flex items-center gap-3">
+              <p className="mono text-dim">{d.dossier.standing}</p>
+              <EditBadge
+                target={{
+                  type: "catalogItem",
+                  itemId: item.id,
+                  label: `${item.title.en} (${item.code})`,
+                  item,
+                }}
+              />
             </div>
-          ))}
+            <p className="text-[17px] leading-relaxed text-bone/90 md:col-span-7">{item.standing[lang]}</p>
+          </div>
         </div>
 
         {/* Prev / next */}

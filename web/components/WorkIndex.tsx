@@ -1,14 +1,9 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { canRun3D } from "@/lib/capability";
 import { fold, num } from "@/lib/i18n";
-import type { PreviewTarget } from "./HoverPreview";
-
-const HoverPreview = dynamic(() => import("./HoverPreview"), { ssr: false });
 
 export interface IndexItem {
   id: string;
@@ -88,12 +83,10 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
   const [kind, setKind] = useState(initial?.kind ?? "all");
   const [cat, setCat] = useState(initial?.cat ?? "all");
   const [hover, setHover] = useState<string | null>(null);
-  const [preview, setPreview] = useState<PreviewTarget | null>(null);
-  const [fancy, setFancy] = useState(false);
   const [open, setOpen] = useState<Set<string>>(() => new Set());
   const rowRefs = useRef<Map<string, HTMLElement>>(new Map());
 
-  // Remembered view; hover preview only where a pointer and WebGL both exist.
+  // Remembered view
   useEffect(() => {
     // Deferred so the server HTML and the first client paint match.
     const t = setTimeout(() => {
@@ -101,9 +94,6 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
         const saved = localStorage.getItem("bl-view");
         if (saved === "list" || saved === "grid") setView(saved);
       } catch {}
-      const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
-      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      setFancy(fine && !reduced && canRun3D());
     }, 0);
     return () => clearTimeout(t);
   }, []);
@@ -162,21 +152,14 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
   const dots = (members: IndexItem[]) =>
     members.map((m) => <span key={m.id} className={`size-1.5 rounded-full ${STATUS_DOT[m.status]}`} />);
 
-  // Hover and focus drive the preview. A row is keyed by an id; groups use "g:{topic}".
-  const enter = (id: string, shot?: IndexItem["shot"], anchor?: { x: number; y: number }) => {
+  const enter = (id: string) => {
     setHover(id);
-    // Rows without a screenshot clear the preview rather than leaving the last one up.
-    setPreview(fancy && shot ? { src: shot.full, anchor } : null);
   };
   const leave = () => {
     setHover(null);
-    setPreview(null);
   };
-  const focusRow = (id: string, shot?: IndexItem["shot"]) => {
-    const el = rowRefs.current.get(id);
-    if (!el) return enter(id, shot);
-    const r = el.getBoundingClientRect();
-    enter(id, shot, { x: Math.min(innerWidth - 190, r.right - 200), y: r.top + r.height / 2 });
+  const focusRow = (id: string) => {
+    enter(id);
   };
   const setRef = (id: string) => (el: HTMLElement | null) => {
     if (el) rowRefs.current.set(id, el);
@@ -215,7 +198,6 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
         ) : (
           <p className="mono text-dim" aria-live="polite">
             {labels.count.replace("{n}", num(shown.length, digits))}
-            {fancy && <span className="ml-3 hidden text-dim/70 lg:inline">· {labels.hint}</span>}
           </p>
         )}
         <div className="flex items-center gap-3">
@@ -246,7 +228,7 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
           <p className="mono mt-2 text-dim">{labels.zawgyi}</p>
         </div>
       ) : view === "list" ? (
-        <div className="index" data-hover={hover ? "1" : "0"} data-preview={preview?.src ?? ""} onMouseLeave={leave}>
+        <div className="index" onMouseLeave={leave}>
           {/* Column heads (desktop) */}
           <div className="mono hidden grid-cols-[4.5rem_1fr_7rem_1fr_7.5rem_3.5rem_2.5rem] gap-x-4 border-b border-line py-2 text-dim md:grid">
             <span>{labels.code}</span>
@@ -261,7 +243,6 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
             {rows.map((r) => {
               if (r.kind === "group") {
                 const id = `g:${r.id}`;
-                const shot = groupShot(r.members);
                 return (
                   <li key={id} className="row border-b border-line" data-on={hover === id ? "1" : "0"} data-group="1">
                     <button
@@ -269,8 +250,8 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
                       aria-expanded={r.open}
                       ref={setRef(id)}
                       onClick={() => toggle(r.id)}
-                      onMouseEnter={() => enter(id, shot)}
-                      onFocus={() => focusRow(id, shot)}
+                      onMouseEnter={() => enter(id)}
+                      onFocus={() => focusRow(id)}
                       onBlur={leave}
                       className={`${rowGrid} w-full cursor-pointer text-left`}
                     >
@@ -311,14 +292,14 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
               return (
                 <li
                   key={it.id}
-                  className={`row border-b border-line ${r.child ? "row-in bg-ink-2/50 shadow-[inset_2px_0_0_var(--color-line-2)]" : ""}`}
+                  className="row border-b border-line"
                   data-on={hover === it.id ? "1" : "0"}
                 >
                   <Link
                     href={it.href}
                     ref={setRef(it.id)}
-                    onMouseEnter={() => enter(it.id, it.shot)}
-                    onFocus={() => focusRow(it.id, it.shot)}
+                    onMouseEnter={() => enter(it.id)}
+                    onFocus={() => focusRow(it.id)}
                     onBlur={leave}
                     className={rowGrid}
                   >
@@ -354,7 +335,6 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
               );
             })}
           </ul>
-          {fancy && <HoverPreview target={preview} />}
         </div>
       ) : (
         <ul className="mt-6 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
@@ -369,37 +349,25 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
                     onClick={() => toggle(r.id)}
                     className="group block w-full cursor-pointer text-left"
                   >
-                    <div className="relative">
-                      {/* Two sheets behind the card say "there is a stack here"; they fold away when it is open. */}
-                      <div
-                        aria-hidden
-                        className={`absolute inset-0 translate-x-4 translate-y-4 border border-line bg-ink-2/40 transition duration-500 ${r.open ? "translate-x-0 translate-y-0 opacity-0" : ""}`}
-                      />
-                      <div
-                        aria-hidden
-                        className={`absolute inset-0 translate-x-2 translate-y-2 border border-line bg-ink-2/70 transition duration-500 ${r.open ? "translate-x-0 translate-y-0 opacity-0" : ""}`}
-                      />
-                      <div className="relative aspect-[16/10] overflow-hidden border border-line bg-ink-2 transition duration-500 group-hover:border-line-2">
-                        {/* While open, its items are on show right after it, so the picture steps back. */}
-                        <div className={`absolute inset-0 transition duration-500 ${r.open ? "opacity-30 grayscale" : ""}`}>
-                          {shot ? (
-                            <Image
-                              src={shot.full}
-                              alt=""
-                              fill
-                              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                              className="object-cover transition duration-700 group-hover:scale-[1.03]"
-                            />
-                          ) : (
-                            <div className="h-full w-full transition duration-700 group-hover:scale-[1.03]">{r.members[0].cover}</div>
-                          )}
-                        </div>
-                        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-10 h-14 bg-linear-to-b from-ink/85 to-transparent" />
-                        <span className="mono absolute top-2.5 left-3 z-20 text-bone/80">×{num(r.members.length, digits)}</span>
-                        <span aria-hidden className="mono absolute top-2.5 right-3 z-20 text-bone/80">
-                          {r.open ? "−" : "+"}
-                        </span>
+                    <div className="relative aspect-[16/10] overflow-hidden border border-line bg-ink-2 transition duration-500 group-hover:border-line-2">
+                      <div className="absolute inset-0">
+                        {shot ? (
+                          <Image
+                            src={shot.full}
+                            alt=""
+                            fill
+                            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="h-full w-full">{r.members[0].cover}</div>
+                        )}
                       </div>
+                      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-10 h-14 bg-linear-to-b from-ink/85 to-transparent" />
+                      <span className="mono absolute top-2.5 left-3 z-20 text-bone/80">×{num(r.members.length, digits)}</span>
+                      <span aria-hidden className="mono absolute top-2.5 right-3 z-20 text-bone/80">
+                        {r.open ? "−" : "+"}
+                      </span>
                     </div>
                     <div className="mt-3 flex items-baseline justify-between gap-3">
                       <h3 className="text-lg font-medium transition-colors group-hover:text-signal">{r.label}</h3>
@@ -415,7 +383,7 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
             }
             const it = r.it;
             return (
-              <li key={it.id} className={r.child ? "row-in" : undefined}>
+              <li key={it.id}>
                 <Link href={it.href} className="group block">
                   <div className="relative aspect-[16/10] overflow-hidden border border-line bg-ink-2 transition duration-500 group-hover:border-line-2">
                     {it.shot ? (
@@ -424,10 +392,10 @@ export default function WorkIndex({ items, labels, digits, filters, initial, def
                         alt=""
                         fill
                         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        className="object-cover transition duration-700 group-hover:scale-[1.03]"
+                        className="object-cover"
                       />
                     ) : (
-                      <div className="h-full w-full transition duration-700 group-hover:scale-[1.03]">{it.cover}</div>
+                      <div className="h-full w-full">{it.cover}</div>
                     )}
                     <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-10 h-14 bg-linear-to-b from-ink/85 to-transparent" />
                     <span className="mono absolute top-2.5 left-3 z-20 text-bone/80">{it.code}</span>

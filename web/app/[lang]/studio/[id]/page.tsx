@@ -6,6 +6,7 @@ import { getDictionary } from "@/lib/dictionaries";
 import { hasLocale, locales } from "@/lib/i18n";
 import ArtStage from "@/components/ArtStage";
 import { Container } from "@/components/ui";
+import { EditBadge } from "@/components/admin";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => pieces.map((p) => ({ lang, id: p.id })));
@@ -52,7 +53,17 @@ export default async function PiecePage({ params }: PageProps<"/[lang]/studio/[i
 
         <div className="mt-10 grid gap-10 border-t border-line pt-10 md:grid-cols-12">
           <div className="md:col-span-5">
-            <h1 className="display text-6xl sm:text-7xl">{piece.title[lang]}</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="display text-6xl sm:text-7xl">{piece.title[lang]}</h1>
+              <EditBadge
+                target={{
+                  type: "studioPiece",
+                  pieceId: piece.id,
+                  label: `${piece.title.en} (${piece.id})`,
+                  piece,
+                }}
+              />
+            </div>
             <p className="mt-4 text-sm text-dim">{piece.medium[lang]}</p>
           </div>
           <div className="space-y-8 md:col-span-6 md:col-start-7">

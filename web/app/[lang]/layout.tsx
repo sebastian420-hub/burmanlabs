@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SWRegister from "@/components/SWRegister";
 import { site } from "@/lib/site";
+import { AdminProvider } from "@/components/admin";
 
 export const viewport: Viewport = {
   themeColor: "#0b0a09",
@@ -56,16 +57,18 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   return (
     <html lang={lang} data-scroll-behavior="smooth">
       <body>
-        <Header
-          lang={lang}
-          name={dict.site.name}
-          home={dict.nav.home}
-          links={links}
-          other={{ label: dict.lang.other, aria: dict.lang.otherLabel }}
-        />
-        <main className="pt-[calc(4rem+env(safe-area-inset-top,0px))]">{children}</main>
-        <Footer lang={lang} labels={dict.footer} links={links} email={site.email} />
-        <SWRegister />
+        <AdminProvider>
+          <Header
+            lang={lang}
+            name={dict.site.name}
+            home={dict.nav.home}
+            links={links}
+            other={{ label: dict.lang.other, aria: dict.lang.otherLabel }}
+          />
+          <main className="pt-[calc(4rem+env(safe-area-inset-top,0px))]">{children}</main>
+          <Footer lang={lang} labels={dict.footer} links={links} email={site.email} />
+          <SWRegister />
+        </AdminProvider>
       </body>
     </html>
   );
