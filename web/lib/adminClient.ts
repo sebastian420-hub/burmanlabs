@@ -9,76 +9,35 @@ export interface SaveResponse {
 
 export type AdminFileTarget = "en" | "my" | "catalog" | "studio";
 
-export const ADMIN_STORAGE_KEY = "burmanlabs_admin_token";
-
-export function getStoredAdminToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem(ADMIN_STORAGE_KEY);
-}
-
-export function isLocalTokenValid(token: string | null | undefined): boolean {
-  if (!token) return false;
+export async function checkAdminAuth(): Promise<boolean> {
   try {
-    const parts = token.split(".");
-    const expiresAt = Number(parts[0]);
-    return !isNaN(expiresAt) && Date.now() < expiresAt;
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("burmanlabs_admin_token");
+    }
+
+    const res = await fetch("/api/admin/auth", { cache: "no-store" });
+    if (!res.ok) return false;
+    const data = await res.json();
+    return Boolean(data.isAdmin);
   } catch {
     return false;
   }
 }
 
-export async function checkAdminAuth(): Promise<boolean> {
-  const localToken = getStoredAdminToken();
-  const hasValidLocal = isLocalTokenValid(localToken);
-
+export async function loginAdmin(password: string): Promise<{ ok: boolean; error?: string }> {
   try {
-    const headers: Record<string, string> = {};
-    if (localToken) {
-      headers["Authorization"] = `Bearer ${localToken}`;
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("burmanlabs_admin_token");
     }
 
-    const res = await fetch("/api/admin/auth", { cache: "no-store", headers });
-    if (!res.ok) {
-      return hasValidLocal;
-    }
-    const data = await res.json();
-    const serverAuthed = Boolean(data.isAdmin);
-
-    if (serverAuthed) {
-      return true;
-    }
-
-    if (!hasValidLocal && typeof window !== "undefined") {
-      localStorage.removeItem(ADMIN_STORAGE_KEY);
-    }
-
-    return hasValidLocal;
-  } catch {
-    return hasValidLocal;
-  }
-}
-
-export async function loginAdmin(
-  password: string,
-  rememberMe = true
-): Promise<{ ok: boolean; error?: string }> {
-  try {
     const res = await fetch("/api/admin/auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password, rememberMe }),
+      body: JSON.stringify({ password }),
     });
     const data = await res.json();
     if (!res.ok || !data.ok) {
       return { ok: false, error: data.error || "Failed to authenticate" };
-    }
-
-    if (typeof window !== "undefined") {
-      if (data.token) {
-        localStorage.setItem(ADMIN_STORAGE_KEY, data.token);
-      } else {
-        localStorage.removeItem(ADMIN_STORAGE_KEY);
-      }
     }
 
     return { ok: true };
@@ -90,7 +49,7 @@ export async function loginAdmin(
 export async function logoutAdmin(): Promise<void> {
   try {
     if (typeof window !== "undefined") {
-      localStorage.removeItem(ADMIN_STORAGE_KEY);
+      localStorage.removeItem("burmanlabs_admin_token");
     }
     await fetch("/api/admin/auth", { method: "DELETE" });
   } catch {
@@ -99,12 +58,7 @@ export async function logoutAdmin(): Promise<void> {
 }
 
 export async function fetchFileContent<T = unknown>(file: AdminFileTarget): Promise<T> {
-  const headers: Record<string, string> = {};
-  const token = getStoredAdminToken();
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-  const res = await fetch(`/api/admin/content?file=${file}`, { cache: "no-store", headers });
+  const res = await fetch(`/api/admin/content?file=${file}`, { cache: "no-store" });
   const json = await res.json();
   if (!res.ok || !json.ok) {
     throw new Error(json.error || `Failed to fetch ${file}`);
@@ -113,14 +67,9 @@ export async function fetchFileContent<T = unknown>(file: AdminFileTarget): Prom
 }
 
 export async function saveFile(file: AdminFileTarget, content: unknown): Promise<SaveResponse> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  const token = getStoredAdminToken();
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
   const res = await fetch("/api/admin/save", {
     method: "POST",
-    headers,
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ file, content }),
   });
   const json = await res.json();

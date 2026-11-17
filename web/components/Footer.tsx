@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 import { useAdmin } from "@/components/admin";
-import { getStoredAdminToken, isLocalTokenValid } from "@/lib/adminClient";
 
 interface Props {
   lang: Locale;
@@ -72,9 +71,7 @@ export default function Footer({ lang, labels, links, email }: Props) {
         <button
           type="button"
           onClick={() => {
-            const hasValidToken = isLocalTokenValid(getStoredAdminToken());
-
-            if (isAdmin || hasValidToken) {
+            if (isAdmin) {
               openManager();
             } else {
               setLoginModalOpen(true);

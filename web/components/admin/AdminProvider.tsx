@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { checkAdminAuth, getStoredAdminToken, isLocalTokenValid, loginAdmin, logoutAdmin } from "@/lib/adminClient";
+import { checkAdminAuth, loginAdmin, logoutAdmin } from "@/lib/adminClient";
 import { AdminBar } from "./AdminBar";
 import { LoginModal } from "./LoginModal";
 import { EditDrawer } from "./EditDrawer";
@@ -23,7 +23,7 @@ interface AdminProviderProps {
 }
 
 export function AdminProvider({ children }: AdminProviderProps) {
-  const [isAdmin, setIsAdmin] = useState(() => isLocalTokenValid(getStoredAdminToken()));
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [activeEdit, setActiveEdit] = useState<EditTarget | null>(null);
@@ -42,16 +42,14 @@ export function AdminProvider({ children }: AdminProviderProps) {
         // Check if query params ?admin=1 or ?cortex=1 are set
         if (typeof window !== "undefined") {
           const params = new URLSearchParams(window.location.search);
-          const isAuthed = authenticated || isLocalTokenValid(getStoredAdminToken());
-
           if (params.get("cortex") === "1") {
-            if (isAuthed) {
+            if (authenticated) {
               setIsCortexOpen(true);
             } else {
               setLoginModalOpen(true);
             }
           } else if (params.get("admin") === "1" || params.get("edit") === "1") {
-            if (isAuthed) {
+            if (authenticated) {
               setIsManagerOpen(true);
             } else {
               setLoginModalOpen(true);
@@ -112,8 +110,8 @@ export function AdminProvider({ children }: AdminProviderProps) {
     };
   }, []);
 
-  async function handleLogin(password: string, rememberMe = true) {
-    const res = await loginAdmin(password, rememberMe);
+  async function handleLogin(password: string) {
+    const res = await loginAdmin(password);
     if (res.ok) {
       setIsAdmin(true);
       setLoginModalOpen(false);

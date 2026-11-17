@@ -5,12 +5,11 @@ import { useState, useTransition, type FormEvent } from "react";
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (password: string, rememberMe?: boolean) => Promise<{ ok: boolean; error?: string }>;
+  onLogin: (password: string) => Promise<{ ok: boolean; error?: string }>;
 }
 
 export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -22,7 +21,7 @@ export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
 
     setError(null);
     startTransition(async () => {
-      const res = await onLogin(password, rememberMe);
+      const res = await onLogin(password);
       if (res.ok) {
         setPassword("");
         onClose();
@@ -78,16 +77,6 @@ export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
               className="w-full bg-ink-2 border border-line px-3 py-2 text-base sm:text-sm text-paper placeholder:text-muted/50 focus:border-paper focus:outline-none font-mono"
             />
           </div>
-
-          <label className="flex items-center gap-2 cursor-pointer select-none text-muted hover:text-paper transition-colors pt-0.5">
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-              className="accent-signal rounded border-line bg-ink-2 size-3.5"
-            />
-            <span className="font-mono text-[11px]">Keep unlocked on this device (30 days)</span>
-          </label>
 
           {error && (
             <div className="font-mono text-[11px] text-red-400 bg-red-950/30 border border-red-900/50 px-2.5 py-1.5">
