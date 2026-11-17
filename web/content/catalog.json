@@ -4,7 +4,7 @@
     "code": "BL-001",
     "type": "app",
     "category": "education",
-    "status": "live",
+    "status": "ongoing",
     "role": "build",
     "year": 2026,
     "title": {
@@ -28,7 +28,8 @@
     "stack": [
       "WebGPU"
     ],
-    "art": "orbits"
+    "art": "orbits",
+    "offline": false
   },
   {
     "id": "spikebook",
