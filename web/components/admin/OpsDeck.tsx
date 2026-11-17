@@ -298,20 +298,20 @@ export function OpsDeck({
         {/* Top Header */}
         <div className="p-4 sm:p-6 pb-4 border-b border-line bg-ink shrink-0 space-y-3.5 pt-[max(1rem,env(safe-area-inset-top,0px))]">
           <div className="flex items-center justify-between gap-2">
-            <div>
-              <div className="font-mono text-[10px] uppercase tracking-wider text-ash flex items-center gap-1.5">
-                <span className="size-1.5 rounded-full bg-signal inline-block" />
-                <span>Burmanlabs Infrastructure</span>
+            <div className="min-w-0">
+              <div className="font-mono text-[10px] uppercase tracking-wider text-ash flex items-center gap-1.5 truncate">
+                <span className="size-1.5 rounded-full bg-signal shrink-0" />
+                <span className="truncate">Burmanlabs Infrastructure</span>
               </div>
-              <h2 className="font-mono text-base font-semibold text-bone mt-0.5">
+              <h2 className="font-mono text-base font-semibold text-bone mt-0.5 truncate">
                 DevOps & Fleet Deck
               </h2>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               <button
                 type="button"
                 onClick={onOpenManager}
-                className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-white text-bone hover:text-white font-mono text-xs transition-all cursor-pointer flex items-center active:scale-95"
+                className="px-2.5 sm:px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-white text-bone hover:text-white font-mono text-xs transition-all cursor-pointer flex items-center active:scale-95"
                 title="Switch to Content Manager"
               >
                 <span>Content</span>
@@ -320,7 +320,7 @@ export function OpsDeck({
                 <button
                   type="button"
                   onClick={onOpenCortex}
-                  className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-signal text-bone hover:text-white font-mono text-xs transition-all cursor-pointer flex items-center active:scale-95"
+                  className="px-2.5 sm:px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-signal text-bone hover:text-white font-mono text-xs transition-all cursor-pointer flex items-center active:scale-95"
                   title="Switch to Cortex Dispatcher"
                 >
                   <span>Cortex</span>
@@ -329,11 +329,11 @@ export function OpsDeck({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-white text-bone hover:text-white font-mono text-xs cursor-pointer transition-all active:scale-95 flex items-center gap-1.5"
+                className="px-2.5 sm:px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-white text-bone hover:text-white font-mono text-xs cursor-pointer transition-all active:scale-95 flex items-center gap-1"
                 aria-label="Close Ops Deck"
               >
                 <span>✕</span>
-                <span>Close</span>
+                <span className="hidden xs:inline">Close</span>
               </button>
             </div>
           </div>
