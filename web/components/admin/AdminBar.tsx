@@ -29,22 +29,20 @@ export function AdminBar({ isAdmin, onLogout, onOpenManager, onOpenCortex }: Adm
       <button
         type="button"
         onClick={onOpenCortex}
-        className="px-2 py-1 bg-ink-2 border border-line-2 hover:border-signal text-bone font-mono text-[11px] transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap active:scale-95 rounded"
+        className="px-2.5 py-1 bg-ink-2 border border-line-2 hover:border-signal text-bone font-mono text-[11px] transition-all cursor-pointer flex items-center whitespace-nowrap active:scale-95 rounded"
         title="Open Cortex Dispatcher"
       >
-        <span>🧠</span>
-        <span className="hidden min-[380px]:inline">Cortex</span>
+        <span>Cortex</span>
       </button>
 
       {/* Button 2: Content Manager */}
       <button
         type="button"
         onClick={onOpenManager}
-        className="px-2 py-1 bg-ink-2 border border-line-2 hover:border-white font-mono text-[11px] text-white transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap active:scale-95 rounded"
+        className="px-2.5 py-1 bg-ink-2 border border-line-2 hover:border-white font-mono text-[11px] text-white transition-all cursor-pointer flex items-center whitespace-nowrap active:scale-95 rounded"
         title="Manage Site Content"
       >
-        <span>✎</span>
-        <span className="hidden min-[420px]:inline">Content</span>
+        <span>Content</span>
       </button>
 
       <span className="hidden lg:inline font-mono text-[10px] text-muted">

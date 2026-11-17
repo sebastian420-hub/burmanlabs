@@ -196,11 +196,10 @@ export function CortexDispatcher({
               <button
                 type="button"
                 onClick={onOpenManager}
-                className="px-2.5 py-1.5 rounded bg-ink-2 border border-line-2 hover:border-white text-ash hover:text-white font-mono text-[11px] transition-colors cursor-pointer flex items-center gap-1 active:scale-95"
+                className="px-2.5 py-1.5 rounded bg-ink-2 border border-line-2 hover:border-white text-ash hover:text-white font-mono text-[11px] transition-colors cursor-pointer flex items-center active:scale-95"
                 title="Switch to Content Manager"
               >
-                <span>✎</span>
-                <span className="hidden sm:inline">Content Mgr</span>
+                <span>Content Mgr</span>
               </button>
               <button
                 type="button"
@@ -465,7 +464,7 @@ export function CortexDispatcher({
                           onClick={() => handleCopyTask(task)}
                           className="shrink-0 px-2 py-1 rounded bg-ink-2 border border-line-2 hover:border-white text-bone font-mono text-[10px] transition-all active:scale-95 cursor-pointer flex items-center gap-1"
                         >
-                          {isCopied ? "✓ Copied" : "📋 Copy"}
+                          {isCopied ? "✓ Copied" : "Copy"}
                         </button>
                       </div>
 
@@ -507,7 +506,7 @@ export function CortexDispatcher({
                   onClick={handleCopyAll}
                   className="px-3 py-1.5 rounded bg-ink-2 border border-line-2 hover:border-white text-bone transition-all cursor-pointer flex items-center gap-1 active:scale-95"
                 >
-                  {copiedAll ? "✓ Script Copied!" : "📋 Copy All Script"}
+                  {copiedAll ? "✓ Script Copied!" : "Copy Script"}
                 </button>
               )}
               {onLogout && (

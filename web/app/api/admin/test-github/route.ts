@@ -1,13 +1,10 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { ADMIN_COOKIE_NAME, verifySessionToken } from "@/lib/adminSession";
+import { getAdminTokenFromRequest } from "@/lib/adminSession";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
-
-    if (!verifySessionToken(token)) {
+    const token = await getAdminTokenFromRequest(req);
+    if (!token) {
       return NextResponse.json({ ok: false, error: "Unauthorized: Admin session required" }, { status: 401 });
     }
 

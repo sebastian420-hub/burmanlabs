@@ -122,52 +122,82 @@ export function EditDrawer({
   );
 }
 
-function GitHubTestButton() {
-  const [testing, setTesting] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
-  const [isSuccess, setIsSuccess] = useState(false);
+function GitHubStatusBadge() {
+  const [status, setStatus] = useState<"checking" | "connected" | "error">("checking");
+  const [detail, setDetail] = useState<string | null>(null);
 
-  async function handleTest() {
-    setTesting(true);
-    setResult(null);
+  async function handleManualRetry() {
+    setStatus("checking");
     try {
       const res = await fetch("/api/admin/test-github", { cache: "no-store" });
       const data = await res.json();
       if (res.ok && data.ok) {
-        setIsSuccess(true);
-        setResult(`✓ Connected to ${data.repository} (${data.authenticatedAs})`);
+        setStatus("connected");
+        setDetail(data.repository || data.authenticatedAs || "Connected");
       } else {
-        setIsSuccess(false);
-        setResult(data.error || "GitHub connection failed");
+        setStatus("error");
+        setDetail(data.error || "Connection failed");
       }
-    } catch (err: unknown) {
-      setIsSuccess(false);
-      setResult(err instanceof Error ? err.message : "Network error");
-    } finally {
-      setTesting(false);
+    } catch {
+      setStatus("error");
+      setDetail("Offline / Network error");
     }
   }
 
+  useEffect(() => {
+    let active = true;
+    fetch("/api/admin/test-github", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!active) return;
+        if (data.ok) {
+          setStatus("connected");
+          setDetail(data.repository || data.authenticatedAs || "Connected");
+        } else {
+          setStatus("error");
+          setDetail(data.error || "Connection failed");
+        }
+      })
+      .catch(() => {
+        if (!active) return;
+        setStatus("error");
+        setDetail("Offline / Network error");
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
-    <div className="flex items-center gap-2">
-      {result && (
-        <span
-          className={`font-mono text-[10px] ${
-            isSuccess ? "text-emerald-400" : "text-amber-400"
-          }`}
-        >
-          {result}
-        </span>
+    <button
+      type="button"
+      onClick={handleManualRetry}
+      title={detail ? `GitHub Status: ${detail} (click to re-test)` : "Click to test GitHub connection"}
+      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-ink-2/80 border border-line hover:border-line-2 transition-colors cursor-pointer select-none"
+    >
+      {status === "checking" && (
+        <>
+          <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" />
+          <span className="font-mono text-[10px] text-muted">Checking GitHub…</span>
+        </>
       )}
-      <button
-        type="button"
-        onClick={handleTest}
-        disabled={testing}
-        className="px-2 py-0.5 bg-ink-2 border border-line hover:border-white text-white font-mono text-[10px] rounded transition-colors cursor-pointer disabled:opacity-50"
-      >
-        {testing ? "Checking…" : "⚡ Test GitHub Connection"}
-      </button>
-    </div>
+      {status === "connected" && (
+        <>
+          <span className="relative flex size-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+          </span>
+          <span className="font-mono text-[10px] text-emerald-400 font-medium">GitHub Connected</span>
+        </>
+      )}
+      {status === "error" && (
+        <>
+          <span className="size-1.5 rounded-full bg-red-400 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+          <span className="font-mono text-[10px] text-red-400 font-medium">GitHub Offline</span>
+        </>
+      )}
+    </button>
   );
 }
 
@@ -205,7 +235,10 @@ function NavigatorView({
       <div className="p-4 sm:p-6 pb-4 border-b border-line bg-ink shrink-0 space-y-3.5 pt-[max(1rem,env(safe-area-inset-top,0px))]">
         <div className="flex items-center justify-between gap-2">
           <div>
-            <div className="font-mono text-[10px] uppercase tracking-wider text-muted">Burmanlabs Admin</div>
+            <div className="font-mono text-[10px] uppercase tracking-wider text-muted flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-signal inline-block" />
+              <span>Burmanlabs Admin</span>
+            </div>
             <h2 className="font-mono text-base font-semibold text-paper mt-0.5">Content Manager</h2>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -213,29 +246,16 @@ function NavigatorView({
               <button
                 type="button"
                 onClick={onOpenCortex}
-                className="px-2.5 py-1.5 rounded bg-ink-2 border border-line-2 hover:border-signal text-bone font-mono text-[11px] transition-colors cursor-pointer flex items-center gap-1 active:scale-95"
+                className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-signal text-bone font-mono text-xs transition-colors cursor-pointer flex items-center active:scale-95"
                 title="Switch to Cortex Dispatcher"
               >
-                <span>🧠</span>
-                <span className="hidden sm:inline">Cortex</span>
-              </button>
-            )}
-            {onLogout && (
-              <button
-                type="button"
-                onClick={onLogout}
-                className="px-2.5 py-1.5 rounded bg-ink-3 border border-red-900/60 hover:border-red-500 text-red-300 font-mono text-[11px] transition-colors cursor-pointer flex items-center gap-1 active:scale-95"
-                title="Log out of Admin Mode"
-              >
-                <span>⎋</span>
-                <span className="hidden sm:inline">Exit Admin</span>
-                <span className="sm:hidden">Exit</span>
+                <span>Cortex</span>
               </button>
             )}
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 rounded bg-ink-2 border border-line-2 hover:border-white text-bone font-mono text-xs cursor-pointer transition-all active:scale-95 flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-white text-bone font-mono text-xs cursor-pointer transition-all active:scale-95 flex items-center gap-1.5"
               aria-label="Close Content Manager"
             >
               <span>✕</span>
@@ -251,8 +271,8 @@ function NavigatorView({
             autoFocus
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search all copy (e.g. drone, Artcodex, bio, email)…"
-            className="w-full bg-ink-2 border border-line px-3.5 py-2 text-base sm:text-xs text-paper font-mono placeholder:text-muted/60 focus:border-paper focus:outline-none"
+            placeholder="Search all copy (e.g. Artcodex, bio, email)…"
+            className="w-full bg-ink-2 border border-line px-3.5 pr-9 py-2 text-base sm:text-xs text-paper font-mono placeholder:text-muted/60 focus:border-paper focus:outline-none rounded-md"
           />
           {searchQuery && (
             <button
@@ -266,7 +286,7 @@ function NavigatorView({
         </div>
 
         {/* Category Filter Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+        <div className="-mx-4 px-4 sm:-mx-6 sm:px-6 flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           {CATEGORY_TABS.map((tab) => {
             const isActive = selectedCategory === tab.id;
             return (
@@ -274,9 +294,9 @@ function NavigatorView({
                 key={tab.id}
                 type="button"
                 onClick={() => setSelectedCategory(tab.id)}
-                className={`px-2.5 py-1 font-mono text-[11px] whitespace-nowrap transition-colors cursor-pointer rounded border touch-manipulation ${
+                className={`h-8 px-3.5 font-mono text-xs whitespace-nowrap transition-all cursor-pointer rounded-full border touch-manipulation flex items-center justify-center shrink-0 ${
                   isActive
-                    ? "bg-black border-bone text-white font-semibold shadow-sm"
+                    ? "bg-bone border-bone text-ink font-semibold shadow-sm"
                     : "bg-ink-2 border-line text-ash hover:text-white hover:border-line-2"
                 }`}
               >
@@ -335,37 +355,33 @@ function NavigatorView({
       </div>
 
       {/* Bottom Footer Actions (Desktop & Mobile with safe-area padding) */}
-      <div className="border-t border-line px-4 sm:px-6 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] bg-ink shrink-0">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 font-mono text-[11px] text-muted">
-          <div className="flex items-center justify-between sm:justify-start gap-3">
-            <span>Showing {entries.length} of {totalCount} editable fields</span>
-            <span className="hidden sm:inline">·</span>
-            <span className="hidden sm:inline">Esc to close</span>
-          </div>
+      <div className="border-t border-line px-4 sm:px-6 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] bg-ink shrink-0 space-y-2.5">
+        <div className="flex items-center justify-between gap-3 font-mono text-[11px] text-muted">
+          <span>Showing {entries.length} of {totalCount} editable fields</span>
+          <GitHubStatusBadge />
+        </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <GitHubTestButton />
-            {onLogout && (
-              <button
-                type="button"
-                onClick={onLogout}
-                className="flex-1 sm:flex-none justify-center px-3 py-2 sm:py-1.5 rounded bg-ink-3 border border-red-900/60 hover:border-red-500 text-red-300 font-mono text-xs transition-colors cursor-pointer flex items-center gap-1.5 active:scale-95"
-                title="Log out of Admin Mode"
-              >
-                <span>⎋</span>
-                <span>Exit Admin</span>
-              </button>
-            )}
+        <div className="flex items-center gap-2 w-full">
+          {onLogout && (
             <button
               type="button"
-              onClick={onClose}
-              className="flex-1 sm:flex-none justify-center px-4 py-2 sm:py-1.5 rounded bg-bone text-ink font-mono text-xs font-semibold hover:bg-white transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 shadow-md"
-              title="Close Content Manager"
+              onClick={onLogout}
+              className="flex-1 sm:flex-none justify-center h-10 px-4 rounded-md bg-ink-2 border border-red-900/50 hover:border-red-500 text-red-400 hover:text-red-300 font-mono text-xs transition-colors cursor-pointer flex items-center gap-1.5 active:scale-95"
+              title="Log out of Admin Mode"
             >
-              <span>✕</span>
-              <span>Close Manager</span>
+              <span>⎋</span>
+              <span>Exit Admin</span>
             </button>
-          </div>
+          )}
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 sm:flex-none justify-center h-10 px-4 rounded-md bg-bone text-ink font-mono text-xs font-semibold hover:bg-white transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 shadow-md"
+            title="Close Content Manager"
+          >
+            <span>✕</span>
+            <span>Close Manager</span>
+          </button>
         </div>
       </div>
     </>
@@ -558,7 +574,7 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
           <button
             type="button"
             onClick={onBack}
-            className="font-mono text-[11px] text-muted hover:text-paper transition-colors flex items-center gap-1 cursor-pointer"
+            className="font-mono text-xs text-muted hover:text-paper transition-colors flex items-center gap-1 cursor-pointer"
           >
             ← All Content
           </button>
@@ -572,11 +588,11 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
             type="button"
             onClick={handleSave}
             disabled={isPending}
-            className="px-3.5 py-1.5 bg-black border border-line-2 text-white font-mono text-xs font-medium hover:border-white disabled:opacity-50 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+            className="px-3.5 py-1.5 bg-bone text-ink font-mono text-xs font-semibold hover:bg-white disabled:opacity-50 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 rounded-md"
           >
             {isPending ? (
               <>
-                <span className="inline-block h-2.5 w-2.5 animate-spin rounded-full border border-white border-t-transparent" />
+                <span className="inline-block h-2.5 w-2.5 animate-spin rounded-full border border-ink border-t-transparent" />
                 <span className="hidden sm:inline">Saving…</span>
               </>
             ) : (
@@ -587,7 +603,7 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
             type="button"
             onClick={onClose}
             aria-label="Close editor"
-            className="px-2.5 py-1.5 rounded bg-ink-2 border border-line-2 hover:border-white text-bone font-mono text-xs cursor-pointer transition-all active:scale-95 flex items-center gap-1"
+            className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-white text-bone font-mono text-xs cursor-pointer transition-all active:scale-95 flex items-center gap-1"
           >
             <span>✕</span>
             <span className="hidden sm:inline">Close</span>
@@ -1149,51 +1165,42 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
       </div>
 
       {/* Footer Actions (Desktop & Mobile with safe-area padding) */}
-      <div className="border-t border-line px-4 sm:px-6 py-3.5 pb-[max(1rem,env(safe-area-inset-bottom,0px))] bg-ink shrink-0">
+      <div className="border-t border-line px-4 sm:px-6 py-3.5 pb-[max(1rem,env(safe-area-inset-bottom,0px))] bg-ink shrink-0 space-y-3">
         {error && (
-          <div className="mb-3 font-mono text-xs text-red-400 bg-red-950/30 border border-red-900/50 p-2.5">
+          <div className="font-mono text-xs text-red-400 bg-red-950/30 border border-red-900/50 p-2.5 rounded-md">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="mb-3 font-mono text-xs text-emerald-400 bg-emerald-950/30 border border-emerald-900/50 p-2.5 flex items-center gap-2">
+          <div className="font-mono text-xs text-emerald-400 bg-emerald-950/30 border border-emerald-900/50 p-2.5 rounded-md flex items-center gap-2">
             <span>✓</span> Published successfully! Page refreshed.
           </div>
         )}
 
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={onBack}
-              disabled={isPending}
-              className="px-3.5 py-2 rounded border border-line bg-ink-2 font-mono text-xs text-white hover:border-line-2 transition-colors cursor-pointer active:scale-95"
-            >
-              ← Back
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-3.5 py-2 rounded border border-line-2 font-mono text-xs text-ash hover:text-white transition-colors cursor-pointer active:scale-95"
-            >
-              ✕ Close
-            </button>
-          </div>
+        <div className="flex items-center gap-2.5 w-full">
+          <button
+            type="button"
+            onClick={onBack}
+            disabled={isPending}
+            className="h-10 px-4 rounded-md border border-line-2 bg-ink-2 font-mono text-xs text-bone hover:border-white transition-colors cursor-pointer active:scale-95 flex items-center gap-1.5 shrink-0"
+          >
+            ← Back
+          </button>
 
           <button
             type="button"
             onClick={handleSave}
             disabled={isPending}
-            className="px-4 sm:px-5 py-2 rounded bg-black border border-line-2 text-white font-mono text-xs font-medium hover:border-white disabled:opacity-50 transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
+            className="flex-1 justify-center h-10 px-6 rounded-md bg-bone text-ink font-mono text-xs font-semibold hover:bg-white disabled:opacity-50 transition-all flex items-center gap-2 cursor-pointer shadow-md active:scale-95"
           >
             {isPending ? (
               <>
-                <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Publishing…
+                <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-ink border-t-transparent" />
+                <span>Publishing…</span>
               </>
             ) : (
-              "Save & Publish"
+              <span>Save & Publish</span>
             )}
           </button>
         </div>
