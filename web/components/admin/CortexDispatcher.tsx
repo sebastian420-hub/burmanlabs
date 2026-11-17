@@ -19,6 +19,7 @@ interface CortexDispatcherProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenManager: () => void;
+  onOpenOps?: () => void;
   onLogout?: () => void;
 }
 
@@ -26,6 +27,7 @@ export function CortexDispatcher({
   isOpen,
   onClose,
   onOpenManager,
+  onOpenOps,
   onLogout,
 }: CortexDispatcherProps) {
   const [tasks, setTasks] = useState<CortexTask[]>(() => {
@@ -193,6 +195,16 @@ export function CortexDispatcher({
               </h2>
             </div>
             <div className="flex items-center gap-2 shrink-0">
+              {onOpenOps && (
+                <button
+                  type="button"
+                  onClick={onOpenOps}
+                  className="px-2.5 py-1.5 rounded bg-ink-2 border border-line-2 hover:border-paper text-ash hover:text-white font-mono text-[11px] transition-colors cursor-pointer flex items-center active:scale-95"
+                  title="Switch to DevOps & Fleet Deck (⌘⇧O)"
+                >
+                  <span>Ops Deck</span>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={onOpenManager}

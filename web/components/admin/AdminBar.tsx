@@ -5,9 +5,10 @@ interface AdminBarProps {
   onLogout: () => void;
   onOpenManager: () => void;
   onOpenCortex: () => void;
+  onOpenOps: () => void;
 }
 
-export function AdminBar({ isAdmin, onLogout, onOpenManager, onOpenCortex }: AdminBarProps) {
+export function AdminBar({ isAdmin, onLogout, onOpenManager, onOpenCortex, onOpenOps }: AdminBarProps) {
   if (!isAdmin) return null;
 
   return (
@@ -40,9 +41,19 @@ export function AdminBar({ isAdmin, onLogout, onOpenManager, onOpenCortex }: Adm
         type="button"
         onClick={onOpenManager}
         className="px-2.5 py-1 bg-ink-2 border border-line-2 hover:border-white font-mono text-[11px] text-white transition-all cursor-pointer flex items-center whitespace-nowrap active:scale-95 rounded"
-        title="Manage Site Content"
+        title="Manage Site Content (⌘⇧E)"
       >
         <span>Content</span>
+      </button>
+
+      {/* Button 3: DevOps & Fleet Deck */}
+      <button
+        type="button"
+        onClick={onOpenOps}
+        className="px-2.5 py-1 bg-ink-2 border border-line-2 hover:border-signal text-bone font-mono text-[11px] transition-all cursor-pointer flex items-center whitespace-nowrap active:scale-95 rounded"
+        title="Open DevOps & Fleet Deck (⌘⇧O)"
+      >
+        <span>Ops</span>
       </button>
 
       <span className="hidden lg:inline font-mono text-[10px] text-muted">

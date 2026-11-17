@@ -23,6 +23,7 @@ interface EditDrawerProps {
   onSelectTarget: (target: EditTarget | null) => void;
   onLogout?: () => void;
   onOpenCortex?: () => void;
+  onOpenOps?: () => void;
 }
 
 export function EditDrawer({
@@ -32,6 +33,7 @@ export function EditDrawer({
   onSelectTarget,
   onLogout,
   onOpenCortex,
+  onOpenOps,
 }: EditDrawerProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -115,6 +117,7 @@ export function EditDrawer({
             onClose={onClose}
             onLogout={onLogout}
             onOpenCortex={onOpenCortex}
+            onOpenOps={onOpenOps}
           />
         )}
       </aside>
@@ -215,6 +218,7 @@ interface NavigatorViewProps {
   onClose: () => void;
   onLogout?: () => void;
   onOpenCortex?: () => void;
+  onOpenOps?: () => void;
 }
 
 function NavigatorView({
@@ -228,6 +232,7 @@ function NavigatorView({
   onClose,
   onLogout,
   onOpenCortex,
+  onOpenOps,
 }: NavigatorViewProps) {
   return (
     <>
@@ -242,6 +247,16 @@ function NavigatorView({
             <h2 className="font-mono text-base font-semibold text-paper mt-0.5">Content Manager</h2>
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            {onOpenOps && (
+              <button
+                type="button"
+                onClick={onOpenOps}
+                className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-paper text-bone font-mono text-xs transition-colors cursor-pointer flex items-center active:scale-95"
+                title="Switch to DevOps & Fleet Deck (⌘⇧O)"
+              >
+                <span>Ops</span>
+              </button>
+            )}
             {onOpenCortex && (
               <button
                 type="button"

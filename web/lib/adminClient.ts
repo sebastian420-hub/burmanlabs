@@ -194,3 +194,87 @@ export async function saveStudioPieceField(
     return { ok: false, error: err instanceof Error ? err.message : "Error saving studio piece" };
   }
 }
+
+// -------------------------------------------------------------
+// DEVOPS & FLEET OPERATIONS HELPERS
+// -------------------------------------------------------------
+import type { FleetTargetResult } from "@/app/api/admin/ops/fleet/route";
+import type { GitCommitInfo, GitWorkflowRunInfo } from "@/app/api/admin/ops/git/route";
+import type { EnvAuditItem } from "@/app/api/admin/ops/audit/route";
+import type { VercelDeploymentInfo } from "@/app/api/admin/ops/vercel/route";
+
+export type { FleetTargetResult, GitCommitInfo, GitWorkflowRunInfo, EnvAuditItem, VercelDeploymentInfo };
+
+export async function fetchFleetHealth(): Promise<{ ok: boolean; targets: FleetTargetResult[]; error?: string }> {
+  try {
+    const res = await fetch("/api/admin/ops/fleet", { cache: "no-store" });
+    const data = await res.json();
+    return data;
+  } catch (err: unknown) {
+    return { ok: false, targets: [], error: err instanceof Error ? err.message : "Failed to ping fleet" };
+  }
+}
+
+export async function fetchGitTelemetry(): Promise<{
+  ok: boolean;
+  repo?: string;
+  branch?: string;
+  commits: GitCommitInfo[];
+  runs: GitWorkflowRunInfo[];
+  error?: string;
+}> {
+  try {
+    const res = await fetch("/api/admin/ops/git", { cache: "no-store" });
+    const data = await res.json();
+    return data;
+  } catch (err: unknown) {
+    return { ok: false, commits: [], runs: [], error: err instanceof Error ? err.message : "Failed to load git telemetry" };
+  }
+}
+
+export async function triggerCachePurge(): Promise<{ ok: boolean; message?: string; error?: string }> {
+  try {
+    const res = await fetch("/api/admin/ops/revalidate", { method: "POST" });
+    const data = await res.json();
+    return data;
+  } catch (err: unknown) {
+    return { ok: false, error: err instanceof Error ? err.message : "Failed to purge cache" };
+  }
+}
+
+export async function fetchEnvAudit(): Promise<{ ok: boolean; items: EnvAuditItem[]; nodeEnv?: string; error?: string }> {
+  try {
+    const res = await fetch("/api/admin/ops/audit", { cache: "no-store" });
+    const data = await res.json();
+    return data;
+  } catch (err: unknown) {
+    return { ok: false, items: [], error: err instanceof Error ? err.message : "Failed to load config audit" };
+  }
+}
+
+export async function fetchVercelStatus(): Promise<{
+  ok: boolean;
+  configured: boolean;
+  deployments: VercelDeploymentInfo[];
+  hint?: string;
+  error?: string;
+}> {
+  try {
+    const res = await fetch("/api/admin/ops/vercel", { cache: "no-store" });
+    const data = await res.json();
+    return data;
+  } catch (err: unknown) {
+    return { ok: false, configured: false, deployments: [], error: err instanceof Error ? err.message : "Failed to load Vercel status" };
+  }
+}
+
+export async function triggerVercelRedeploy(): Promise<{ ok: boolean; message?: string; error?: string }> {
+  try {
+    const res = await fetch("/api/admin/ops/vercel", { method: "POST" });
+    const data = await res.json();
+    return data;
+  } catch (err: unknown) {
+    return { ok: false, error: err instanceof Error ? err.message : "Failed to trigger redeploy" };
+  }
+}
+

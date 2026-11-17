@@ -39,11 +39,14 @@ export interface AdminContextType {
   activeEdit: EditTarget | null;
   isManagerOpen: boolean;
   isCortexOpen: boolean;
+  isOpsOpen: boolean;
   openEdit: (target: EditTarget) => void;
   openManager: () => void;
   closeEdit: () => void;
   openCortex: () => void;
   closeCortex: () => void;
+  openOps: () => void;
+  closeOps: () => void;
   login: (password: string, rememberMe?: boolean) => Promise<{ ok: boolean; error?: string }>;
   logout: () => Promise<void>;
 }

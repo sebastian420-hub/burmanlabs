@@ -6,6 +6,7 @@ import { AdminBar } from "./AdminBar";
 import { LoginModal } from "./LoginModal";
 import { EditDrawer } from "./EditDrawer";
 import { CortexDispatcher } from "./CortexDispatcher";
+import { OpsDeck } from "./OpsDeck";
 import type { AdminContextType, EditTarget } from "./types";
 
 const AdminContext = createContext<AdminContextType | null>(null);
@@ -29,6 +30,7 @@ export function AdminProvider({ children }: AdminProviderProps) {
   const [activeEdit, setActiveEdit] = useState<EditTarget | null>(null);
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [isCortexOpen, setIsCortexOpen] = useState(false);
+  const [isOpsOpen, setIsOpsOpen] = useState(false);
 
   // Check auth on mount & listen to keyboard shortcuts
   useEffect(() => {
@@ -39,10 +41,16 @@ export function AdminProvider({ children }: AdminProviderProps) {
         setIsAdmin(authenticated);
         setIsLoading(false);
 
-        // Check if query params ?admin=1 or ?cortex=1 are set
+        // Check if query params ?admin=1, ?cortex=1 or ?ops=1 are set
         if (typeof window !== "undefined") {
           const params = new URLSearchParams(window.location.search);
-          if (params.get("cortex") === "1") {
+          if (params.get("ops") === "1") {
+            if (authenticated) {
+              setIsOpsOpen(true);
+            } else {
+              setLoginModalOpen(true);
+            }
+          } else if (params.get("cortex") === "1") {
             if (authenticated) {
               setIsCortexOpen(true);
             } else {
@@ -61,6 +69,19 @@ export function AdminProvider({ children }: AdminProviderProps) {
 
     function handleKeyDown(e: KeyboardEvent) {
       const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+
+      // ⌘ + Shift + O: Toggle DevOps & Fleet Deck
+      if (isCmdOrCtrl && e.shiftKey && (e.key === "o" || e.key === "O")) {
+        e.preventDefault();
+        setIsAdmin((prev) => {
+          if (!prev) {
+            setLoginModalOpen(true);
+            return prev;
+          }
+          setIsOpsOpen((o) => !o);
+          return prev;
+        });
+      }
 
       // ⌘ + Shift + C: Toggle Cortex Dispatcher
       if (isCmdOrCtrl && e.shiftKey && (e.key === "c" || e.key === "C")) {
@@ -134,17 +155,20 @@ export function AdminProvider({ children }: AdminProviderProps) {
     setActiveEdit(null);
     setIsManagerOpen(false);
     setIsCortexOpen(false);
+    setIsOpsOpen(false);
   }
 
   function handleOpenEdit(target: EditTarget) {
     setActiveEdit(target);
     setIsCortexOpen(false);
+    setIsOpsOpen(false);
     setIsManagerOpen(true);
   }
 
   function handleOpenManager() {
     setActiveEdit(null);
     setIsCortexOpen(false);
+    setIsOpsOpen(false);
     setIsManagerOpen(true);
   }
 
@@ -156,11 +180,23 @@ export function AdminProvider({ children }: AdminProviderProps) {
   function handleOpenCortex() {
     setActiveEdit(null);
     setIsManagerOpen(false);
+    setIsOpsOpen(false);
     setIsCortexOpen(true);
   }
 
   function handleCloseCortex() {
     setIsCortexOpen(false);
+  }
+
+  function handleOpenOps() {
+    setActiveEdit(null);
+    setIsManagerOpen(false);
+    setIsCortexOpen(false);
+    setIsOpsOpen(true);
+  }
+
+  function handleCloseOps() {
+    setIsOpsOpen(false);
   }
 
   const value: AdminContextType = {
@@ -171,11 +207,14 @@ export function AdminProvider({ children }: AdminProviderProps) {
     activeEdit,
     isManagerOpen,
     isCortexOpen,
+    isOpsOpen,
     openEdit: handleOpenEdit,
     openManager: handleOpenManager,
     closeEdit: handleCloseDrawer,
     openCortex: handleOpenCortex,
     closeCortex: handleCloseCortex,
+    openOps: handleOpenOps,
+    closeOps: handleCloseOps,
     login: handleLogin,
     logout: handleLogout,
   };
@@ -188,6 +227,7 @@ export function AdminProvider({ children }: AdminProviderProps) {
         onLogout={handleLogout}
         onOpenManager={handleOpenManager}
         onOpenCortex={handleOpenCortex}
+        onOpenOps={handleOpenOps}
       />
       <LoginModal
         isOpen={isLoginModalOpen}
@@ -201,11 +241,20 @@ export function AdminProvider({ children }: AdminProviderProps) {
         onSelectTarget={(target) => setActiveEdit(target)}
         onLogout={handleLogout}
         onOpenCortex={handleOpenCortex}
+        onOpenOps={handleOpenOps}
       />
       <CortexDispatcher
         isOpen={isCortexOpen}
         onClose={handleCloseCortex}
         onOpenManager={handleOpenManager}
+        onOpenOps={handleOpenOps}
+        onLogout={handleLogout}
+      />
+      <OpsDeck
+        isOpen={isOpsOpen}
+        onClose={handleCloseOps}
+        onOpenManager={handleOpenManager}
+        onOpenCortex={handleOpenCortex}
         onLogout={handleLogout}
       />
     </AdminContext.Provider>
