@@ -1,7 +1,8 @@
 import crypto from "crypto";
 
 export const ADMIN_COOKIE_NAME = "burmanlabs_admin";
-const SESSION_DURATION_MS = 8 * 60 * 60 * 1000; // 8 hours
+export const DEFAULT_SESSION_MS = 8 * 60 * 60 * 1000; // 8 hours
+export const EXTENDED_SESSION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days (personal device)
 
 function getSecret(): string {
   return process.env.ADMIN_PASSWORD || "burmanlabs";
@@ -18,12 +19,13 @@ export function verifyAdminPassword(password: string): boolean {
   return crypto.timingSafeEqual(bufA, bufB);
 }
 
-export function createSessionToken(): string {
+export function createSessionToken(rememberMe = true): { token: string; durationMs: number } {
   const secret = getSecret();
-  const expiresAt = Date.now() + SESSION_DURATION_MS;
+  const durationMs = rememberMe ? EXTENDED_SESSION_MS : DEFAULT_SESSION_MS;
+  const expiresAt = Date.now() + durationMs;
   const payload = `${expiresAt}`;
   const sig = crypto.createHmac("sha256", secret).update(payload).digest("hex");
-  return `${payload}.${sig}`;
+  return { token: `${payload}.${sig}`, durationMs };
 }
 
 export function verifySessionToken(token: string | undefined | null): boolean {
@@ -47,12 +49,12 @@ export function verifySessionToken(token: string | undefined | null): boolean {
   return crypto.timingSafeEqual(bufSig, bufExpected);
 }
 
-export function getCookieOptions() {
+export function getCookieOptions(durationMs = EXTENDED_SESSION_MS) {
   return {
     httpOnly: true,
     sameSite: "lax" as const,
     path: "/",
-    maxAge: Math.floor(SESSION_DURATION_MS / 1000),
+    maxAge: Math.floor(durationMs / 1000),
     secure: process.env.NODE_ENV === "production",
   };
 }

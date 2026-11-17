@@ -19,7 +19,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { password } = body || {};
+    const { password, rememberMe = true } = body || {};
 
     if (!password || typeof password !== "string") {
       return NextResponse.json({ ok: false, error: "Password is required" }, { status: 400 });
@@ -29,9 +29,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Incorrect password" }, { status: 401 });
     }
 
-    const token = createSessionToken();
+    const { token, durationMs } = createSessionToken(Boolean(rememberMe));
     const cookieStore = await cookies();
-    cookieStore.set(ADMIN_COOKIE_NAME, token, getCookieOptions());
+    cookieStore.set(ADMIN_COOKIE_NAME, token, getCookieOptions(durationMs));
 
     return NextResponse.json({ ok: true });
   } catch (err: unknown) {

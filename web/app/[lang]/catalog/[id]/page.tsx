@@ -167,7 +167,12 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
 
         {item.mode === "embed" && item.target && (
           <div className="mt-8">
-            <EmbedFrame url={item.target} title={item.title[lang]} labels={{ load: d.item.loadEmbed, note: d.item.embedNote }} />
+            <EmbedFrame
+              url={item.target}
+              title={item.title[lang]}
+              code={item.code}
+              labels={{ load: d.item.loadEmbed, note: d.item.embedNote }}
+            />
           </div>
         )}
 

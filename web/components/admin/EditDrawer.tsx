@@ -22,9 +22,17 @@ interface EditDrawerProps {
   onClose: () => void;
   onSelectTarget: (target: EditTarget | null) => void;
   onLogout?: () => void;
+  onOpenCortex?: () => void;
 }
 
-export function EditDrawer({ isOpen, activeTarget, onClose, onSelectTarget, onLogout }: EditDrawerProps) {
+export function EditDrawer({
+  isOpen,
+  activeTarget,
+  onClose,
+  onSelectTarget,
+  onLogout,
+  onOpenCortex,
+}: EditDrawerProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<ContentCategory>("all");
@@ -92,6 +100,7 @@ export function EditDrawer({ isOpen, activeTarget, onClose, onSelectTarget, onLo
             onSelectTarget={(target) => onSelectTarget(target)}
             onClose={onClose}
             onLogout={onLogout}
+            onOpenCortex={onOpenCortex}
           />
         )}
       </aside>
@@ -161,6 +170,7 @@ interface NavigatorViewProps {
   onSelectTarget: (t: EditTarget) => void;
   onClose: () => void;
   onLogout?: () => void;
+  onOpenCortex?: () => void;
 }
 
 function NavigatorView({
@@ -173,6 +183,7 @@ function NavigatorView({
   onSelectTarget,
   onClose,
   onLogout,
+  onOpenCortex,
 }: NavigatorViewProps) {
   return (
     <>
@@ -184,6 +195,17 @@ function NavigatorView({
             <h2 className="font-mono text-base font-semibold text-paper mt-0.5">Content Manager</h2>
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            {onOpenCortex && (
+              <button
+                type="button"
+                onClick={onOpenCortex}
+                className="px-2.5 py-1.5 rounded bg-ink-2 border border-line-2 hover:border-signal text-bone font-mono text-[11px] transition-colors cursor-pointer flex items-center gap-1 active:scale-95"
+                title="Switch to Cortex Dispatcher"
+              >
+                <span>🧠</span>
+                <span className="hidden sm:inline">Cortex</span>
+              </button>
+            )}
             {onLogout && (
               <button
                 type="button"

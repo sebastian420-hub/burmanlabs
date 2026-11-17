@@ -2,9 +2,9 @@
 <html lang="my">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#0b0a09" />
-    <title>Burmanlabs</title>
+    <title>Burmanlabs · Offline</title>
     <style>
       @font-face {
         font-family: "Noto Sans Myanmar";
@@ -18,35 +18,81 @@
         src: url(/fonts/noto-myanmar-700.woff2) format("woff2");
         unicode-range: U+1000-109F, U+200C-200D, U+25CC, U+A92E, U+A9E0-A9FE, U+AA60-AA7F;
       }
+      @font-face {
+        font-family: "Inter Tight";
+        font-weight: 100 900;
+        src: url(/fonts/inter-tight-var.woff2) format("woff2-variations");
+      }
+      * { box-sizing: border-box; touch-action: manipulation; }
       body {
         margin: 0;
-        min-height: 100vh;
+        min-height: 100dvh;
         display: grid;
         place-items: center;
         background: #0b0a09;
-        color: #eef3fb;
-        font-family: "Noto Sans Myanmar", system-ui, sans-serif;
-        line-height: 1.85;
+        color: #f2efe9;
+        font-family: "Inter Tight", "Noto Sans Myanmar", system-ui, -apple-system, sans-serif;
+        line-height: 1.6;
         text-align: center;
         padding: 24px;
       }
-      h1 { font-size: 1.6rem; margin: 0 0 4px; line-height: 1.6; }
-      p { margin: 0 0 8px; color: #a6b4d0; }
-      a {
-        display: inline-block; margin-top: 16px; padding: 10px 22px; border-radius: 12px;
-        background: #ffb347; color: #0b0a09; font-weight: 700; text-decoration: none;
+      .badge {
+        font-family: monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #ff3131;
+        background: #1b1917;
+        border: 1px solid #2a2725;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        display: inline-block;
+        margin-bottom: 16px;
       }
-      hr { border: 0; border-top: 1px solid #222f4c; margin: 24px auto; width: 120px; }
+      h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 6px; color: #f2efe9; }
+      p { margin: 0 0 12px; color: #a39d94; font-size: 0.95rem; }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 24px;
+      }
+      a {
+        display: inline-flex;
+        align-items: center;
+        padding: 9px 18px;
+        border-radius: 9999px;
+        background: #f2efe9;
+        color: #0b0a09;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: transform 0.15s, opacity 0.15s;
+      }
+      a:active { transform: scale(0.96); }
+      a.sec {
+        background: #1b1917;
+        color: #f2efe9;
+        border: 1px solid #3a3633;
+      }
+      hr { border: 0; border-top: 1px solid #2a2725; margin: 24px auto; width: 80px; }
     </style>
   </head>
   <body>
     <main>
+      <div class="badge">Offline Shell · အင်တာနက် မရှိပါ</div>
       <h1>အင်တာနက် မရှိပါ</h1>
-      <p>ယခင်က ဖွင့်ဖူးသော စာမျက်နှာများကို ဆက်ဖွင့်နိုင်ပါသည်။</p>
+      <p>ယခင်က ဖွင့်ဖူးသော စာမျက်နှာများနှင့် သိမ်းဆည်းထားသော အချက်အလက်များကို ဆက်ဖွင့်နိုင်ပါသည်။</p>
       <hr />
-      <h1 lang="en">You are offline</h1>
-      <p lang="en">Pages you opened before are still available.</p>
-      <a href="/my">ပင်မစာမျက်နှာ</a> <a href="/en" lang="en">Home</a>
+      <h1 lang="en">Offline Deck Active</h1>
+      <p lang="en">Cached laboratory tools, dossiers, and notes remain available.</p>
+      <div class="actions">
+        <a href="/my">ပင်မစာမျက်နှာ</a>
+        <a href="/en" lang="en">Home</a>
+        <a href="/en/catalog" class="sec" lang="en">Catalog</a>
+        <a href="/en/studio" class="sec" lang="en">Studio 3D</a>
+      </div>
     </main>
   </body>
 </html>

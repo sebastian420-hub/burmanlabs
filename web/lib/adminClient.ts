@@ -20,12 +20,15 @@ export async function checkAdminAuth(): Promise<boolean> {
   }
 }
 
-export async function loginAdmin(password: string): Promise<{ ok: boolean; error?: string }> {
+export async function loginAdmin(
+  password: string,
+  rememberMe = true
+): Promise<{ ok: boolean; error?: string }> {
   try {
     const res = await fetch("/api/admin/auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ password, rememberMe }),
     });
     const data = await res.json();
     if (!res.ok || !data.ok) {

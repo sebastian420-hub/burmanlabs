@@ -38,9 +38,12 @@ export interface AdminContextType {
   setLoginModalOpen: (open: boolean) => void;
   activeEdit: EditTarget | null;
   isManagerOpen: boolean;
+  isCortexOpen: boolean;
   openEdit: (target: EditTarget) => void;
   openManager: () => void;
   closeEdit: () => void;
-  login: (password: string) => Promise<{ ok: boolean; error?: string }>;
+  openCortex: () => void;
+  closeCortex: () => void;
+  login: (password: string, rememberMe?: boolean) => Promise<{ ok: boolean; error?: string }>;
   logout: () => Promise<void>;
 }

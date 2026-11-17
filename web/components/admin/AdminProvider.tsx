@@ -5,6 +5,7 @@ import { checkAdminAuth, loginAdmin, logoutAdmin } from "@/lib/adminClient";
 import { AdminBar } from "./AdminBar";
 import { LoginModal } from "./LoginModal";
 import { EditDrawer } from "./EditDrawer";
+import { CortexDispatcher } from "./CortexDispatcher";
 import type { AdminContextType, EditTarget } from "./types";
 
 const AdminContext = createContext<AdminContextType | null>(null);
@@ -27,6 +28,7 @@ export function AdminProvider({ children }: AdminProviderProps) {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [activeEdit, setActiveEdit] = useState<EditTarget | null>(null);
   const [isManagerOpen, setIsManagerOpen] = useState(false);
+  const [isCortexOpen, setIsCortexOpen] = useState(false);
 
   // Check auth on mount & listen to keyboard shortcuts
   useEffect(() => {
@@ -37,10 +39,16 @@ export function AdminProvider({ children }: AdminProviderProps) {
         setIsAdmin(authenticated);
         setIsLoading(false);
 
-        // Check if query param ?admin=1 is set
+        // Check if query params ?admin=1 or ?cortex=1 are set
         if (typeof window !== "undefined") {
           const params = new URLSearchParams(window.location.search);
-          if (params.get("admin") === "1" || params.get("edit") === "1") {
+          if (params.get("cortex") === "1") {
+            if (authenticated) {
+              setIsCortexOpen(true);
+            } else {
+              setLoginModalOpen(true);
+            }
+          } else if (params.get("admin") === "1" || params.get("edit") === "1") {
             if (authenticated) {
               setIsManagerOpen(true);
             } else {
@@ -54,7 +62,20 @@ export function AdminProvider({ children }: AdminProviderProps) {
     function handleKeyDown(e: KeyboardEvent) {
       const isCmdOrCtrl = e.metaKey || e.ctrlKey;
 
-      // ⌘ + Shift + E: toggle Manager or open Login
+      // ⌘ + Shift + C: Toggle Cortex Dispatcher
+      if (isCmdOrCtrl && e.shiftKey && (e.key === "c" || e.key === "C")) {
+        e.preventDefault();
+        setIsAdmin((prev) => {
+          if (!prev) {
+            setLoginModalOpen(true);
+            return prev;
+          }
+          setIsCortexOpen((c) => !c);
+          return prev;
+        });
+      }
+
+      // ⌘ + Shift + E: Toggle Manager or open Login
       if (isCmdOrCtrl && e.shiftKey && (e.key === "e" || e.key === "E")) {
         e.preventDefault();
         setIsAdmin((prev) => {
@@ -89,11 +110,19 @@ export function AdminProvider({ children }: AdminProviderProps) {
     };
   }, []);
 
-  async function handleLogin(password: string) {
-    const res = await loginAdmin(password);
+  async function handleLogin(password: string, rememberMe = true) {
+    const res = await loginAdmin(password, rememberMe);
     if (res.ok) {
       setIsAdmin(true);
       setLoginModalOpen(false);
+
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("cortex") === "1") {
+          setIsCortexOpen(true);
+          return res;
+        }
+      }
       setIsManagerOpen(true);
     }
     return res;
@@ -104,21 +133,34 @@ export function AdminProvider({ children }: AdminProviderProps) {
     setIsAdmin(false);
     setActiveEdit(null);
     setIsManagerOpen(false);
+    setIsCortexOpen(false);
   }
 
   function handleOpenEdit(target: EditTarget) {
     setActiveEdit(target);
+    setIsCortexOpen(false);
     setIsManagerOpen(true);
   }
 
   function handleOpenManager() {
     setActiveEdit(null);
+    setIsCortexOpen(false);
     setIsManagerOpen(true);
   }
 
   function handleCloseDrawer() {
     setActiveEdit(null);
     setIsManagerOpen(false);
+  }
+
+  function handleOpenCortex() {
+    setActiveEdit(null);
+    setIsManagerOpen(false);
+    setIsCortexOpen(true);
+  }
+
+  function handleCloseCortex() {
+    setIsCortexOpen(false);
   }
 
   const value: AdminContextType = {
@@ -128,9 +170,12 @@ export function AdminProvider({ children }: AdminProviderProps) {
     setLoginModalOpen,
     activeEdit,
     isManagerOpen,
+    isCortexOpen,
     openEdit: handleOpenEdit,
     openManager: handleOpenManager,
     closeEdit: handleCloseDrawer,
+    openCortex: handleOpenCortex,
+    closeCortex: handleCloseCortex,
     login: handleLogin,
     logout: handleLogout,
   };
@@ -142,6 +187,7 @@ export function AdminProvider({ children }: AdminProviderProps) {
         isAdmin={isAdmin}
         onLogout={handleLogout}
         onOpenManager={handleOpenManager}
+        onOpenCortex={handleOpenCortex}
       />
       <LoginModal
         isOpen={isLoginModalOpen}
@@ -153,6 +199,13 @@ export function AdminProvider({ children }: AdminProviderProps) {
         activeTarget={activeEdit}
         onClose={handleCloseDrawer}
         onSelectTarget={(target) => setActiveEdit(target)}
+        onLogout={handleLogout}
+        onOpenCortex={handleOpenCortex}
+      />
+      <CortexDispatcher
+        isOpen={isCortexOpen}
+        onClose={handleCloseCortex}
+        onOpenManager={handleOpenManager}
         onLogout={handleLogout}
       />
     </AdminContext.Provider>
