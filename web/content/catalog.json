@@ -119,7 +119,7 @@
       "en": "Beta version live in the browser. Still a work in progress while I hunt down bugs and round out the final details. The AI co-builder works with your own Anthropic key."
     },
     "mode": "embed",
-    "target": "https://artcodex.vercel.app/",
+    "target": "https://artcodex.vercel.app/?embed=1",
     "stack": [
       "React",
       "three.js",

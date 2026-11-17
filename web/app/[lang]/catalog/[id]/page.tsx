@@ -115,18 +115,13 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
                 </ButtonLink>
               )}
               {item.mode === "embed" && item.target && (
-                <div className="flex flex-wrap items-center gap-3">
-                  <a
-                    href="#focus-deck"
-                    className="inline-flex items-center gap-2 rounded-full bg-bone px-5 py-2.5 font-mono text-xs font-semibold text-ink transition hover:bg-white active:scale-95 shadow-md"
-                  >
-                    <span>⛶</span>
-                    <span>Launch in Deck</span>
-                  </a>
-                  <ButtonLink href={item.target} external>
-                    {d.item.openNew}
-                  </ButtonLink>
-                </div>
+                <a
+                  href="#focus-deck"
+                  className="inline-flex items-center gap-2 rounded-full bg-bone px-5 py-2.5 font-mono text-xs font-semibold text-ink transition hover:bg-white active:scale-95 shadow-md"
+                >
+                  <span>⛶</span>
+                  <span>Launch in Deck</span>
+                </a>
               )}
               {item.mode === "native" && item.target && (
                 <ButtonLink href={`/${lang}/sims/${item.target}`}>{d.item.open}</ButtonLink>
@@ -163,31 +158,52 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
           </div>
         </div>
 
-        {/* The piece */}
-        <div className="intro-fade relative mt-10 aspect-[16/10] overflow-hidden border border-line bg-ink-2">
-          {item.shot ? (
-            <Image src={`/work/${item.shot}.webp`} alt={item.title[lang]} fill priority sizes="(min-width: 1280px) 1200px, 100vw" className="object-cover" />
-          ) : (
-            <Cover id={item.id} art={coverArt(item)} className="h-full w-full" />
-          )}
-          <span className="mono absolute bottom-3 left-3 text-bone/70">
-            {item.code} · {item.title[lang]}
-          </span>
-        </div>
-
-        {item.gallery && item.gallery.length > 0 && (
-          <Gallery gallery={item.gallery} lang={lang} />
-        )}
-
-        {item.mode === "embed" && item.target && (
-          <div id="focus-deck" className="mt-8 scroll-mt-24">
+        {/* The piece / Focus Deck */}
+        <div id="focus-deck" className="intro-fade relative mt-10 scroll-mt-24">
+          {item.mode === "embed" && item.target ? (
             <EmbedFrame
               url={item.target}
               title={item.title[lang]}
               code={item.code}
               labels={{ load: d.item.loadEmbed, note: d.item.embedNote }}
+              poster={
+                item.shot ? (
+                  <Image
+                    src={`/work/${item.shot}.webp`}
+                    alt={item.title[lang]}
+                    fill
+                    priority
+                    sizes="(min-width: 1280px) 1200px, 100vw"
+                    className="object-cover"
+                  />
+                ) : (
+                  <Cover id={item.id} art={coverArt(item)} className="h-full w-full" />
+                )
+              }
             />
-          </div>
+          ) : (
+            <div className="relative aspect-[16/10] overflow-hidden border border-line bg-ink-2">
+              {item.shot ? (
+                <Image
+                  src={`/work/${item.shot}.webp`}
+                  alt={item.title[lang]}
+                  fill
+                  priority
+                  sizes="(min-width: 1280px) 1200px, 100vw"
+                  className="object-cover"
+                />
+              ) : (
+                <Cover id={item.id} art={coverArt(item)} className="h-full w-full" />
+              )}
+              <span className="mono absolute bottom-3 left-3 text-bone/70">
+                {item.code} · {item.title[lang]}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {item.gallery && item.gallery.length > 0 && (
+          <Gallery gallery={item.gallery} lang={lang} />
         )}
 
         {/* What it is / where it stands */}

@@ -7,13 +7,14 @@ interface Props {
   title: string;
   labels: { load: string; note: string };
   code?: string;
+  poster?: React.ReactNode;
 }
 
 /**
  * Click-to-load iframe with Fullscreen Focus Deck capability.
  * Enables running EduSim, Artcodex, or Spikebook edge-to-edge inside the PWA without browser tabs.
  */
-export default function EmbedFrame({ url, title, labels, code }: Props) {
+export default function EmbedFrame({ url, title, labels, code, poster }: Props) {
   const [on, setOn] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [iframeKey, setIframeKey] = useState(0);
@@ -56,28 +57,50 @@ export default function EmbedFrame({ url, title, labels, code }: Props) {
 
   if (!on) {
     return (
-      <div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 rounded-2xl sm:rounded-3xl border border-line bg-ink-2 p-6 text-center sm:aspect-video">
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => setOn(true)}
-            className="rounded-full bg-bone px-6 py-2.5 font-mono text-xs font-semibold text-ink transition hover:bg-white active:scale-95 cursor-pointer shadow-md"
-          >
-            ▶ {labels.load}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setOn(true);
-              setIsFullscreen(true);
-            }}
-            className="rounded-full bg-ink-3 border border-line-2 px-5 py-2.5 font-mono text-xs text-bone hover:border-white transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
-          >
-            <span>⛶</span>
-            <span>Launch in Deck</span>
-          </button>
+      <div className="relative aspect-[16/10] overflow-hidden border border-line bg-ink-2 group">
+        {poster}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/50 to-transparent flex flex-col justify-between p-4 sm:p-6 select-none">
+          <div className="flex items-center justify-between">
+            <span className="mono text-[11px] text-bone/80 bg-ink/70 backdrop-blur-md px-2.5 py-1 rounded border border-line/60">
+              {code && <span className="text-signal mr-1.5">{code}</span>}
+              <span>Interactive Deck</span>
+            </span>
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            </span>
+          </div>
+
+          <div className="flex flex-col items-center justify-center text-center my-auto gap-3 py-4">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setOn(true);
+                  setIsFullscreen(true);
+                }}
+                className="rounded-full bg-bone px-6 py-3 font-mono text-xs font-semibold text-ink transition hover:bg-white active:scale-95 cursor-pointer shadow-xl flex items-center gap-2"
+              >
+                <span>⛶</span>
+                <span>Launch in Deck</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setOn(true)}
+                className="rounded-full bg-ink-3/90 backdrop-blur-md border border-line-2 px-5 py-3 font-mono text-xs text-bone hover:border-white transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+              >
+                <span>▶</span>
+                <span>{labels.load}</span>
+              </button>
+            </div>
+            <p className="text-xs text-bone/70 font-mono drop-shadow">{labels.note}</p>
+          </div>
+
+          <div className="mono text-[11px] text-bone/70 flex items-center justify-between">
+            <span>{title}</span>
+            <span className="text-dim">Tap to run live</span>
+          </div>
         </div>
-        <p className="text-xs text-dim font-mono">{labels.note}</p>
       </div>
     );
   }
@@ -167,11 +190,11 @@ export default function EmbedFrame({ url, title, labels, code }: Props) {
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-2.5 py-1.5 rounded bg-ink-2 border border-line text-ash hover:text-white transition-colors cursor-pointer flex items-center gap-1 active:scale-95"
+                className="px-2.5 py-1.5 rounded bg-ink-2 border border-line-2 text-bone hover:border-white transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
                 title="Open raw external link in browser"
               >
                 <span>↗</span>
-                <span className="hidden sm:inline">Browser</span>
+                <span className="font-mono text-xs">Open site</span>
               </a>
 
               <button
