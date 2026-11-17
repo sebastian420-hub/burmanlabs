@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import fs from "fs";
 import path from "path";
-import { ADMIN_COOKIE_NAME, verifySessionToken } from "@/lib/adminSession";
+import { getAdminTokenFromRequest } from "@/lib/adminSession";
 
 const ALLOWED_FILES: Record<string, string> = {
   en: "dictionaries/en.json",
@@ -13,10 +12,8 @@ const ALLOWED_FILES: Record<string, string> = {
 
 export async function GET(req: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
-
-    if (!verifySessionToken(token)) {
+    const token = await getAdminTokenFromRequest(req);
+    if (!token) {
       return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }
 

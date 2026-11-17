@@ -56,10 +56,13 @@ export function CortexDispatcher({
   // Lock background scroll when open
   useEffect(() => {
     if (isOpen) {
-      const originalOverflow = document.body.style.overflow;
+      const origBodyOverflow = document.body.style.overflow;
+      const origHtmlOverflow = document.documentElement.style.overflow;
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
       return () => {
-        document.body.style.overflow = originalOverflow;
+        document.body.style.overflow = origBodyOverflow;
+        document.documentElement.style.overflow = origHtmlOverflow;
       };
     }
   }, [isOpen]);
@@ -213,7 +216,10 @@ export function CortexDispatcher({
         </div>
 
         {/* Scrollable Main Body */}
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-6 no-scrollbar">
+        <div
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-6 no-scrollbar"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
           {/* Section 1: Quick Prompt Capture Box */}
           <div className="bg-ink-2 border border-line p-4 rounded-lg space-y-3.5">
             <div className="flex items-center justify-between">

@@ -61,10 +61,13 @@ export function EditDrawer({
   // Lock background scroll when open
   useEffect(() => {
     if (isOpen) {
-      const originalOverflow = document.body.style.overflow;
+      const origBodyOverflow = document.body.style.overflow;
+      const origHtmlOverflow = document.documentElement.style.overflow;
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
       return () => {
-        document.body.style.overflow = originalOverflow;
+        document.body.style.overflow = origBodyOverflow;
+        document.documentElement.style.overflow = origHtmlOverflow;
       };
     }
   }, [isOpen]);
@@ -285,7 +288,10 @@ function NavigatorView({
       </div>
 
       {/* Scrollable Results List */}
-      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 divide-y divide-line">
+      <div
+        className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 divide-y divide-line no-scrollbar"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
         {entries.length === 0 ? (
           <div className="py-12 text-center">
             <p className="font-mono text-xs text-muted">No text matches &ldquo;{searchQuery}&rdquo;</p>
@@ -590,7 +596,10 @@ function ItemEditorView({ target, onBack, onClose, routerRefresh }: ItemEditorVi
       </div>
 
       {/* Scrollable Form Content */}
-      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-6">
+      <div
+        className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-6 no-scrollbar"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
         {/* CASE 1: Dictionary target */}
         {target.type === "dictionary" && (
           <>

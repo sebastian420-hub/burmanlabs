@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { cookies } from "next/headers";
 
 export const ADMIN_COOKIE_NAME = "burmanlabs_admin";
 export const DEFAULT_SESSION_MS = 8 * 60 * 60 * 1000; // 8 hours
@@ -12,8 +13,8 @@ export function verifyAdminPassword(password: string): boolean {
   const secret = getSecret();
   if (!password || !secret) return false;
 
-  const bufA = Buffer.from(password);
-  const bufB = Buffer.from(secret);
+  const bufA = Buffer.from(password.trim());
+  const bufB = Buffer.from(secret.trim());
 
   if (bufA.length !== bufB.length) return false;
   return crypto.timingSafeEqual(bufA, bufB);
@@ -28,8 +29,9 @@ export function createSessionToken(rememberMe = true): { token: string; duration
   return { token: `${payload}.${sig}`, durationMs };
 }
 
-export function verifySessionToken(token: string | undefined | null): boolean {
-  if (!token) return false;
+export function verifySessionToken(rawToken: string | undefined | null): boolean {
+  if (!rawToken) return false;
+  const token = rawToken.trim();
   const secret = getSecret();
   const parts = token.split(".");
   if (parts.length !== 2) return false;
@@ -58,4 +60,25 @@ export function getCookieOptions(durationMs = EXTENDED_SESSION_MS) {
     expires: new Date(Date.now() + durationMs),
     secure: process.env.NODE_ENV === "production",
   };
+}
+
+export async function getAdminTokenFromRequest(req: Request): Promise<string | null> {
+  const authHeader = req.headers.get("authorization");
+  if (authHeader) {
+    const match = authHeader.match(/^Bearer\s+(.+)$/i);
+    if (match) {
+      const candidate = match[1].trim();
+      if (verifySessionToken(candidate)) {
+        return candidate;
+      }
+    }
+  }
+
+  const cookieStore = await cookies();
+  const cookieVal = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
+  if (cookieVal && verifySessionToken(cookieVal)) {
+    return cookieVal;
+  }
+
+  return null;
 }

@@ -3,33 +3,24 @@ import { cookies } from "next/headers";
 import {
   ADMIN_COOKIE_NAME,
   createSessionToken,
+  getAdminTokenFromRequest,
   getCookieOptions,
   verifyAdminPassword,
-  verifySessionToken,
 } from "@/lib/adminSession";
 
 export async function GET(req: Request) {
-  const cookieStore = await cookies();
-  let token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
+  const verifiedToken = await getAdminTokenFromRequest(req);
+  const isAdmin = Boolean(verifiedToken);
 
-  // Header fallback for iOS PWAs where cookies can be evicted on suspension
-  if (!token) {
-    const authHeader = req.headers.get("authorization");
-    if (authHeader?.startsWith("Bearer ")) {
-      token = authHeader.substring(7).trim();
-    }
-  }
-
-  const isAdmin = verifySessionToken(token);
-
-  // If verified via valid header token, re-seed cookie
-  if (isAdmin && token) {
+  // If verified via header token or cookie, re-seed cookie
+  if (isAdmin && verifiedToken) {
     try {
-      const parts = token.split(".");
+      const parts = verifiedToken.split(".");
       const expiresAt = Number(parts[0]);
       const remainingMs = expiresAt - Date.now();
       if (remainingMs > 0) {
-        cookieStore.set(ADMIN_COOKIE_NAME, token, getCookieOptions(remainingMs));
+        const cookieStore = await cookies();
+        cookieStore.set(ADMIN_COOKIE_NAME, verifiedToken, getCookieOptions(remainingMs));
       }
     } catch {
       // ignore
