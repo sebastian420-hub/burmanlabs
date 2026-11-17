@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import type { Locale } from "@/lib/i18n";
 import { useAdmin } from "@/components/admin";
@@ -16,7 +16,6 @@ interface Props {
 }
 
 export default function Header({ lang, name, home, links, other }: Props) {
-  const router = useRouter();
   const pathname = usePathname() ?? `/${lang}`;
   const otherLang: Locale = lang === "my" ? "en" : "my";
   const switchHref = pathname.replace(/^\/(my|en)(?=\/|$)/, `/${otherLang}`);
@@ -25,10 +24,6 @@ export default function Header({ lang, name, home, links, other }: Props) {
   const { setLoginModalOpen, isAdmin, openManager } = useAdmin();
   const tapCountRef = useRef(0);
   const lastTapRef = useRef(0);
-  const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const touchStartPosRef = useRef<{ x: number; y: number } | null>(null);
-  const isGestureActiveRef = useRef(false);
 
   function triggerAdmin() {
     if (typeof navigator !== "undefined" && navigator.vibrate) {
@@ -45,82 +40,23 @@ export default function Header({ lang, name, home, links, other }: Props) {
     }
   }
 
-  function handleLogoClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    if (isGestureActiveRef.current) {
-      e.preventDefault();
-      e.stopPropagation();
-      isGestureActiveRef.current = false;
-      return;
-    }
-
+  function handleLogoClick(e: React.MouseEvent) {
     const now = Date.now();
-    const isRapid = now - lastTapRef.current < 450;
+    const elapsed = now - lastTapRef.current;
     lastTapRef.current = now;
 
-    if (isRapid) {
-      // 2nd or subsequent rapid tap: prevent navigation so user can finish triple-tap
+    if (elapsed < 550) {
+      tapCountRef.current += 1;
       e.preventDefault();
       e.stopPropagation();
-      if (clickTimerRef.current) {
-        clearTimeout(clickTimerRef.current);
-        clickTimerRef.current = null;
-      }
-      tapCountRef.current += 1;
+
       if (tapCountRef.current >= 3) {
         tapCountRef.current = 0;
+        lastTapRef.current = 0;
         triggerAdmin();
       }
     } else {
-      // 1st tap: start counter and delay navigation briefly (280ms) to allow multi-tap detection
       tapCountRef.current = 1;
-      e.preventDefault();
-      e.stopPropagation();
-      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
-      clickTimerRef.current = setTimeout(() => {
-        if (tapCountRef.current === 1) {
-          tapCountRef.current = 0;
-          if (pathname === `/${lang}`) {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          } else {
-            router.push(`/${lang}`);
-          }
-        }
-      }, 280);
-    }
-  }
-
-  function handleTouchStart(e: React.TouchEvent) {
-    isGestureActiveRef.current = false;
-    const touch = e.touches[0];
-    touchStartPosRef.current = { x: touch.clientX, y: touch.clientY };
-
-    if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
-
-    // 650ms long press: triggers admin mode with haptic feedback
-    longPressTimerRef.current = setTimeout(() => {
-      isGestureActiveRef.current = true;
-      triggerAdmin();
-    }, 650);
-  }
-
-  function handleTouchMove(e: React.TouchEvent) {
-    if (!touchStartPosRef.current) return;
-    const touch = e.touches[0];
-    const dx = Math.abs(touch.clientX - touchStartPosRef.current.x);
-    const dy = Math.abs(touch.clientY - touchStartPosRef.current.y);
-    // Finger dragged > 10px: cancel long press (user is scrolling)
-    if (dx > 10 || dy > 10) {
-      if (longPressTimerRef.current) {
-        clearTimeout(longPressTimerRef.current);
-        longPressTimerRef.current = null;
-      }
-    }
-  }
-
-  function handleTouchEnd() {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
     }
   }
 
@@ -128,11 +64,7 @@ export default function Header({ lang, name, home, links, other }: Props) {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
-      if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
-    };
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
@@ -148,15 +80,7 @@ export default function Header({ lang, name, home, links, other }: Props) {
           href={`/${lang}`}
           aria-label={home}
           onClick={handleLogoClick}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onTouchCancel={handleTouchEnd}
-          onContextMenu={(e) => {
-            if (isGestureActiveRef.current) e.preventDefault();
-          }}
-          draggable={false}
-          className="group flex items-center gap-2.5 select-none touch-manipulation [-webkit-touch-callout:none]"
+          className="group flex items-center gap-2.5 select-none touch-manipulation cursor-pointer"
         >
           <Image
             src="/brand/mark.png"
@@ -164,8 +88,7 @@ export default function Header({ lang, name, home, links, other }: Props) {
             width={34}
             height={34}
             priority
-            draggable={false}
-            className="size-[34px] transition-transform duration-500 group-hover:-rotate-6 pointer-events-none select-none"
+            className="size-[34px] transition-transform duration-500 group-hover:-rotate-6"
           />
           <span className="hidden text-[15px] font-semibold tracking-tight min-[400px]:inline">{name}</span>
         </Link>
