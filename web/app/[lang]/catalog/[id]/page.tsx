@@ -159,7 +159,7 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
         </div>
 
         {/* The piece / Focus Deck */}
-        <div id="focus-deck" className="intro-fade relative mt-10 scroll-mt-24">
+        <div id="focus-deck" className="relative mt-10 scroll-mt-24">
           {item.mode === "embed" && item.target ? (
             <EmbedFrame
               url={item.target}

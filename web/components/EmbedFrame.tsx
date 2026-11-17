@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 
 interface Props {
   url: string;
@@ -18,12 +19,24 @@ export default function EmbedFrame({ url, title, labels, code, poster }: Props) 
   const [on, setOn] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [iframeKey, setIframeKey] = useState(0);
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+
+  function closeFullscreen() {
+    setIsFullscreen(false);
+    if (typeof window !== "undefined" && window.location.hash === "#focus-deck") {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+  }
 
   // Handle Escape key when fullscreen
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape" && isFullscreen) {
-        setIsFullscreen(false);
+        closeFullscreen();
       }
     }
     window.addEventListener("keydown", handleKeyDown);
@@ -150,15 +163,15 @@ export default function EmbedFrame({ url, title, labels, code, poster }: Props) 
         />
       </div>
 
-      {/* Fullscreen Deck Overlay */}
-      {isFullscreen && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-black text-bone h-[100dvh] max-h-[100dvh] overscroll-contain">
+      {/* Fullscreen Deck Overlay: mounted directly on body to escape parent stacking contexts */}
+      {isClient && isFullscreen && createPortal(
+        <div className="fixed inset-0 z-[100] flex flex-col bg-black text-bone h-[100dvh] max-h-[100dvh] overscroll-contain">
           {/* Deck Top Bar */}
           <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 border-b border-line bg-ink shrink-0 pt-[max(0.625rem,env(safe-area-inset-top,0px))] select-none">
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={() => setIsFullscreen(false)}
+                onClick={closeFullscreen}
                 className="px-3 py-1.5 rounded bg-ink-2 border border-line-2 hover:border-white text-bone font-mono text-xs cursor-pointer transition-all active:scale-95 flex items-center gap-1.5"
               >
                 <span>←</span>
@@ -199,7 +212,7 @@ export default function EmbedFrame({ url, title, labels, code, poster }: Props) 
 
               <button
                 type="button"
-                onClick={() => setIsFullscreen(false)}
+                onClick={closeFullscreen}
                 className="px-3 py-1.5 rounded bg-bone text-ink font-semibold hover:bg-white transition-all cursor-pointer flex items-center gap-1 active:scale-95"
                 aria-label="Exit fullscreen"
               >
@@ -219,7 +232,8 @@ export default function EmbedFrame({ url, title, labels, code, poster }: Props) 
               className="w-full h-full border-0 bg-black"
             />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
