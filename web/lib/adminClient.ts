@@ -199,11 +199,11 @@ export async function saveStudioPieceField(
 // DEVOPS & FLEET OPERATIONS HELPERS
 // -------------------------------------------------------------
 import type { FleetTargetResult } from "@/app/api/admin/ops/fleet/route";
-import type { GitCommitInfo, GitWorkflowRunInfo } from "@/app/api/admin/ops/git/route";
+import type { GitCommitInfo, GitWorkflowRunInfo, BurmanProjectRepo } from "@/app/api/admin/ops/git/route";
 import type { EnvAuditItem } from "@/app/api/admin/ops/audit/route";
 import type { VercelDeploymentInfo } from "@/app/api/admin/ops/vercel/route";
 
-export type { FleetTargetResult, GitCommitInfo, GitWorkflowRunInfo, EnvAuditItem, VercelDeploymentInfo };
+export type { FleetTargetResult, GitCommitInfo, GitWorkflowRunInfo, BurmanProjectRepo, EnvAuditItem, VercelDeploymentInfo };
 
 export async function fetchFleetHealth(): Promise<{ ok: boolean; targets: FleetTargetResult[]; error?: string }> {
   try {
@@ -215,16 +215,21 @@ export async function fetchFleetHealth(): Promise<{ ok: boolean; targets: FleetT
   }
 }
 
-export async function fetchGitTelemetry(): Promise<{
+export async function fetchGitTelemetry(repo?: string, branch?: string): Promise<{
   ok: boolean;
   repo?: string;
   branch?: string;
+  projects?: BurmanProjectRepo[];
   commits: GitCommitInfo[];
   runs: GitWorkflowRunInfo[];
   error?: string;
 }> {
   try {
-    const res = await fetch("/api/admin/ops/git", { cache: "no-store" });
+    const q = new URLSearchParams();
+    if (repo) q.set("repo", repo);
+    if (branch) q.set("branch", branch);
+    const qs = q.toString() ? `?${q.toString()}` : "";
+    const res = await fetch(`/api/admin/ops/git${qs}`, { cache: "no-store" });
     const data = await res.json();
     return data;
   } catch (err: unknown) {

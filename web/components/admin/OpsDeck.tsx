@@ -11,11 +11,64 @@ import {
   type FleetTargetResult,
   type GitCommitInfo,
   type GitWorkflowRunInfo,
+  type BurmanProjectRepo,
   type EnvAuditItem,
   type VercelDeploymentInfo,
 } from "@/lib/adminClient";
 
-type OpsTab = "fleet" | "deploy" | "git" | "audit";
+type OpsTab = "fleet" | "git" | "deploy" | "audit";
+
+const DEFAULT_BURMANLABS_PROJECTS: BurmanProjectRepo[] = [
+  {
+    id: "burmanlabs",
+    code: "SITE",
+    name: "Burmanlabs Hub",
+    repo: "sebastian420-hub/burmanlabs",
+    branch: "main",
+  },
+  {
+    id: "artcodex",
+    code: "BL-004",
+    name: "Artcodex",
+    repo: "sebastian420-hub/Artcodex",
+    branch: "main",
+  },
+  {
+    id: "economy-book",
+    code: "BL-005",
+    name: "The Economy Book",
+    repo: "sebastian420-hub/economy-from-the-ground-up",
+    branch: "main",
+  },
+  {
+    id: "edusim",
+    code: "BL-001",
+    name: "EduSim Engine",
+    repo: "sebastian420-hub/edusim",
+    branch: "main",
+  },
+  {
+    id: "cortex",
+    code: "BL-003",
+    name: "Cortex CLI",
+    repo: "sebastian420-hub/cortex",
+    branch: "main",
+  },
+  {
+    id: "pia",
+    code: "BL-006",
+    name: "PIA Core",
+    repo: "sebastian420-hub/pia",
+    branch: "main",
+  },
+  {
+    id: "pia-ui",
+    code: "BL-006",
+    name: "PIA UI",
+    repo: "sebastian420-hub/pia-ui",
+    branch: "main",
+  },
+];
 
 interface OpsDeckProps {
   isOpen: boolean;
@@ -49,6 +102,16 @@ export function OpsDeck({
   } | null>(null);
   const [isPingingCustom, setIsPingingCustom] = useState(false);
 
+  // Multi-Project Git state
+  const [gitProjects, setGitProjects] = useState<BurmanProjectRepo[]>(DEFAULT_BURMANLABS_PROJECTS);
+  const [selectedRepo, setSelectedRepo] = useState<string>("sebastian420-hub/burmanlabs");
+  const [selectedBranch, setSelectedBranch] = useState<string>("main");
+  const [customRepoInput, setCustomRepoInput] = useState("");
+  const [gitCommits, setGitCommits] = useState<GitCommitInfo[]>([]);
+  const [gitRuns, setGitRuns] = useState<GitWorkflowRunInfo[]>([]);
+  const [isLoadingGit, setIsLoadingGit] = useState(false);
+  const [gitError, setGitError] = useState<string | null>(null);
+
   // Deploy & Cache state
   const [isPurgingCache, setIsPurgingCache] = useState(false);
   const [cachePurgedAt, setCachePurgedAt] = useState<number | null>(null);
@@ -59,13 +122,6 @@ export function OpsDeck({
   const [vercelHint, setVercelHint] = useState<string | null>(null);
   const [isTriggeringVercel, setIsTriggeringVercel] = useState(false);
   const [vercelDeployMessage, setVercelDeployMessage] = useState<string | null>(null);
-
-  // Git state
-  const [gitCommits, setGitCommits] = useState<GitCommitInfo[]>([]);
-  const [gitRuns, setGitRuns] = useState<GitWorkflowRunInfo[]>([]);
-  const [gitRepo, setGitRepo] = useState<string>("sebastian420-hub/burmanlabs");
-  const [gitBranch, setGitBranch] = useState<string>("main");
-  const [isLoadingGit, setIsLoadingGit] = useState(false);
 
   // Audit state
   const [auditItems, setAuditItems] = useState<EnvAuditItem[]>([]);
@@ -104,7 +160,7 @@ export function OpsDeck({
     if (activeTab === "fleet" && fleetTargets.length === 0 && !isPingingFleet) {
       runFleetPing();
     } else if (activeTab === "git" && gitCommits.length === 0 && !isLoadingGit) {
-      runGitLoad();
+      runGitLoad(selectedRepo, selectedBranch);
     } else if (activeTab === "deploy") {
       runVercelLoad();
     } else if (activeTab === "audit" && auditItems.length === 0 && !isLoadingAudit) {
@@ -194,16 +250,46 @@ export function OpsDeck({
     }
   }
 
-  async function runGitLoad() {
+  async function runGitLoad(repo: string, branch: string = "main") {
     setIsLoadingGit(true);
-    const res = await fetchGitTelemetry();
+    setGitError(null);
+    const res = await fetchGitTelemetry(repo, branch);
     setIsLoadingGit(false);
     if (res.ok) {
-      if (res.repo) setGitRepo(res.repo);
-      if (res.branch) setGitBranch(res.branch);
+      if (res.projects && res.projects.length > 0) {
+        setGitProjects(res.projects);
+      }
+      setSelectedRepo(res.repo || repo);
+      setSelectedBranch(res.branch || branch);
       setGitCommits(res.commits);
       setGitRuns(res.runs);
+      if (res.error) {
+        setGitError(res.error);
+      }
+    } else {
+      setGitError(res.error || "Failed to load repository telemetry");
     }
+  }
+
+  function handleSelectProject(proj: BurmanProjectRepo) {
+    setSelectedRepo(proj.repo);
+    setSelectedBranch(proj.branch);
+    runGitLoad(proj.repo, proj.branch);
+  }
+
+  function handleCustomRepoSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const raw = customRepoInput.trim();
+    if (!raw) return;
+
+    let targetRepo = raw;
+    if (!targetRepo.includes("/")) {
+      targetRepo = `sebastian420-hub/${targetRepo}`;
+    }
+
+    setSelectedRepo(targetRepo);
+    setSelectedBranch("main");
+    runGitLoad(targetRepo, "main");
   }
 
   async function runAuditLoad() {
@@ -227,6 +313,8 @@ export function OpsDeck({
         )
       : 0;
 
+  const currentProjectMeta = gitProjects.find((p) => p.repo === selectedRepo);
+
   return (
     <div
       role="dialog"
@@ -242,11 +330,11 @@ export function OpsDeck({
         <div className="p-4 sm:p-6 pb-4 border-b border-line bg-ink shrink-0 space-y-3.5 pt-[max(1rem,env(safe-area-inset-top,0px))]">
           <div className="flex items-center justify-between gap-2">
             <div>
-              <div className="font-mono text-[10px] uppercase tracking-wider text-muted flex items-center gap-1.5">
+              <div className="font-mono text-[10px] uppercase tracking-wider text-ash flex items-center gap-1.5">
                 <span className="size-1.5 rounded-full bg-signal inline-block" />
                 <span>Burmanlabs Infrastructure</span>
               </div>
-              <h2 className="font-mono text-base font-semibold text-paper mt-0.5">
+              <h2 className="font-mono text-base font-semibold text-bone mt-0.5">
                 DevOps & Fleet Deck
               </h2>
             </div>
@@ -254,7 +342,7 @@ export function OpsDeck({
               <button
                 type="button"
                 onClick={onOpenManager}
-                className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-paper text-bone font-mono text-xs transition-colors cursor-pointer flex items-center active:scale-95"
+                className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-white text-bone hover:text-white font-mono text-xs transition-all cursor-pointer flex items-center active:scale-95"
                 title="Switch to Content Manager"
               >
                 <span>Content</span>
@@ -263,7 +351,7 @@ export function OpsDeck({
                 <button
                   type="button"
                   onClick={onOpenCortex}
-                  className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-signal text-bone font-mono text-xs transition-colors cursor-pointer flex items-center active:scale-95"
+                  className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-signal text-bone hover:text-white font-mono text-xs transition-all cursor-pointer flex items-center active:scale-95"
                   title="Switch to Cortex Dispatcher"
                 >
                   <span>Cortex</span>
@@ -272,7 +360,7 @@ export function OpsDeck({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-white text-bone font-mono text-xs cursor-pointer transition-all active:scale-95 flex items-center gap-1.5"
+                className="px-3 py-1.5 rounded-md bg-ink-2 border border-line-2 hover:border-white text-bone hover:text-white font-mono text-xs cursor-pointer transition-all active:scale-95 flex items-center gap-1.5"
                 aria-label="Close Ops Deck"
               >
                 <span>✕</span>
@@ -281,27 +369,29 @@ export function OpsDeck({
             </div>
           </div>
 
-          {/* Sub-Navigation Tabs */}
+          {/* Sub-Navigation Tabs with High-Contrast Bone/Black Styling */}
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 -mx-4 px-4 sm:-mx-6 sm:px-6">
             <button
               type="button"
               onClick={() => setActiveTab("fleet")}
-              className={`h-8 px-3 rounded-full text-xs font-mono transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              className={`h-8 px-3.5 rounded-full text-xs font-mono transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
                 activeTab === "fleet"
-                  ? "bg-paper text-ink font-semibold shadow-sm"
-                  : "bg-ink-2 text-muted hover:text-paper hover:bg-line/40 border border-line"
+                  ? "bg-bone border-bone text-ink font-semibold shadow-sm"
+                  : "bg-ink-2 border-line text-ash hover:text-white hover:border-line-2"
               }`}
             >
               <span
                 className={`size-1.5 rounded-full ${
                   fleetHealthyCount === fleetTargets.length && fleetTargets.length > 0
-                    ? "bg-emerald-500"
+                    ? activeTab === "fleet"
+                      ? "bg-emerald-600"
+                      : "bg-emerald-500"
                     : "bg-signal"
                 }`}
               />
               <span>Fleet Health</span>
               {fleetTargets.length > 0 && (
-                <span className="text-[10px] opacity-75">
+                <span className="text-[10px] opacity-80">
                   ({fleetHealthyCount}/{fleetTargets.length})
                 </span>
               )}
@@ -309,11 +399,23 @@ export function OpsDeck({
 
             <button
               type="button"
+              onClick={() => setActiveTab("git")}
+              className={`h-8 px-3.5 rounded-full text-xs font-mono transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
+                activeTab === "git"
+                  ? "bg-bone border-bone text-ink font-semibold shadow-sm"
+                  : "bg-ink-2 border-line text-ash hover:text-white hover:border-line-2"
+              }`}
+            >
+              <span>Multi-Project Git</span>
+            </button>
+
+            <button
+              type="button"
               onClick={() => setActiveTab("deploy")}
-              className={`h-8 px-3 rounded-full text-xs font-mono transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              className={`h-8 px-3.5 rounded-full text-xs font-mono transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
                 activeTab === "deploy"
-                  ? "bg-paper text-ink font-semibold shadow-sm"
-                  : "bg-ink-2 text-muted hover:text-paper hover:bg-line/40 border border-line"
+                  ? "bg-bone border-bone text-ink font-semibold shadow-sm"
+                  : "bg-ink-2 border-line text-ash hover:text-white hover:border-line-2"
               }`}
             >
               <span>Deploy & Cache</span>
@@ -321,23 +423,11 @@ export function OpsDeck({
 
             <button
               type="button"
-              onClick={() => setActiveTab("git")}
-              className={`h-8 px-3 rounded-full text-xs font-mono transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
-                activeTab === "git"
-                  ? "bg-paper text-ink font-semibold shadow-sm"
-                  : "bg-ink-2 text-muted hover:text-paper hover:bg-line/40 border border-line"
-              }`}
-            >
-              <span>Git Telemetry</span>
-            </button>
-
-            <button
-              type="button"
               onClick={() => setActiveTab("audit")}
-              className={`h-8 px-3 rounded-full text-xs font-mono transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              className={`h-8 px-3.5 rounded-full text-xs font-mono transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
                 activeTab === "audit"
-                  ? "bg-paper text-ink font-semibold shadow-sm"
-                  : "bg-ink-2 text-muted hover:text-paper hover:bg-line/40 border border-line"
+                  ? "bg-bone border-bone text-ink font-semibold shadow-sm"
+                  : "bg-ink-2 border-line text-ash hover:text-white hover:border-line-2"
               }`}
             >
               <span>Security & Backup</span>
@@ -346,14 +436,14 @@ export function OpsDeck({
         </div>
 
         {/* Scrollable Main Area */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 no-scrollbar">
           {/* TAB 1: FLEET HEALTH */}
           {activeTab === "fleet" && (
             <div className="space-y-5">
               {/* Fleet Overview Bar */}
               <div className="p-4 bg-ink-2 border border-line rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <div className="font-mono text-xs uppercase tracking-wider text-muted">
+                  <div className="font-mono text-xs uppercase tracking-wider text-ash">
                     Fleet Status Board
                   </div>
                   <div className="flex items-center gap-2 mt-1">
@@ -364,7 +454,7 @@ export function OpsDeck({
                           : "bg-signal"
                       }`}
                     />
-                    <span className="font-mono text-sm font-semibold text-paper">
+                    <span className="font-mono text-sm font-semibold text-bone">
                       {isPingingFleet
                         ? "Pinging ecosystem targets…"
                         : fleetHealthyCount === fleetTargets.length && fleetTargets.length > 0
@@ -373,7 +463,7 @@ export function OpsDeck({
                     </span>
                   </div>
                   {fleetCheckedAt && (
-                    <div className="font-mono text-[10px] text-muted mt-1">
+                    <div className="font-mono text-[10px] text-ash mt-1">
                       Avg latency: {avgLatency}ms · Checked{" "}
                       {new Date(fleetCheckedAt).toLocaleTimeString()}
                     </div>
@@ -384,7 +474,7 @@ export function OpsDeck({
                   type="button"
                   onClick={runFleetPing}
                   disabled={isPingingFleet}
-                  className="px-3.5 py-1.5 bg-paper text-ink font-mono text-xs font-semibold rounded hover:bg-white active:scale-95 transition-all disabled:opacity-50 cursor-pointer shrink-0"
+                  className="px-3.5 py-1.5 bg-bone border border-bone text-ink font-mono text-xs font-semibold rounded hover:bg-white active:scale-95 transition-all disabled:opacity-50 cursor-pointer shrink-0 shadow-sm"
                 >
                   {isPingingFleet ? "Checking…" : "Ping All Targets"}
                 </button>
@@ -392,7 +482,7 @@ export function OpsDeck({
 
               {/* Targets List */}
               <div className="space-y-2">
-                <div className="font-mono text-[11px] uppercase tracking-wider text-muted px-1 flex items-center justify-between">
+                <div className="font-mono text-[11px] uppercase tracking-wider text-ash px-1 flex items-center justify-between">
                   <span>Target Service</span>
                   <span>Status · Latency</span>
                 </div>
@@ -417,10 +507,10 @@ export function OpsDeck({
                                 : "bg-signal shadow-[0_0_6px_rgba(255,49,49,0.8)]"
                             }`}
                           />
-                          <span className="font-mono text-xs font-semibold text-paper truncate">
+                          <span className="font-mono text-xs font-semibold text-bone truncate">
                             {target.name}
                           </span>
-                          <span className="font-mono text-[10px] text-muted uppercase">
+                          <span className="font-mono text-[10px] text-ash uppercase">
                             [{target.code}]
                           </span>
                         </div>
@@ -428,14 +518,14 @@ export function OpsDeck({
                           href={target.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="font-mono text-[11px] text-muted/80 hover:text-signal truncate block mt-0.5"
+                          className="font-mono text-[11px] text-ash hover:text-signal truncate block mt-0.5"
                         >
                           {target.url.replace(/^https?:\/\//, "")} ↗
                         </a>
                       </div>
 
                       <div className="text-right shrink-0">
-                        <div className="font-mono text-xs font-semibold text-paper">
+                        <div className="font-mono text-xs font-semibold text-bone">
                           {target.status > 0 ? (
                             <span
                               className={
@@ -452,7 +542,7 @@ export function OpsDeck({
                             <span className="text-signal">Offline</span>
                           )}
                         </div>
-                        <div className="font-mono text-[10px] text-muted mt-0.5">
+                        <div className="font-mono text-[10px] text-ash mt-0.5">
                           {target.latencyMs > 0 ? `${target.latencyMs}ms` : target.error || "Failed"}
                         </div>
                       </div>
@@ -463,7 +553,7 @@ export function OpsDeck({
 
               {/* Custom Ping Inspector */}
               <div className="p-4 bg-ink-2/60 border border-line rounded-lg space-y-3">
-                <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+                <div className="font-mono text-[11px] uppercase tracking-wider text-ash">
                   Custom Endpoint Ping
                 </div>
                 <form onSubmit={handleCustomPing} className="flex gap-2">
@@ -472,12 +562,12 @@ export function OpsDeck({
                     value={customUrl}
                     onChange={(e) => setCustomUrl(e.target.value)}
                     placeholder="https://example.com or API URL"
-                    className="flex-1 bg-ink border border-line px-3 py-1.5 text-xs text-paper font-mono focus:border-paper focus:outline-none rounded"
+                    className="flex-1 bg-ink border border-line px-3 py-1.5 text-xs text-bone font-mono focus:border-bone focus:outline-none rounded"
                   />
                   <button
                     type="submit"
                     disabled={isPingingCustom || !customUrl.trim()}
-                    className="px-3 py-1.5 bg-ink-2 border border-line hover:border-paper text-bone font-mono text-xs rounded transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+                    className="px-3.5 py-1.5 bg-ink-2 border border-line hover:border-bone text-bone font-mono text-xs rounded transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
                   >
                     {isPingingCustom ? "Pinging…" : "Test Ping"}
                   </button>
@@ -491,11 +581,11 @@ export function OpsDeck({
                           customPingResult.ok ? "bg-emerald-500" : "bg-signal"
                         }`}
                       />
-                      <span className="text-paper">
+                      <span className="text-bone">
                         Status: {customPingResult.status || "Error"}
                       </span>
                     </div>
-                    <span className="text-muted">
+                    <span className="text-ash">
                       Latency: {customPingResult.latencyMs}ms
                     </span>
                   </div>
@@ -504,186 +594,108 @@ export function OpsDeck({
             </div>
           )}
 
-          {/* TAB 2: DEPLOY & CACHE */}
-          {activeTab === "deploy" && (
-            <div className="space-y-6">
-              {/* Next.js Global Cache Invalidation Card */}
-              <div className="p-4 bg-ink-2 border border-line rounded-lg space-y-3.5">
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <div className="font-mono text-[10px] uppercase tracking-wider text-muted">
-                      Edge Cache Control
-                    </div>
-                    <h3 className="font-mono text-sm font-semibold text-paper mt-0.5">
-                      Next.js ISR Cache Purging
-                    </h3>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handlePurgeCache}
-                    disabled={isPurgingCache}
-                    className="px-3.5 py-1.5 bg-paper text-ink font-mono text-xs font-semibold rounded hover:bg-white active:scale-95 transition-all disabled:opacity-50 cursor-pointer shrink-0"
-                  >
-                    {isPurgingCache ? "Purging Cache…" : "Purge Next.js Cache"}
-                  </button>
-                </div>
-
-                <p className="font-mono text-xs text-muted leading-relaxed">
-                  Forces immediate server-side revalidation across the root layout and all locale
-                  routes (<code className="text-paper">/en</code> and{" "}
-                  <code className="text-paper">/my</code>). Visitors worldwide immediately receive
-                  fresh static HTML without waiting for background cache invalidation.
-                </p>
-
-                {cachePurgeStatus && (
-                  <div className="p-2.5 bg-ink border border-line rounded font-mono text-xs text-paper flex items-center gap-2">
-                    <span className="size-1.5 rounded-full bg-emerald-500" />
-                    <span>{cachePurgeStatus}</span>
-                    {cachePurgedAt && (
-                      <span className="text-muted ml-auto">
-                        {new Date(cachePurgedAt).toLocaleTimeString()}
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Vercel Production Pipeline */}
-              <div className="p-4 bg-ink-2 border border-line rounded-lg space-y-4">
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <div className="font-mono text-[10px] uppercase tracking-wider text-muted">
-                      Production Pipeline
-                    </div>
-                    <h3 className="font-mono text-sm font-semibold text-paper mt-0.5">
-                      Vercel Deployments
-                    </h3>
-                  </div>
-
-                  {isVercelConfigured && (
-                    <button
-                      type="button"
-                      onClick={handleTriggerVercel}
-                      disabled={isTriggeringVercel}
-                      className="px-3.5 py-1.5 bg-signal text-white font-mono text-xs font-semibold rounded hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 cursor-pointer shrink-0"
-                    >
-                      {isTriggeringVercel ? "Triggering…" : "Trigger Production Build"}
-                    </button>
-                  )}
-                </div>
-
-                {isVercelConfigured ? (
-                  <div className="space-y-3">
-                    {vercelDeployMessage && (
-                      <div className="p-2.5 bg-ink border border-line rounded font-mono text-xs text-paper">
-                        {vercelDeployMessage}
-                      </div>
-                    )}
-
-                    <div className="space-y-2">
-                      <div className="font-mono text-[10px] uppercase tracking-wider text-muted">
-                        Recent Deployments
-                      </div>
-                      {vercelDeployments.map((d) => (
-                        <div
-                          key={d.uid}
-                          className="p-3 bg-ink border border-line rounded flex items-center justify-between gap-3 text-xs font-mono"
-                        >
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span
-                                className={`size-1.5 rounded-full ${
-                                  d.state === "READY"
-                                    ? "bg-emerald-500"
-                                    : d.state === "BUILDING"
-                                    ? "bg-gold animate-pulse"
-                                    : "bg-signal"
-                                }`}
-                              />
-                              <span className="font-semibold text-paper">{d.state}</span>
-                              {d.commitSha && (
-                                <span className="text-muted">commit {d.commitSha}</span>
-                              )}
-                            </div>
-                            {d.commitMessage && (
-                              <p className="text-muted truncate mt-0.5">{d.commitMessage}</p>
-                            )}
-                          </div>
-                          <div className="text-right shrink-0">
-                            <span className="text-muted">
-                              {new Date(d.created).toLocaleDateString()}
-                            </span>
-                            {d.url && (
-                              <a
-                                href={d.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block text-bone hover:text-signal text-[11px] mt-0.5"
-                              >
-                                View ↗
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-3.5 bg-ink border border-line rounded space-y-2.5">
-                    <div className="font-mono text-xs font-semibold text-paper flex items-center gap-2">
-                      <span className="size-1.5 rounded-full bg-gold" />
-                      <span>Vercel Integration Optional</span>
-                    </div>
-                    <p className="font-mono text-xs text-muted leading-relaxed">
-                      To view live Vercel build status and trigger redeployments directly from this
-                      admin deck, add your personal access token to{" "}
-                      <code className="text-paper">web/.env.local</code>:
-                    </p>
-                    <div className="p-2.5 bg-ink-2 border border-line font-mono text-xs text-paper rounded">
-                      <div>VERCEL_TOKEN=your_token_here</div>
-                      <div>VERCEL_PROJECT_ID=your_project_id_here</div>
-                    </div>
-                    {vercelHint && (
-                      <p className="font-mono text-[11px] text-muted">{vercelHint}</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* TAB 3: GIT TELEMETRY */}
+          {/* TAB 2: MULTI-PROJECT GIT (MAINTAIN ALL BURMANLABS PROJECTS) */}
           {activeTab === "git" && (
             <div className="space-y-5">
-              {/* Repo Status Card */}
-              <div className="p-4 bg-ink-2 border border-line rounded-lg flex items-center justify-between gap-3">
+              {/* Burmanlabs Projects Selector */}
+              <div className="space-y-2">
+                <div className="font-mono text-[11px] uppercase tracking-wider text-ash px-1 flex items-center justify-between">
+                  <span>Select Burmanlabs Project Repository</span>
+                  <span className="text-[10px] text-ash">
+                    {gitProjects.length} Lab Repositories
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                  {gitProjects.map((proj) => {
+                    const isSelected = proj.repo === selectedRepo;
+                    return (
+                      <button
+                        key={proj.id}
+                        type="button"
+                        onClick={() => handleSelectProject(proj)}
+                        className={`h-7 px-3 rounded-full text-xs font-mono transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
+                          isSelected
+                            ? "bg-bone border-bone text-ink font-semibold shadow-sm"
+                            : "bg-ink-2 border-line text-ash hover:text-white hover:border-line-2"
+                        }`}
+                      >
+                        <span className="text-[10px] opacity-75 font-mono">[{proj.code}]</span>
+                        <span>{proj.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Active Repository Card */}
+              <div className="p-4 bg-ink-2 border border-line rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-muted">
-                    Source Control
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-ash flex items-center gap-1.5">
+                    <span className="size-1.5 rounded-full bg-signal" />
+                    <span>
+                      {currentProjectMeta
+                        ? `${currentProjectMeta.code} · ${currentProjectMeta.name}`
+                        : "Active Repository"}
+                    </span>
                   </div>
-                  <div className="font-mono text-sm font-semibold text-paper mt-0.5 flex items-center gap-2">
+                  <div className="font-mono text-sm font-semibold text-bone mt-0.5 flex items-center gap-2">
                     <span className="size-1.5 rounded-full bg-emerald-500" />
-                    <span>{gitRepo}</span>
+                    <span>{selectedRepo}</span>
                   </div>
-                  <div className="font-mono text-xs text-muted mt-1">
-                    Target branch: <code className="text-paper">{gitBranch}</code>
+                  <div className="font-mono text-xs text-ash mt-1">
+                    Branch: <code className="text-bone">{selectedBranch}</code>
                   </div>
                 </div>
 
-                <a
-                  href={`https://github.com/${gitRepo}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 bg-ink border border-line hover:border-paper text-bone font-mono text-xs rounded transition-colors active:scale-95"
-                >
-                  GitHub ↗
-                </a>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => runGitLoad(selectedRepo, selectedBranch)}
+                    disabled={isLoadingGit}
+                    className="px-3 py-1.5 bg-ink-2 border border-line hover:border-white text-bone font-mono text-xs rounded transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+                  >
+                    {isLoadingGit ? "Fetching…" : "Refresh"}
+                  </button>
+                  <a
+                    href={`https://github.com/${selectedRepo}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 bg-bone border border-bone text-ink font-mono text-xs font-semibold rounded hover:bg-white transition-all active:scale-95"
+                  >
+                    GitHub ↗
+                  </a>
+                </div>
               </div>
+
+              {/* Switch to any repository tool */}
+              <form onSubmit={handleCustomRepoSubmit} className="flex gap-2">
+                <input
+                  type="text"
+                  value={customRepoInput}
+                  onChange={(e) => setCustomRepoInput(e.target.value)}
+                  placeholder="Or enter any repo (e.g. Artcodex, pia-api, notes)…"
+                  className="flex-1 bg-ink border border-line px-3 py-1.5 text-xs text-bone font-mono focus:border-bone focus:outline-none rounded"
+                />
+                <button
+                  type="submit"
+                  disabled={!customRepoInput.trim() || isLoadingGit}
+                  className="px-3.5 py-1.5 bg-ink-2 border border-line hover:border-white text-bone font-mono text-xs rounded transition-all active:scale-95 disabled:opacity-50 cursor-pointer shrink-0"
+                >
+                  Load Repo
+                </button>
+              </form>
+
+              {gitError && (
+                <div className="p-3 bg-ink-2 border border-signal/50 rounded font-mono text-xs text-signal">
+                  {gitError}
+                </div>
+              )}
 
               {/* Commit Stream */}
               <div className="space-y-2">
-                <div className="font-mono text-[11px] uppercase tracking-wider text-muted px-1 flex items-center justify-between">
-                  <span>Recent Commits on {gitBranch}</span>
+                <div className="font-mono text-[11px] uppercase tracking-wider text-ash px-1 flex items-center justify-between">
+                  <span>Recent Commits on {selectedBranch}</span>
                   <span>Author · Time</span>
                 </div>
 
@@ -698,11 +710,11 @@ export function OpsDeck({
                           <span className="px-1.5 py-0.5 bg-ink border border-line text-bone text-[11px] rounded font-mono">
                             {c.sha}
                           </span>
-                          <span className="text-paper truncate font-medium">{c.message}</span>
+                          <span className="text-bone truncate font-medium">{c.message}</span>
                         </div>
                       </div>
                       <div className="text-right shrink-0">
-                        <span className="text-muted block text-[11px]">{c.author}</span>
+                        <span className="text-ash block text-[11px]">{c.author}</span>
                         <a
                           href={c.url}
                           target="_blank"
@@ -715,15 +727,19 @@ export function OpsDeck({
                     </div>
                   ))
                 ) : (
-                  <div className="p-4 bg-ink-2 border border-line rounded text-center font-mono text-xs text-muted">
-                    {isLoadingGit ? "Fetching git commits…" : "No commits found or token missing."}
+                  <div className="p-4 bg-ink-2 border border-line rounded text-center font-mono text-xs text-ash">
+                    {isLoadingGit
+                      ? "Fetching commits from GitHub…"
+                      : gitError
+                      ? "Could not load commits for this repository."
+                      : "No commits recorded on this branch."}
                   </div>
                 )}
               </div>
 
               {/* Workflow Runs */}
               <div className="space-y-2">
-                <div className="font-mono text-[11px] uppercase tracking-wider text-muted px-1">
+                <div className="font-mono text-[11px] uppercase tracking-wider text-ash px-1">
                   GitHub Actions CI/CD
                 </div>
                 {gitRuns.length > 0 ? (
@@ -742,8 +758,8 @@ export function OpsDeck({
                               : "bg-signal"
                           }`}
                         />
-                        <span className="text-paper font-semibold">{r.name}</span>
-                        <span className="text-muted">[{r.status}]</span>
+                        <span className="text-bone font-semibold">{r.name}</span>
+                        <span className="text-ash">[{r.status}]</span>
                       </div>
                       <a
                         href={r.url}
@@ -756,8 +772,166 @@ export function OpsDeck({
                     </div>
                   ))
                 ) : (
-                  <div className="p-3 bg-ink-2/60 border border-line rounded font-mono text-xs text-muted">
-                    No active GitHub Actions workflows recorded in repository.
+                  <div className="p-3 bg-ink-2/60 border border-line rounded font-mono text-xs text-ash">
+                    No active GitHub Actions workflows recorded for {selectedRepo}.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: DEPLOY & CACHE */}
+          {activeTab === "deploy" && (
+            <div className="space-y-6">
+              {/* Next.js Global Cache Invalidation Card */}
+              <div className="p-4 bg-ink-2 border border-line rounded-lg space-y-3.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <div className="font-mono text-[10px] uppercase tracking-wider text-ash">
+                      Edge Cache Control
+                    </div>
+                    <h3 className="font-mono text-sm font-semibold text-bone mt-0.5">
+                      Next.js ISR Cache Purging
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handlePurgeCache}
+                    disabled={isPurgingCache}
+                    className="px-3.5 py-1.5 bg-bone border border-bone text-ink font-mono text-xs font-semibold rounded hover:bg-white active:scale-95 transition-all disabled:opacity-50 cursor-pointer shrink-0 shadow-sm"
+                  >
+                    {isPurgingCache ? "Purging Cache…" : "Purge Next.js Cache"}
+                  </button>
+                </div>
+
+                <p className="font-mono text-xs text-ash leading-relaxed">
+                  Forces immediate server-side revalidation across the root layout and all locale
+                  routes (<code className="text-bone">/en</code> and{" "}
+                  <code className="text-bone">/my</code>). Visitors worldwide immediately receive
+                  fresh static HTML without waiting for background cache invalidation.
+                </p>
+
+                {cachePurgeStatus && (
+                  <div className="p-2.5 bg-ink border border-line rounded font-mono text-xs text-bone flex items-center gap-2">
+                    <span className="size-1.5 rounded-full bg-emerald-500" />
+                    <span>{cachePurgeStatus}</span>
+                    {cachePurgedAt && (
+                      <span className="text-ash ml-auto">
+                        {new Date(cachePurgedAt).toLocaleTimeString()}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Vercel Production Pipeline Explanation & Status */}
+              <div className="p-4 bg-ink-2 border border-line rounded-lg space-y-4">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <div className="font-mono text-[10px] uppercase tracking-wider text-ash">
+                      Production Pipeline
+                    </div>
+                    <h3 className="font-mono text-sm font-semibold text-bone mt-0.5">
+                      Vercel Deployments API
+                    </h3>
+                  </div>
+
+                  {isVercelConfigured && (
+                    <button
+                      type="button"
+                      onClick={handleTriggerVercel}
+                      disabled={isTriggeringVercel}
+                      className="px-3.5 py-1.5 bg-signal text-white font-mono text-xs font-semibold rounded hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 cursor-pointer shrink-0"
+                    >
+                      {isTriggeringVercel ? "Triggering…" : "Trigger Production Build"}
+                    </button>
+                  )}
+                </div>
+
+                {isVercelConfigured ? (
+                  <div className="space-y-3">
+                    {vercelDeployMessage && (
+                      <div className="p-2.5 bg-ink border border-line rounded font-mono text-xs text-bone">
+                        {vercelDeployMessage}
+                      </div>
+                    )}
+
+                    <div className="space-y-2">
+                      <div className="font-mono text-[10px] uppercase tracking-wider text-ash">
+                        Recent Deployments
+                      </div>
+                      {vercelDeployments.map((d) => (
+                        <div
+                          key={d.uid}
+                          className="p-3 bg-ink border border-line rounded flex items-center justify-between gap-3 text-xs font-mono"
+                        >
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={`size-1.5 rounded-full ${
+                                  d.state === "READY"
+                                    ? "bg-emerald-500"
+                                    : d.state === "BUILDING"
+                                    ? "bg-gold animate-pulse"
+                                    : "bg-signal"
+                                }`}
+                              />
+                              <span className="font-semibold text-bone">{d.state}</span>
+                              {d.commitSha && (
+                                <span className="text-ash">commit {d.commitSha}</span>
+                              )}
+                            </div>
+                            {d.commitMessage && (
+                              <p className="text-ash truncate mt-0.5">{d.commitMessage}</p>
+                            )}
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className="text-ash">
+                              {new Date(d.created).toLocaleDateString()}
+                            </span>
+                            {d.url && (
+                              <a
+                                href={d.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block text-bone hover:text-signal text-[11px] mt-0.5"
+                              >
+                                View ↗
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-3.5 bg-ink border border-line rounded space-y-3">
+                    <div className="font-mono text-xs font-semibold text-bone flex items-center gap-2">
+                      <span className="size-1.5 rounded-full bg-gold" />
+                      <span>What is the Vercel API?</span>
+                    </div>
+                    <p className="font-mono text-xs text-ash leading-relaxed">
+                      The <strong>Vercel REST API</strong> (<code>api.vercel.com</code>) is an
+                      optional service that lets external dashboards monitor live build progression
+                      and trigger redeployments remotely without opening Vercel.
+                    </p>
+                    <p className="font-mono text-xs text-ash leading-relaxed">
+                      <strong>Is it needed?</strong> No, it is completely optional. Burmanlabs
+                      already deploys automatically whenever you save content or push git commits.
+                      You only need this if you want a manual <code>[Trigger Production Build]</code>{" "}
+                      button right inside this panel.
+                    </p>
+                    <div className="p-2.5 bg-ink-2 border border-line font-mono text-xs text-bone rounded space-y-1">
+                      <div className="text-ash text-[10px] uppercase">How to enable (Optional):</div>
+                      <div>1. Create a personal token at <span className="text-signal">vercel.com/account/tokens</span></div>
+                      <div>2. Copy your Project ID from your Vercel Project Settings</div>
+                      <div>3. Add to <span className="text-bone">web/.env.local</span>:</div>
+                      <div className="text-ash mt-1">VERCEL_TOKEN=your_token</div>
+                      <div className="text-ash">VERCEL_PROJECT_ID=prj_...</div>
+                    </div>
+                    {vercelHint && (
+                      <p className="font-mono text-[11px] text-ash">{vercelHint}</p>
+                    )}
                   </div>
                 )}
               </div>
@@ -771,34 +945,34 @@ export function OpsDeck({
               <div className="p-4 bg-ink-2 border border-line rounded-lg space-y-3">
                 <div className="flex items-center justify-between gap-2">
                   <div>
-                    <div className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                    <div className="font-mono text-[10px] uppercase tracking-wider text-ash">
                       Disaster Recovery
                     </div>
-                    <h3 className="font-mono text-sm font-semibold text-paper mt-0.5">
+                    <h3 className="font-mono text-sm font-semibold text-bone mt-0.5">
                       Content Snapshot Backup
                     </h3>
                   </div>
                   <a
                     href="/api/admin/ops/backup"
                     download
-                    className="px-3.5 py-1.5 bg-paper text-ink font-mono text-xs font-semibold rounded hover:bg-white active:scale-95 transition-all cursor-pointer inline-flex items-center gap-1.5 shrink-0"
+                    className="px-3.5 py-1.5 bg-bone border border-bone text-ink font-mono text-xs font-semibold rounded hover:bg-white active:scale-95 transition-all cursor-pointer inline-flex items-center gap-1.5 shrink-0 shadow-sm"
                   >
                     <span>Download Snapshot</span>
                     <span>↓</span>
                   </a>
                 </div>
-                <p className="font-mono text-xs text-muted leading-relaxed">
+                <p className="font-mono text-xs text-ash leading-relaxed">
                   Downloads a complete offline backup of all project catalogs, art pieces, and
-                  bilingual dictionaries (<code className="text-paper">catalog.json</code>,{" "}
-                  <code className="text-paper">studio.json</code>,{" "}
-                  <code className="text-paper">en.json</code>, and{" "}
-                  <code className="text-paper">my.json</code>).
+                  bilingual dictionaries (<code className="text-bone">catalog.json</code>,{" "}
+                  <code className="text-bone">studio.json</code>,{" "}
+                  <code className="text-bone">en.json</code>, and{" "}
+                  <code className="text-bone">my.json</code>).
                 </p>
               </div>
 
               {/* Environment Security Audit Table */}
               <div className="space-y-3">
-                <div className="font-mono text-[11px] uppercase tracking-wider text-muted px-1 flex items-center justify-between">
+                <div className="font-mono text-[11px] uppercase tracking-wider text-ash px-1 flex items-center justify-between">
                   <span>Configuration Key</span>
                   <span>Security & Status</span>
                 </div>
@@ -823,13 +997,13 @@ export function OpsDeck({
                                 isGood
                                   ? "bg-emerald-500"
                                   : isOptional
-                                  ? "bg-muted"
+                                  ? "bg-ash"
                                   : "bg-signal"
                               }`}
                             />
-                            <span className="font-semibold text-paper">{item.key}</span>
+                            <span className="font-semibold text-bone">{item.key}</span>
                           </div>
-                          <div className="text-[11px] text-muted mt-0.5">{item.label}</div>
+                          <div className="text-[11px] text-ash mt-0.5">{item.label}</div>
                         </div>
 
                         <div className="sm:text-right">
@@ -838,14 +1012,14 @@ export function OpsDeck({
                               isGood
                                 ? "text-emerald-400 font-semibold"
                                 : isOptional
-                                ? "text-muted"
+                                ? "text-ash"
                                 : "text-signal font-semibold"
                             }
                           >
                             {item.statusText}
                           </span>
                           {item.hint && (
-                            <div className="text-[10px] text-muted/70 mt-0.5">{item.hint}</div>
+                            <div className="text-[10px] text-ash/70 mt-0.5">{item.hint}</div>
                           )}
                         </div>
                       </div>
@@ -853,8 +1027,8 @@ export function OpsDeck({
                   })}
                 </div>
 
-                <div className="p-3 bg-ink-2/60 border border-line rounded font-mono text-[11px] text-muted">
-                  Runtime Environment: <code className="text-paper">{nodeEnv}</code> · Secret values
+                <div className="p-3 bg-ink-2/60 border border-line rounded font-mono text-[11px] text-ash">
+                  Runtime Environment: <code className="text-bone">{nodeEnv}</code> · Secret values
                   are masked and checked using timing-safe comparisons.
                 </div>
               </div>
@@ -864,12 +1038,12 @@ export function OpsDeck({
 
         {/* Navigator Footer matching EditDrawer balanced 2-row layout */}
         <div className="p-4 sm:p-5 border-t border-line bg-ink shrink-0 space-y-3 pb-[max(1rem,env(safe-area-inset-bottom,0px))]">
-          <div className="flex items-center justify-between text-xs font-mono text-muted">
+          <div className="flex items-center justify-between text-xs font-mono text-ash">
             <span className="flex items-center gap-1.5">
               <span className="size-1.5 rounded-full bg-signal" />
               <span>Burmanlabs DevOps Active</span>
             </span>
-            <span>Target: {gitBranch}</span>
+            <span className="truncate max-w-[200px] text-right">Repo: {selectedRepo.split("/")[1] || selectedRepo}</span>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
@@ -885,7 +1059,7 @@ export function OpsDeck({
             <button
               type="button"
               onClick={onClose}
-              className={`w-full py-2.5 px-3 rounded-md bg-paper text-ink font-semibold font-mono text-xs hover:bg-white active:scale-95 transition-all shadow-md cursor-pointer text-center ${
+              className={`w-full py-2.5 px-3 rounded-md bg-bone border border-bone text-ink font-semibold font-mono text-xs hover:bg-white active:scale-95 transition-all shadow-md cursor-pointer text-center ${
                 !onLogout ? "col-span-2" : ""
               }`}
             >

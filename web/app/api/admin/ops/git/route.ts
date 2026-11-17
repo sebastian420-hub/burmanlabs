@@ -20,6 +20,66 @@ export interface GitWorkflowRunInfo {
   commitSha?: string;
 }
 
+export interface BurmanProjectRepo {
+  id: string;
+  code: string;
+  name: string;
+  repo: string;
+  branch: string;
+}
+
+const BURMANLABS_PROJECT_REPOS: BurmanProjectRepo[] = [
+  {
+    id: "burmanlabs",
+    code: "SITE",
+    name: "Burmanlabs Hub",
+    repo: "sebastian420-hub/burmanlabs",
+    branch: "main",
+  },
+  {
+    id: "artcodex",
+    code: "BL-004",
+    name: "Artcodex",
+    repo: "sebastian420-hub/Artcodex",
+    branch: "main",
+  },
+  {
+    id: "economy-book",
+    code: "BL-005",
+    name: "The Economy Book",
+    repo: "sebastian420-hub/economy-from-the-ground-up",
+    branch: "main",
+  },
+  {
+    id: "edusim",
+    code: "BL-001",
+    name: "EduSim Engine",
+    repo: "sebastian420-hub/edusim",
+    branch: "main",
+  },
+  {
+    id: "cortex",
+    code: "BL-003",
+    name: "Cortex CLI",
+    repo: "sebastian420-hub/cortex",
+    branch: "main",
+  },
+  {
+    id: "pia",
+    code: "BL-006",
+    name: "PIA Core",
+    repo: "sebastian420-hub/pia",
+    branch: "main",
+  },
+  {
+    id: "pia-ui",
+    code: "BL-006",
+    name: "PIA UI",
+    repo: "sebastian420-hub/pia-ui",
+    branch: "main",
+  },
+];
+
 interface RawGitHubCommit {
   sha: string;
   html_url: string;
@@ -49,9 +109,13 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }
 
+    const { searchParams } = new URL(req.url);
+    const requestedRepo = searchParams.get("repo");
+    const requestedBranch = searchParams.get("branch");
+
     const githubToken = process.env.GITHUB_TOKEN;
-    const githubRepo = process.env.GITHUB_REPO || "sebastian420-hub/burmanlabs";
-    const githubBranch = process.env.GITHUB_BRANCH || "main";
+    const githubRepo = requestedRepo?.trim() || process.env.GITHUB_REPO || "sebastian420-hub/burmanlabs";
+    const githubBranch = requestedBranch?.trim() || process.env.GITHUB_BRANCH || "main";
 
     if (!githubToken) {
       return NextResponse.json({
@@ -59,6 +123,7 @@ export async function GET(req: Request) {
         error: "GITHUB_TOKEN is missing in web/.env.local",
         repo: githubRepo,
         branch: githubBranch,
+        projects: BURMANLABS_PROJECT_REPOS,
         commits: [],
         runs: [],
       });
@@ -126,6 +191,7 @@ export async function GET(req: Request) {
       ok: true,
       repo: githubRepo,
       branch: githubBranch,
+      projects: BURMANLABS_PROJECT_REPOS,
       commits,
       runs,
       error: gitError,
