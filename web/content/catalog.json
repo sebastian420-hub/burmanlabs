@@ -48,7 +48,7 @@
     },
     "about": {
       "my": "Neuromorphic ချစ်ပ်များ — ဦးနှောက်ကဲ့သို့ spike များဖြင့် တွက်ချက်သော ဟာ့ဒ်ဝဲ — အကြောင်း လေ့လာရင်း ရေးသားနေသော စာအုပ်။ အခန်းတိုင်းတွင် စမ်းကစားနိုင်သော ပုံများ ပါဝင်သည်။ ရည်မှန်းချက်မှာ ထိုချစ်ပ်ဖြင့် တွေးခေါ်သော ကိုယ်တိုင်ပျံသန်းနိုင်သည့် ဒရုန်း ဖြစ်သည်။",
-      "en": "A book I am writing while I learn neuromorphic chips: hardware that computes with spikes, the way a brain does. Every chapter has diagrams you can play with. The goal at the end of it is an autonomous drone that thinks on such a chip."
+      "en": "A Neuromorphic chip book: hardware that computes with spikes, the way a brain does. Every chapter has diagrams you can play with. The goal at the end of it is an autonomous drone that thinks on such a chip."
     },
     "standing": {
       "my": "လေ့လာရင်း ရေးသားနေဆဲ။ အခန်းသစ်များကို ဖတ်ရင်း ထည့်သွင်းနေသည်။",
@@ -59,7 +59,8 @@
     "stack": [
       "Neuromorphic computing"
     ],
-    "art": "lines"
+    "art": "lines",
+    "offline": false
   },
   {
     "id": "cortex",
