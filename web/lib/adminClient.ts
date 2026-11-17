@@ -201,9 +201,8 @@ export async function saveStudioPieceField(
 import type { FleetTargetResult } from "@/app/api/admin/ops/fleet/route";
 import type { GitCommitInfo, GitWorkflowRunInfo, BurmanProjectRepo } from "@/app/api/admin/ops/git/route";
 import type { EnvAuditItem } from "@/app/api/admin/ops/audit/route";
-import type { VercelDeploymentInfo } from "@/app/api/admin/ops/vercel/route";
 
-export type { FleetTargetResult, GitCommitInfo, GitWorkflowRunInfo, BurmanProjectRepo, EnvAuditItem, VercelDeploymentInfo };
+export type { FleetTargetResult, GitCommitInfo, GitWorkflowRunInfo, BurmanProjectRepo, EnvAuditItem };
 
 export async function fetchFleetHealth(): Promise<{ ok: boolean; targets: FleetTargetResult[]; error?: string }> {
   try {
@@ -254,32 +253,6 @@ export async function fetchEnvAudit(): Promise<{ ok: boolean; items: EnvAuditIte
     return data;
   } catch (err: unknown) {
     return { ok: false, items: [], error: err instanceof Error ? err.message : "Failed to load config audit" };
-  }
-}
-
-export async function fetchVercelStatus(): Promise<{
-  ok: boolean;
-  configured: boolean;
-  deployments: VercelDeploymentInfo[];
-  hint?: string;
-  error?: string;
-}> {
-  try {
-    const res = await fetch("/api/admin/ops/vercel", { cache: "no-store" });
-    const data = await res.json();
-    return data;
-  } catch (err: unknown) {
-    return { ok: false, configured: false, deployments: [], error: err instanceof Error ? err.message : "Failed to load Vercel status" };
-  }
-}
-
-export async function triggerVercelRedeploy(): Promise<{ ok: boolean; message?: string; error?: string }> {
-  try {
-    const res = await fetch("/api/admin/ops/vercel", { method: "POST" });
-    const data = await res.json();
-    return data;
-  } catch (err: unknown) {
-    return { ok: false, error: err instanceof Error ? err.message : "Failed to trigger redeploy" };
   }
 }
 

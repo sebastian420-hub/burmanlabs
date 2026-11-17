@@ -23,8 +23,6 @@ export async function GET(req: Request) {
     const hasGithubToken = Boolean(process.env.GITHUB_TOKEN);
     const githubRepo = process.env.GITHUB_REPO || "sebastian420-hub/burmanlabs";
     const githubBranch = process.env.GITHUB_BRANCH || "main";
-    const hasVercelToken = Boolean(process.env.VERCEL_TOKEN);
-    const hasVercelProjectId = Boolean(process.env.VERCEL_PROJECT_ID);
     const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL;
 
     const items: EnvAuditItem[] = [
@@ -63,24 +61,6 @@ export async function GET(req: Request) {
         category: "vcs",
         isSecret: false,
         publicValue: githubBranch,
-      },
-      {
-        key: "VERCEL_TOKEN",
-        label: "Vercel API Token",
-        status: hasVercelToken ? "configured" : "optional_missing",
-        statusText: hasVercelToken ? "Configured" : "Optional (Not configured)",
-        category: "deploy",
-        isSecret: true,
-        hint: hasVercelToken ? undefined : "Add to web/.env.local to unlock direct Vercel build triggers & deployment logs",
-      },
-      {
-        key: "VERCEL_PROJECT_ID",
-        label: "Vercel Project ID",
-        status: hasVercelProjectId ? "configured" : "optional_missing",
-        statusText: hasVercelProjectId ? "Configured" : "Optional (Not configured)",
-        category: "deploy",
-        isSecret: false,
-        hint: hasVercelProjectId ? undefined : "Project ID from Vercel dashboard project settings",
       },
       {
         key: "NEXT_PUBLIC_CONTACT_EMAIL",

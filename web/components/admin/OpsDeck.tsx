@@ -6,17 +6,14 @@ import {
   fetchGitTelemetry,
   triggerCachePurge,
   fetchEnvAudit,
-  fetchVercelStatus,
-  triggerVercelRedeploy,
   type FleetTargetResult,
   type GitCommitInfo,
   type GitWorkflowRunInfo,
   type BurmanProjectRepo,
   type EnvAuditItem,
-  type VercelDeploymentInfo,
 } from "@/lib/adminClient";
 
-type OpsTab = "fleet" | "git" | "deploy" | "audit";
+type OpsTab = "fleet" | "git" | "maint";
 
 const DEFAULT_BURMANLABS_PROJECTS: BurmanProjectRepo[] = [
   {
@@ -112,16 +109,10 @@ export function OpsDeck({
   const [isLoadingGit, setIsLoadingGit] = useState(false);
   const [gitError, setGitError] = useState<string | null>(null);
 
-  // Deploy & Cache state
+  // Cache & Maintenance state
   const [isPurgingCache, setIsPurgingCache] = useState(false);
   const [cachePurgedAt, setCachePurgedAt] = useState<number | null>(null);
   const [cachePurgeStatus, setCachePurgeStatus] = useState<string | null>(null);
-
-  const [vercelDeployments, setVercelDeployments] = useState<VercelDeploymentInfo[]>([]);
-  const [isVercelConfigured, setIsVercelConfigured] = useState(false);
-  const [vercelHint, setVercelHint] = useState<string | null>(null);
-  const [isTriggeringVercel, setIsTriggeringVercel] = useState(false);
-  const [vercelDeployMessage, setVercelDeployMessage] = useState<string | null>(null);
 
   // Audit state
   const [auditItems, setAuditItems] = useState<EnvAuditItem[]>([]);
@@ -161,9 +152,7 @@ export function OpsDeck({
       runFleetPing();
     } else if (activeTab === "git" && gitCommits.length === 0 && !isLoadingGit) {
       runGitLoad(selectedRepo, selectedBranch);
-    } else if (activeTab === "deploy") {
-      runVercelLoad();
-    } else if (activeTab === "audit" && auditItems.length === 0 && !isLoadingAudit) {
+    } else if (activeTab === "maint" && auditItems.length === 0 && !isLoadingAudit) {
       runAuditLoad();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -227,26 +216,6 @@ export function OpsDeck({
       setCachePurgeStatus("All route layouts revalidated worldwide.");
     } else {
       setCachePurgeStatus(`Purge error: ${res.error || "Unknown error"}`);
-    }
-  }
-
-  async function runVercelLoad() {
-    const res = await fetchVercelStatus();
-    setIsVercelConfigured(res.configured);
-    if (res.hint) setVercelHint(res.hint);
-    if (res.deployments) setVercelDeployments(res.deployments);
-  }
-
-  async function handleTriggerVercel() {
-    setIsTriggeringVercel(true);
-    setVercelDeployMessage(null);
-    const res = await triggerVercelRedeploy();
-    setIsTriggeringVercel(false);
-    if (res.ok) {
-      setVercelDeployMessage(res.message || "Redeployment triggered successfully.");
-      runVercelLoad();
-    } else {
-      setVercelDeployMessage(`Failed: ${res.error || "Unknown error"}`);
     }
   }
 
@@ -369,7 +338,7 @@ export function OpsDeck({
             </div>
           </div>
 
-          {/* Sub-Navigation Tabs with High-Contrast Bone/Black Styling */}
+          {/* Sub-Navigation Tabs: 3 focused, perfectly sized pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 -mx-4 px-4 sm:-mx-6 sm:px-6">
             <button
               type="button"
@@ -411,26 +380,14 @@ export function OpsDeck({
 
             <button
               type="button"
-              onClick={() => setActiveTab("deploy")}
+              onClick={() => setActiveTab("maint")}
               className={`h-8 px-3.5 rounded-full text-xs font-mono transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
-                activeTab === "deploy"
+                activeTab === "maint"
                   ? "bg-bone border-bone text-ink font-semibold shadow-sm"
                   : "bg-ink-2 border-line text-ash hover:text-white hover:border-line-2"
               }`}
             >
-              <span>Deploy & Cache</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab("audit")}
-              className={`h-8 px-3.5 rounded-full text-xs font-mono transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 border ${
-                activeTab === "audit"
-                  ? "bg-bone border-bone text-ink font-semibold shadow-sm"
-                  : "bg-ink-2 border-line text-ash hover:text-white hover:border-line-2"
-              }`}
-            >
-              <span>Security & Backup</span>
+              <span>Cache & Security</span>
             </button>
           </div>
         </div>
@@ -780,8 +737,8 @@ export function OpsDeck({
             </div>
           )}
 
-          {/* TAB 3: DEPLOY & CACHE */}
-          {activeTab === "deploy" && (
+          {/* TAB 3: CACHE & SECURITY (CLEAN, FOCUSED INFRASTRUCTURE) */}
+          {activeTab === "maint" && (
             <div className="space-y-6">
               {/* Next.js Global Cache Invalidation Card */}
               <div className="p-4 bg-ink-2 border border-line rounded-lg space-y-3.5">
@@ -824,123 +781,6 @@ export function OpsDeck({
                 )}
               </div>
 
-              {/* Vercel Production Pipeline Explanation & Status */}
-              <div className="p-4 bg-ink-2 border border-line rounded-lg space-y-4">
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <div className="font-mono text-[10px] uppercase tracking-wider text-ash">
-                      Production Pipeline
-                    </div>
-                    <h3 className="font-mono text-sm font-semibold text-bone mt-0.5">
-                      Vercel Deployments API
-                    </h3>
-                  </div>
-
-                  {isVercelConfigured && (
-                    <button
-                      type="button"
-                      onClick={handleTriggerVercel}
-                      disabled={isTriggeringVercel}
-                      className="px-3.5 py-1.5 bg-signal text-white font-mono text-xs font-semibold rounded hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 cursor-pointer shrink-0"
-                    >
-                      {isTriggeringVercel ? "Triggering…" : "Trigger Production Build"}
-                    </button>
-                  )}
-                </div>
-
-                {isVercelConfigured ? (
-                  <div className="space-y-3">
-                    {vercelDeployMessage && (
-                      <div className="p-2.5 bg-ink border border-line rounded font-mono text-xs text-bone">
-                        {vercelDeployMessage}
-                      </div>
-                    )}
-
-                    <div className="space-y-2">
-                      <div className="font-mono text-[10px] uppercase tracking-wider text-ash">
-                        Recent Deployments
-                      </div>
-                      {vercelDeployments.map((d) => (
-                        <div
-                          key={d.uid}
-                          className="p-3 bg-ink border border-line rounded flex items-center justify-between gap-3 text-xs font-mono"
-                        >
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span
-                                className={`size-1.5 rounded-full ${
-                                  d.state === "READY"
-                                    ? "bg-emerald-500"
-                                    : d.state === "BUILDING"
-                                    ? "bg-gold animate-pulse"
-                                    : "bg-signal"
-                                }`}
-                              />
-                              <span className="font-semibold text-bone">{d.state}</span>
-                              {d.commitSha && (
-                                <span className="text-ash">commit {d.commitSha}</span>
-                              )}
-                            </div>
-                            {d.commitMessage && (
-                              <p className="text-ash truncate mt-0.5">{d.commitMessage}</p>
-                            )}
-                          </div>
-                          <div className="text-right shrink-0">
-                            <span className="text-ash">
-                              {new Date(d.created).toLocaleDateString()}
-                            </span>
-                            {d.url && (
-                              <a
-                                href={d.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block text-bone hover:text-signal text-[11px] mt-0.5"
-                              >
-                                View ↗
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-3.5 bg-ink border border-line rounded space-y-3">
-                    <div className="font-mono text-xs font-semibold text-bone flex items-center gap-2">
-                      <span className="size-1.5 rounded-full bg-gold" />
-                      <span>What is the Vercel API?</span>
-                    </div>
-                    <p className="font-mono text-xs text-ash leading-relaxed">
-                      The <strong>Vercel REST API</strong> (<code>api.vercel.com</code>) is an
-                      optional service that lets external dashboards monitor live build progression
-                      and trigger redeployments remotely without opening Vercel.
-                    </p>
-                    <p className="font-mono text-xs text-ash leading-relaxed">
-                      <strong>Is it needed?</strong> No, it is completely optional. Burmanlabs
-                      already deploys automatically whenever you save content or push git commits.
-                      You only need this if you want a manual <code>[Trigger Production Build]</code>{" "}
-                      button right inside this panel.
-                    </p>
-                    <div className="p-2.5 bg-ink-2 border border-line font-mono text-xs text-bone rounded space-y-1">
-                      <div className="text-ash text-[10px] uppercase">How to enable (Optional):</div>
-                      <div>1. Create a personal token at <span className="text-signal">vercel.com/account/tokens</span></div>
-                      <div>2. Copy your Project ID from your Vercel Project Settings</div>
-                      <div>3. Add to <span className="text-bone">web/.env.local</span>:</div>
-                      <div className="text-ash mt-1">VERCEL_TOKEN=your_token</div>
-                      <div className="text-ash">VERCEL_PROJECT_ID=prj_...</div>
-                    </div>
-                    {vercelHint && (
-                      <p className="font-mono text-[11px] text-ash">{vercelHint}</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* TAB 4: SECURITY AUDIT & DISASTER RECOVERY */}
-          {activeTab === "audit" && (
-            <div className="space-y-6">
               {/* Disaster Recovery & Snapshot Card */}
               <div className="p-4 bg-ink-2 border border-line rounded-lg space-y-3">
                 <div className="flex items-center justify-between gap-2">
