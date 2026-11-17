@@ -58,6 +58,17 @@ export function EditDrawer({
     });
   }, [registry, searchQuery, selectedCategory]);
 
+  // Lock background scroll when open
+  useEffect(() => {
+    if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
+
   // Handle Escape key
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {

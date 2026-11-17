@@ -284,11 +284,18 @@ html:lang(en) body {
   border-radius: 4px;
 }
 
-.no-scrollbar {
-  scrollbar-width: none;
+.no-scrollbar,
+.scrollbar-none,
+[role="dialog"] * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar,
+[role="dialog"] *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Prevent iOS Safari from auto-zooming inputs on mobile focus */

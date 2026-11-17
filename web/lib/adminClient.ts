@@ -9,12 +9,28 @@ export interface SaveResponse {
 
 export type AdminFileTarget = "en" | "my" | "catalog" | "studio";
 
+const ADMIN_STORAGE_KEY = "burmanlabs_admin_token";
+
 export async function checkAdminAuth(): Promise<boolean> {
   try {
-    const res = await fetch("/api/admin/auth", { cache: "no-store" });
+    const headers: Record<string, string> = {};
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem(ADMIN_STORAGE_KEY);
+      if (storedToken) {
+        headers["Authorization"] = `Bearer ${storedToken}`;
+      }
+    }
+
+    const res = await fetch("/api/admin/auth", { cache: "no-store", headers });
     if (!res.ok) return false;
     const data = await res.json();
-    return Boolean(data.isAdmin);
+    const isAdmin = Boolean(data.isAdmin);
+
+    if (!isAdmin && typeof window !== "undefined") {
+      localStorage.removeItem(ADMIN_STORAGE_KEY);
+    }
+
+    return isAdmin;
   } catch {
     return false;
   }
@@ -34,6 +50,15 @@ export async function loginAdmin(
     if (!res.ok || !data.ok) {
       return { ok: false, error: data.error || "Failed to authenticate" };
     }
+
+    if (typeof window !== "undefined") {
+      if (data.token) {
+        localStorage.setItem(ADMIN_STORAGE_KEY, data.token);
+      } else {
+        localStorage.removeItem(ADMIN_STORAGE_KEY);
+      }
+    }
+
     return { ok: true };
   } catch (err: unknown) {
     return { ok: false, error: err instanceof Error ? err.message : "Network error" };
@@ -42,6 +67,9 @@ export async function loginAdmin(
 
 export async function logoutAdmin(): Promise<void> {
   try {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(ADMIN_STORAGE_KEY);
+    }
     await fetch("/api/admin/auth", { method: "DELETE" });
   } catch {
     // Ignore network errors on logout

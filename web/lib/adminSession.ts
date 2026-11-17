@@ -55,6 +55,7 @@ export function getCookieOptions(durationMs = EXTENDED_SESSION_MS) {
     sameSite: "lax" as const,
     path: "/",
     maxAge: Math.floor(durationMs / 1000),
+    expires: new Date(Date.now() + durationMs),
     secure: process.env.NODE_ENV === "production",
   };
 }
