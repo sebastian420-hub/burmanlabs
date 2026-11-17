@@ -23,7 +23,7 @@
       "my": "အသုံးပြုနိုင်ပြီ။ WebGPU ပံ့ပိုးသော ဘရောက်ဇာ လိုအပ်သည်။",
       "en": "Live. Needs a browser with WebGPU."
     },
-    "mode": "link",
+    "mode": "embed",
     "target": "https://edusim-theta.vercel.app/",
     "stack": [
       "WebGPU"
@@ -54,7 +54,7 @@
       "my": "လေ့လာရင်း ရေးသားနေဆဲ။ အခန်းသစ်များကို ဖတ်ရင်း ထည့်သွင်းနေသည်။",
       "en": "Written in public, chapter by chapter, as I read."
     },
-    "mode": "link",
+    "mode": "embed",
     "target": "https://spikebook.vercel.app",
     "stack": [
       "Neuromorphic computing"
@@ -118,7 +118,7 @@
       "my": "ဘရောက်ဇာထဲတွင် Beta ဗားရှင်းအနေဖြင့် စမ်းသပ်သုံးနိုင်ပြီ။ အပြီးသတ်နိုင်ရန် bug များကို လိုက်ရှာပြင်ဆင်ပြီး လိုအပ်သည်များကို ဆက်လက်ဖြည့်စွက်နေဆဲ ဖြစ်ပါသည်။ AI ကူညီသူသည် သင့်ကိုယ်ပိုင် Anthropic key ဖြင့် အလုပ်လုပ်သည်။",
       "en": "Beta version live in the browser. Still a work in progress while I hunt down bugs and round out the final details. The AI co-builder works with your own Anthropic key."
     },
-    "mode": "link",
+    "mode": "embed",
     "target": "https://artcodex.vercel.app/",
     "stack": [
       "React",

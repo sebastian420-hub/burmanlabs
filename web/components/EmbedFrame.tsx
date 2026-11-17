@@ -29,6 +29,19 @@ export default function EmbedFrame({ url, title, labels, code }: Props) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isFullscreen]);
 
+  // Open Focus Deck on #focus-deck hash or anchor click
+  useEffect(() => {
+    function checkHash() {
+      if (window.location.hash === "#focus-deck") {
+        setOn(true);
+        setIsFullscreen(true);
+      }
+    }
+    checkHash();
+    window.addEventListener("hashchange", checkHash);
+    return () => window.removeEventListener("hashchange", checkHash);
+  }, []);
+
   // Lock background scroll when in Focus Deck
   useEffect(() => {
     if (isFullscreen) {

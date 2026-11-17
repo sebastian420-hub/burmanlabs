@@ -114,6 +114,20 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
                   {d.item.openNew}
                 </ButtonLink>
               )}
+              {item.mode === "embed" && item.target && (
+                <div className="flex flex-wrap items-center gap-3">
+                  <a
+                    href="#focus-deck"
+                    className="inline-flex items-center gap-2 rounded-full bg-bone px-5 py-2.5 font-mono text-xs font-semibold text-ink transition hover:bg-white active:scale-95 shadow-md"
+                  >
+                    <span>⛶</span>
+                    <span>Launch in Deck</span>
+                  </a>
+                  <ButtonLink href={item.target} external>
+                    {d.item.openNew}
+                  </ButtonLink>
+                </div>
+              )}
               {item.mode === "native" && item.target && (
                 <ButtonLink href={`/${lang}/sims/${item.target}`}>{d.item.open}</ButtonLink>
               )}
@@ -166,7 +180,7 @@ export default async function ItemPage({ params }: PageProps<"/[lang]/catalog/[i
         )}
 
         {item.mode === "embed" && item.target && (
-          <div className="mt-8">
+          <div id="focus-deck" className="mt-8 scroll-mt-24">
             <EmbedFrame
               url={item.target}
               title={item.title[lang]}
